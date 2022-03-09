@@ -23,9 +23,9 @@ app.get('/view', function(request, response){
     instance.then(value => {
         value.methods.queryToken(tkid).call({from:sender}).then(metadata => {
             console.log("Query result:", metadata);
-            response.json({datahash: metadata});    // echo the result back
+            response.json({tokenid: tkid, datahash: metadata});    // echo the result back
         });
     });
 });
 
-app.listen(3000);
+app.listen(3001);

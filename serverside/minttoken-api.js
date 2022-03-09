@@ -29,7 +29,7 @@ app.post('/', function(request, response){
     instance.then(value => {
         value.methods.mint(tkid,datahash).send({from: sender, gas: defaultGas}).then(() => {
             console.log("New token minted:", `${tkid} - ${datahash}`);
-            response.send(tkid);    // echo the result back
+            response.send('New token minted!');    // echo the result back
         });
     });
 });
