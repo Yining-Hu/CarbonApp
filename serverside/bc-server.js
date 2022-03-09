@@ -19,7 +19,7 @@ var app = express();
 
 app.use(express.json());
 
-app.post('/', function(request, response){
+app.post('/mint', function(request, response){
     var tkid = request.body.tkid;
     var gtin = request.body.GTIN;
     var weight = request.body.net_weight;
@@ -30,6 +30,32 @@ app.post('/', function(request, response){
         value.methods.mint(tkid,datahash).send({from: sender, gas: defaultGas}).then(() => {
             console.log("New token minted:", `${tkid} - ${datahash}`);
             response.send('New token minted!');    // echo the result back
+        });
+    });
+});
+
+app.post('/update', function(request, response){
+    var tkid = request.body.tkid;
+    var gtin = request.body.GTIN;
+    var weight = request.body.net_weight;
+    var metadata = gtin + weight;
+    var datahash = keccak256(metadata).toString('hex');
+
+    instance.then(value => {
+        value.methods.update(tkid,datahash).send({from: sender, gas: defaultGas}).then(() => {
+            console.log("Token detail updated:", `${tkid} - ${datahash}`);
+            response.send('Token detail updated!');
+        });
+    });
+});
+
+app.get('/view', function(request, response){
+    var tkid = request.query.tkid;
+
+    instance.then(value => {
+        value.methods.queryToken(tkid).call({from:sender}).then(metadata => {
+            console.log("Query result:", metadata);
+            response.json({tokenid: tkid, datahash: metadata});
         });
     });
 });
