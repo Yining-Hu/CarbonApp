@@ -1,5 +1,6 @@
 # Tokencontract
-Deployed networks include: Ganache local test, Polygon Matic-Mumbai testnet.
+- Run $ npm install to install all dependencies.
+- Deployed networks include: Ganache local test, Polygon Matic-Mumbai testnet.
 
 ## serverside/
 A serverside application in NodeJs, with APIs for sharing data with other servers. Currently connected to a Moz.sol contract on Polygon testnet.
