@@ -4,9 +4,24 @@ import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract DigitalTwin is ERC721 {
     string[] public tks;
+    address public admin;
 
-    mapping(string => uint256) public tkid; // mapping of tkname => id in uint256
-    mapping(string => string) public metadata; // mapping of tkname => metadata
+    /**
+     * Allow consumers to access the product verification results through apis.
+     */
+    enum Verificationstatus {
+        PENDING,
+        PROCESSORVERIFIED,
+        PROCESSORDENIED
+    }
+
+    struct ProductTk {
+        uint256 id;
+        string metadata;
+        Verificationstatus status;
+    }
+
+    mapping(string => ProductTk) public producttks; // mapping of tkname => ProductTk struct
     mapping(string => bool) public tkExists;
 
     event NewTokenMinted(string tkname);
@@ -16,39 +31,66 @@ contract DigitalTwin is ERC721 {
     constructor(string memory _name, string memory _symbol)
         public
         ERC721(_name, _symbol)
-    {}
+    {
+        admin = msg.sender;
+    }
 
     function mint(string memory _tkname, string memory _metadata) public {
+
         require(!tkExists[_tkname], "Token already exists.");
+
         tks.push(_tkname);
         uint256 id = tks.length;
         _mint(msg.sender, id);
-        metadata[_tkname] = _metadata;
-        tkid[_tkname] = id;
+        
+        producttks[_tkname].id = id;
+        producttks[_tkname].metadata = _metadata;
+        producttks[_tkname].status = Verificationstatus.PENDING;
+
         tkExists[_tkname] = true;
 
         emit NewTokenMinted(_tkname);
     }
 
     function update(string memory _tkname, string memory _metadata) public {
+
         require(tkExists[_tkname], "Token does not exist.");
         require(
-            ownerOf(tkid[_tkname]) == address(msg.sender),
+            ownerOf(producttks[_tkname].id) == address(msg.sender),
             "Only the token owner can update the token."
         );
-        metadata[_tkname] = _metadata;
+
+        producttks[_tkname].metadata = _metadata;
 
         emit TokenUpdated(_tkname);
     }
 
+    /**
+     * verify and deny are called by process upon optical verification of the product
+     */
+    function verify(string memory _tkname) public {
+
+        require(tkExists[_tkname], "Token does not exist.");
+
+        producttks[_tkname].status = Verificationstatus.PROCESSORVERIFIED;
+    }
+
+    function deny(string memory _tkname) public {
+
+        require(tkExists[_tkname], "Token does not exist.");
+
+        producttks[_tkname].status = Verificationstatus.PROCESSORDENIED;
+    }
+
     function burn(string memory _tkname) public {
+
         require(tkExists[_tkname], "Token does not exist.");
         require(
-            ownerOf(tkid[_tkname]) == address(msg.sender),
+            ownerOf(producttks[_tkname].id) == address(msg.sender),
             "Only the token owner can destroy the token."
         );
 
-        _burn(tkid[_tkname]);
+        _burn(producttks[_tkname].id);
 
         emit TokenDestroyed(_tkname);
     }
@@ -64,6 +106,11 @@ contract DigitalTwin is ERC721 {
         returns (string memory)
     {
         require(tkExists[_tkname], "Token does not exist.");
-        return metadata[_tkname];
+        return producttks[_tkname].metadata;
+    }
+
+    function queryAll() public returns (string[] memory) {
+        require(msg.sender == admin); // require caller to be the contract owner
+        return tks;
     }
 }
