@@ -6,7 +6,7 @@ const keccak256 = require('keccak256')
 // const netId = '5777';
 // const provider = 'http://127.0.0.1:7545';
 const path = './build/contracts/Moz.json';
-const defaultGas = 400000;
+const defaultGas = 200000;
 const contractAddr = "0xa4Df321308fB1c51Bb9d4c67Ea66064a54637D42";
 
 // var sender = "0x409D2B42677A5f771fb46561CAb55Ed7B45fEFe3"; // address on the local ganache network
@@ -27,9 +27,19 @@ app.post('/mint', function(request, response){
     var datahash = keccak256(metadata).toString('hex');
 
     instance.then(value => {
-        value.methods.mint(tkid,datahash).send({from: sender, gas: defaultGas}).then(() => {
-            console.log("New token minted:", `${tkid} - ${datahash}`);
-            response.send('New token minted!');    // echo the result back
+        value.methods.mint(tkid,datahash).send({from: sender, gas: defaultGas})
+        .on('transactionHash', function(transactionHash){
+            console.log(`Minting new token: ${tkid}, Tx hash: ${transactionHash}`);
+            response.write(transactionHash);
+            response.write('\n');
+        })
+        .on('error', function(error){
+            console.log(error.message);
+            response.write("Tx reverted. Please enter a new token name. \n");
+            response.end();
+        })
+        .on('receipt', function(receipt) {
+            response.end();
         });
     });
 });
@@ -42,9 +52,19 @@ app.post('/update', function(request, response){
     var datahash = keccak256(metadata).toString('hex');
 
     instance.then(value => {
-        value.methods.update(tkid,datahash).send({from: sender, gas: defaultGas}).then(() => {
-            console.log("Token detail updated:", `${tkid} - ${datahash}`);
-            response.send('Token detail updated!');
+        value.methods.update(tkid,datahash).send({from: sender, gas: defaultGas})
+        .on('transactionHash', function(transactionHash){
+            console.log(`Updating token details: ${tkid}, Tx hash: ${transactionHash}`);
+            response.write(transactionHash);
+            response.write('\n');
+        })
+        .on('error', function(error){
+            console.log(error.message);
+            response.write("Tx reverted. Please enter an existing token name. \n");
+            response.end();
+        })
+        .on('receipt', function(receipt) {
+            response.end();
         });
     });
 });
@@ -53,10 +73,16 @@ app.get('/view', function(request, response){
     var tkid = request.query.tkid;
 
     instance.then(value => {
-        value.methods.queryToken(tkid).call({from:sender}).then(metadata => {
-            console.log("Query result:", metadata);
-            response.json({tokenid: tkid, datahash: metadata});
-        });
+        value.methods.queryToken(tkid).call({from:sender}, function(error, metadata){
+            if (error) {
+                console.log("Error:", error.message);
+                response.write("Tx reverted. Please enter an existing token name. \n");
+                response.end();
+            } else {
+                console.log("Query result:", result);
+                response.json({tokenid: tkid, datahash: metadata});
+            }
+        })
     });
 });
 
