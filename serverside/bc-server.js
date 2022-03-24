@@ -79,7 +79,7 @@ app.get('/view', function(request, response){
                 response.write("Tx reverted. Please enter an existing token name. \n");
                 response.end();
             } else {
-                console.log("Query result:", result);
+                console.log("Query result:", metadata);
                 response.json({tokenid: tkid, datahash: metadata});
             }
         })
