@@ -30,12 +30,12 @@ app.post('/mint', function(request, response){
         value.methods.mint(tkid,datahash).send({from: sender, gas: defaultGas})
         .on('transactionHash', function(transactionHash){
             console.log(`Minting new token: ${tkid}, Tx hash: ${transactionHash}`);
-            response.write(transactionHash);
+            response.write(JSON.stringify({'Tx id':transactionHash}));
             response.write('\n');
         })
         .on('error', function(error){
             console.log(error.message);
-            response.write("Tx reverted. Please enter a new token name. \n");
+            response.write(JSON.stringify({"Server response":"Tx reverted. Please enter a new token name."}));
             response.end();
         })
         .on('receipt', function(receipt) {
@@ -55,12 +55,12 @@ app.post('/update', function(request, response){
         value.methods.update(tkid,datahash).send({from: sender, gas: defaultGas})
         .on('transactionHash', function(transactionHash){
             console.log(`Updating token details: ${tkid}, Tx hash: ${transactionHash}`);
-            response.write(transactionHash);
+            response.write(JSON.stringify({'Tx id':transactionHash}));
             response.write('\n');
         })
         .on('error', function(error){
             console.log(error.message);
-            response.write("Tx reverted. Please enter an existing token name. \n");
+            response.write(JSON.stringify({"Server response":"Tx reverted. Please enter an existing token name."}));
             response.end();
         })
         .on('receipt', function(receipt) {
@@ -76,7 +76,7 @@ app.get('/view', function(request, response){
         value.methods.queryToken(tkid).call({from:sender}, function(error, metadata){
             if (error) {
                 console.log("Error:", error.message);
-                response.write("Tx reverted. Please enter an existing token name. \n");
+                response.write(JSON.stringify({"Server response":"Tx reverted. Please enter an existing token name."}))
                 response.end();
             } else {
                 console.log("Query result:", metadata);
