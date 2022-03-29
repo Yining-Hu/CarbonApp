@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -24,12 +25,10 @@ contract DigitalTwin is ERC721 {
     mapping(string => ProductTk) public producttks; // mapping of tkname => ProductTk struct
     mapping(string => bool) public tkExists;
 
-    event NewTokenMinted(string tkname);
     event TokenUpdated(string tkname);
-    event TokenDestroyed(string tkname);
+    event TokenVerified(string tkname);
 
     constructor(string memory _name, string memory _symbol)
-        public
         ERC721(_name, _symbol)
     {
         admin = msg.sender;
@@ -48,10 +47,11 @@ contract DigitalTwin is ERC721 {
         producttks[_tkname].status = Verificationstatus.PENDING;
 
         tkExists[_tkname] = true;
-
-        emit NewTokenMinted(_tkname);
     }
 
+    /**
+     * update only updates the metadata of an existing token
+     */
     function update(string memory _tkname, string memory _metadata) public {
 
         require(tkExists[_tkname], "Token does not exist.");
@@ -66,20 +66,20 @@ contract DigitalTwin is ERC721 {
     }
 
     /**
-     * verify and deny are called by process upon optical verification of the product
+     * verify is called by process upon optical verification of the product
      */
-    function verify(string memory _tkname) public {
+    function verify(string memory _tkname, bool _status) public {
 
         require(tkExists[_tkname], "Token does not exist.");
 
-        producttks[_tkname].status = Verificationstatus.PROCESSORVERIFIED;
-    }
+        if (_status == true) {
+            producttks[_tkname].status = Verificationstatus.PROCESSORVERIFIED;
+        }
+        else {
+            producttks[_tkname].status = Verificationstatus.PROCESSORDENIED;
+        }
 
-    function deny(string memory _tkname) public {
-
-        require(tkExists[_tkname], "Token does not exist.");
-
-        producttks[_tkname].status = Verificationstatus.PROCESSORDENIED;
+        emit TokenVerified(_tkname);
     }
 
     function burn(string memory _tkname) public {
@@ -91,25 +91,38 @@ contract DigitalTwin is ERC721 {
         );
 
         _burn(producttks[_tkname].id);
-
-        emit TokenDestroyed(_tkname);
-    }
-
-    // query the metadata of a token
-    function countToken() public view returns (uint256) {
-        return tks.length;
+        delete producttks[_tkname];
     }
 
     function queryToken(string memory _tkname)
         public
         view
-        returns (string memory)
+        returns (uint256, string memory, string memory, address)
     {
         require(tkExists[_tkname], "Token does not exist.");
-        return producttks[_tkname].metadata;
+        
+        string memory status;
+
+        if (producttks[_tkname].status == Verificationstatus.PENDING) {
+            status = "pending verification";
+        } else if (producttks[_tkname].status == Verificationstatus.PROCESSORVERIFIED) {
+            status = "halal";
+        } else {
+            status = "not halal";
+        }
+
+        return (producttks[_tkname].id, producttks[_tkname].metadata, status, ownerOf(producttks[_tkname].id));
     }
 
-    function queryAll() public returns (string[] memory) {
+    /**
+     * query the metadata of a token
+     */
+    function countToken() public view returns (uint256) {
+        require(msg.sender == admin); // require caller to be the contract owner
+        return tks.length;
+    }
+
+    function queryAll() public view returns (string[] memory) {
         require(msg.sender == admin); // require caller to be the contract owner
         return tks;
     }
