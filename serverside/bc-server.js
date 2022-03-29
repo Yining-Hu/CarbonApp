@@ -88,6 +88,9 @@ app.post('/update', function(request, response){
     })
 });
 
+/**
+ * status field of the request should be true or false
+ */
 app.post('/verify', function(request, response){
     var tkid = request.body.tkid;
     var gas = request.body.gas;

@@ -106,9 +106,9 @@ contract DigitalTwin is ERC721 {
         if (producttks[_tkname].status == Verificationstatus.PENDING) {
             status = "pending verification";
         } else if (producttks[_tkname].status == Verificationstatus.PROCESSORVERIFIED) {
-            status = "halal";
+            status = "verified";
         } else {
-            status = "not halal";
+            status = "denied";
         }
 
         return (producttks[_tkname].id, producttks[_tkname].metadata, status, ownerOf(producttks[_tkname].id));
