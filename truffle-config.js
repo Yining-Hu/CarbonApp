@@ -1,7 +1,7 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
-const privKey = "a419e6f435e1d8d48ae630979e5869b1ec0e81027acfe2cda9d0068650b5b00d";
+const privKey = "a419e6f435e1d8d48ae630979e5869b1ec0e81027acfe2cda9d0068650b5b00d"; // for polygon mumbai
 
 module.exports = {
 
@@ -14,7 +14,7 @@ module.exports = {
     //  port: 8545,            // Standard Ethereum port (default: none)
     //  network_id: "18",       // Any network (default: none)
     },
-    matic: {
+    mumbai: {
       provider: () => new HDWalletProvider(privKey, "https://rpc-mumbai.maticvigil.com"),
       network_id: 80001,
       confirmations: 2,
