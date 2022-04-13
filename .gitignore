@@ -1,1 +1,3 @@
 node_modules
+contracts/Shred.sol
+contracts/MozzarellaSupplyChain.sol
