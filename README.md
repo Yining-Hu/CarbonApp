@@ -1,6 +1,5 @@
-# Tokencontract
-- Run $ npm install to install all dependencies.
-- Deployed networks include: Ganache local test, Polygon Matic-Mumbai testnet.
+# Blockchain-Server
+The repository contains a set of smart contracts and NodeJs APIs for access. The blockchain server running on Network Presence VPS is currently connected to a MyTest.sol contract on Polygon testnet. Server runs under the domain name ozirisblockchain.com.au, with both http and https options. Note that front-end users need to specify a gas value for sending a transaction on the blockchain.
 
 ## serverside/
 A serverside application in NodeJs, with APIs for data access. Currently connected to a Moz.sol contract on Polygon testnet.
