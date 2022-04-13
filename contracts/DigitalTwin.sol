@@ -94,6 +94,22 @@ contract DigitalTwin is ERC721 {
         delete producttks[_tkname];
     }
 
+    /**
+     * @notice for other solidity contracts to interact
+     */
+    function queryTokenFromContract(string memory _tkname)
+        public
+        view
+        returns (uint256, string memory, Verificationstatus vstatus, address)
+    {
+        require(tkExists[_tkname], "Token does not exist.");
+
+        return (producttks[_tkname].id, producttks[_tkname].metadata, vstatus, ownerOf(producttks[_tkname].id));
+    }
+
+    /**
+     * @notice for js client to interact
+     */
     function queryToken(string memory _tkname)
         public
         view
