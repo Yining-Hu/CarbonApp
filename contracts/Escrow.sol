@@ -65,6 +65,15 @@ contract EscrowService is AccessControl { //Ownable,
     }
 
     /**
+     * @notice To prevent sending tokens to 0x0 address and the contract address
+     */
+    modifier validDestination( address to ) {
+        require(to != address(0x0));
+        require(to != address(this) );
+        _;
+    }
+
+    /**
      * @notice to get the deployed DigitalTwin instance for accessing stored variables
      * @dev instead of pure inheriting
      */
@@ -83,7 +92,7 @@ contract EscrowService is AccessControl { //Ownable,
      * @notice Buyer can make a deposit to products on offer
      * @dev Partial payment is sent to the seller, however, can change depending on the agreement
      */
-    function BuyerSendPayment(string memory _tkname) external payable onlyRole(BUYER_ROLE) { 
+    function BuyerSendPayment(string memory _tkname) external payable validDestination onlyRole(BUYER_ROLE) {
         require (msg.value >= fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
         //require (_seller == seller, "Buyer must confirm the seller address!");
         require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!");
@@ -109,7 +118,7 @@ contract EscrowService is AccessControl { //Ownable,
 
     /**
      * @notice Buyer can approve the payment with or without verification
-     * @dev when implementing the api and front end, buyer should have the option of proceed without verification or with
+     * @dev when implementing the api and front end, buyer should have the option to proceed without or with verification
      */ 
     function BuyerApprove(string memory _tkname) public onlyRole(BUYER_ROLE) {
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
@@ -128,7 +137,7 @@ contract EscrowService is AccessControl { //Ownable,
      * @notice If conditions are met: escrow agent releases to seller.
      * @dev consider allowing seller to redeem without agent
      */
-    function AgentConfirmTransaction (string memory _tkname) public onlyRole(AGENT_ROLE) {
+    function AgentConfirmTransaction (string memory _tkname) public validDestination onlyRole(AGENT_ROLE) {
         require (stock[_tkname].state == EscrowState.BUYERAPPROVED , "Awaiting buyer approval!");
         /// To do: send payment from vault to seller. How to be sure that agent can spend from the vault?
         seller.transfer(remaining_payment);
@@ -138,7 +147,7 @@ contract EscrowService is AccessControl { //Ownable,
     /**
      * @notice If conditions does not met: escrow agent revert to buyer.
      */
-    function AgentCancelTransaction (string memory _tkname) onlyRole(AGENT_ROLE) public {
+    function AgentCancelTransaction (string memory _tkname) validDestination onlyRole(AGENT_ROLE) public {
         require (stock[_tkname].state == EscrowState.BUYERDENIED , "Awaiting buyer denail!");
         buyer.transfer(remaining_payment); 
         stock[_tkname].state =  EscrowState.PAYMENTREVERTED;
