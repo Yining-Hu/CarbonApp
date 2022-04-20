@@ -3,7 +3,8 @@ pragma solidity ^0.8.0;
 
 import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./DigitalTwin.sol";
+// import "./DigitalTwin.sol";
+import "./MyTest.sol";
 
 /**
  * @title EscrowService Contract, forked from https://github.com/AleRapchan/escrow-service
@@ -33,7 +34,8 @@ contract EscrowService is AccessControl { //Ownable,
 
     using SafeMath for uint256;
 
-    DigitalTwin public digitaltwin;
+    // DigitalTwin public digitaltwin;
+    MyTest public mytest;
     
     enum EscrowState { OFFERED, DEPOSITTAKEN, BUYERAPPROVED, BUYERDENIED, PAYMENTSUCCESSFUL, PAYMENTREVERTED }
 
@@ -49,14 +51,12 @@ contract EscrowService is AccessControl { //Ownable,
      * @dev before setting up any user wallet, all buyers/sellers use a single buyer/seller address, which are maintained by Beston.
      * @dev the same goes for ownership tracking in DigitalTwin.sol.
      */
-    constructor(address payable _buyer_address, address payable _seller_address, uint32 _price) {
+    constructor(address payable _buyer_address, address payable _seller_address) {
         vault = address(this); // vault set to be the contract address
         root = msg.sender;
         agent = payable(msg.sender);
         buyer = _buyer_address;
         seller= _seller_address;
-        /// @dev double check the conversion in Polygon
-        price = _price*10**18;
         // fee = 1*10**18;
         
         _setupRole(AGENT_ROLE, agent);
@@ -78,12 +78,13 @@ contract EscrowService is AccessControl { //Ownable,
      * @dev instead of pure inheriting
      */
     function setAddr(address _address) public {
-        digitaltwin = DigitalTwin(_address);
+        // digitaltwin = DigitalTwin(_address);
+        mytest = MyTest(_address);
     }
 
     function offer(string memory _tkname , uint256 _price) public {
         Product memory product;
-        product.price = _price;
+        product.price = _price; /// @dev double check the conversion in Polygon
         product.state = EscrowState.OFFERED;
         stock[_tkname] = product;
     }
@@ -92,7 +93,7 @@ contract EscrowService is AccessControl { //Ownable,
      * @notice Buyer can make a deposit to products on offer
      * @dev Partial payment is sent to the seller, however, can change depending on the agreement
      */
-    function BuyerSendPayment(string memory _tkname) external payable validDestination onlyRole(BUYER_ROLE) {
+    function BuyerSendPayment(string memory _tkname) external payable validDestination(agent) validDestination(seller) onlyRole(BUYER_ROLE) {
         require (msg.value >= fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
         //require (_seller == seller, "Buyer must confirm the seller address!");
         require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!");
@@ -137,7 +138,7 @@ contract EscrowService is AccessControl { //Ownable,
      * @notice If conditions are met: escrow agent releases to seller.
      * @dev consider allowing seller to redeem without agent
      */
-    function AgentConfirmTransaction (string memory _tkname) public validDestination onlyRole(AGENT_ROLE) {
+    function AgentConfirmTransaction (string memory _tkname) public validDestination(seller) onlyRole(AGENT_ROLE) {
         require (stock[_tkname].state == EscrowState.BUYERAPPROVED , "Awaiting buyer approval!");
         /// To do: send payment from vault to seller. How to be sure that agent can spend from the vault?
         seller.transfer(remaining_payment);
@@ -147,7 +148,7 @@ contract EscrowService is AccessControl { //Ownable,
     /**
      * @notice If conditions does not met: escrow agent revert to buyer.
      */
-    function AgentCancelTransaction (string memory _tkname) validDestination onlyRole(AGENT_ROLE) public {
+    function AgentCancelTransaction (string memory _tkname) validDestination(buyer) onlyRole(AGENT_ROLE) public {
         require (stock[_tkname].state == EscrowState.BUYERDENIED , "Awaiting buyer denail!");
         buyer.transfer(remaining_payment); 
         stock[_tkname].state =  EscrowState.PAYMENTREVERTED;
