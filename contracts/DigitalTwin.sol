@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract DigitalTwin is ERC721 {
-    string[] public tks;
+    string[] public tks; // to record all tks
     address public admin;
 
     /**
@@ -92,19 +92,6 @@ contract DigitalTwin is ERC721 {
 
         _burn(producttks[_tkname].id);
         delete producttks[_tkname];
-    }
-
-    /**
-     * @notice for other solidity contracts to interact
-     */
-    function queryTokenFromContract(string memory _tkname)
-        public
-        view
-        returns (uint256, string memory, Verificationstatus vstatus, address)
-    {
-        require(tkExists[_tkname], "Token does not exist.");
-
-        return (producttks[_tkname].id, producttks[_tkname].metadata, vstatus, ownerOf(producttks[_tkname].id));
     }
 
     /**

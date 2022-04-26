@@ -29,9 +29,10 @@ contract('Escrow', (accounts) => {
         await dtinstance.mint(product, metadata);
         
         var tkdetails;
-        tkdetails = await dtinstance.queryTokenFromContract(product);
+        // tkdetails = await dtinstance.queryTokenFromContract(product);
+        tkdetails = await dtinstance.queryToken(product);
         assert.equal(tkdetails[1].toString(), metadata);
-        assert.equal(tkdetails[2].toString(), 0); // status of newly minted token should be PENDING
+        assert.equal(tkdetails[2].toString(), "pending verification"); // status of newly minted token should be PENDING
     })
 
     // secondly offer the product on Escrow.sol
@@ -54,18 +55,81 @@ contract('Escrow', (accounts) => {
         await escrowinstance.BuyerSendPayment(product, {from: buyer, value: price+fee});
     })
 
-    // fourthly get the verification result
+    // fourthly get the verification result (before ml verification)
     it("should return product details", async () => {
         var product = "doughnut";
 
         // then query the product details 
-        var result = await escrowinstance.VerifyProduct(product);
-        assert.equal(result, false);
-
-        // var result = await escrowinstance.QueryProduct(product);
-        // assert.equal(result[0], 30000);
-        // assert.equal(result[1].toString(), 0); //cannot use escrowinstance.EscrowState.OFFERED.toString()
-        // assert.equal(result[2], false);
+        var result = await escrowinstance.QueryProduct(product);
+        assert.equal(result[0], 30000);
+        assert.equal(result[1].toString(), 1); //cannot use escrowinstance.EscrowState.DEPOSITTAKEN.toString()
+        assert.equal(result[2], false);
     });
+
+    // get the verification result (after ml verification)
+    it("should return product details", async () => {
+        var product = "doughnut";
+
+        // confirm verification result of product
+        await dtinstance.verify(product, true);
+
+        // then query the product details 
+        var result = await escrowinstance.QueryProduct(product);
+        assert.equal(result[2], true);
+    });
+
+    // fifthly test of a successful trade
+    it("should send the payment to the seller, and change the escrow status to PAYMENTSUCCESSFUL", async () => {
+        var product = "doughnut";
+        var seller_balance_before;
+        var seller_balance_after;
+
+        seller_balance_before = await web3.eth.getBalance(seller);
+        console.log(seller_balance_before);
+
+        // buyer approve payment
+        await escrowinstance.BuyerApprove(product, {from: buyer});
+
+        // agent confirm
+        await escrowinstance.AgentConfirmTransaction(product, {from: agent});
+
+        // confirm that payment has proceeded
+        seller_balance_after = await web3.eth.getBalance(seller);
+        console.log(seller_balance_after);
+
+        // confirm the escrow state of the product
+        var result = await escrowinstance.QueryProduct(product);
+        assert.equal(result[1].toString(), 4);
+    })
+
+    // test of a failed trade
+    it("should return the deposit to the buyer, and change the escrow state to PAYMENTREVERTED", async () => {
+        var product = "coffee";
+        var metadata = "decaf soy latte";
+        var price = 45000;
+        var fee = 100;
+        
+        // mint a coffee token
+        await dtinstance.mint(product, metadata);
+
+        // offer the coffee product
+        await escrowinstance.offer(product, price, {from: seller});
+
+        // buyer make a deposit
+        await escrowinstance.BuyerSendPayment(product, {from: buyer, value: price+fee});
+
+        // deny the coffee product
+        await dtinstance.verify(product, false);
+
+        // buyer deny the payment
+        await escrowinstance.BuyerDeny(product, {from: buyer});
+
+        // agent cancel the payment
+        await escrowinstance.AgentCancelTransaction(product, {from: agent});
+
+        // confirm that money gets returned to buyer and escrow state has changed
+        var result = await escrowinstance.QueryProduct(product);
+        assert.equal(result[1].toString(), 5);
+    })
 
 })

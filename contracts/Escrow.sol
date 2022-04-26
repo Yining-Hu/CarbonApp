@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./DigitalTwin.sol";
 // import "./MyTest.sol";
@@ -20,11 +19,11 @@ contract Escrow { //Ownable,
      * @dev These should be exposed in the external API and be unique.
      * To do: to add a mapping to check if token exists and insert the requirements in query functions
      */
-    // bytes32 public constant AGENT_ROLE = keccak256("AGENT_ROLE");
-    // bytes32 public constant BUYER_ROLE = keccak256("BUYER_ROLE");
-    // bytes32 public constant SELLER_ROLE = keccak256("SELLER_ROLE");
 
-    /// @notice all user addresses are initialised as payable
+    address agentaddr;
+    address buyeraddr;
+    address selleraddr;
+
     address payable agent;
     address payable buyer;
     address payable seller;
@@ -54,15 +53,17 @@ contract Escrow { //Ownable,
      * @dev before setting up any user wallet, all buyers/sellers use a single buyer/seller address, which are maintained by Beston.
      * @dev the same goes for ownership tracking in DigitalTwin.sol.
      */
-    constructor(address payable _buyer_address, address payable _seller_address) {
-        agent = payable(msg.sender);
-        buyer = _buyer_address;
-        seller= _seller_address;
+    constructor(DigitalTwin _digitaltwin, address _buyer_address, address _seller_address) {
+        digitaltwin = _digitaltwin;
+
+        agentaddr = msg.sender;
+        buyeraddr = _buyer_address;
+        selleraddr = _seller_address;
+
+        agent = payable(agentaddr);
+        buyer = payable(buyeraddr);
+        seller= payable(selleraddr);
         fee = 100;
-        
-        // _setupRole(AGENT_ROLE, agent);
-        // _setupRole(BUYER_ROLE, buyer);
-        // _setupRole(SELLER_ROLE, seller);
     }
 
     /**
@@ -96,7 +97,6 @@ contract Escrow { //Ownable,
     /**
      * @notice Buyer can make a deposit to products on offer
      * @dev Partial payment is sent to the seller, however, can change depending on the agreement
-     * @dev removed onlyRole(BUYER_ROLE) modifier for testing
      * @dev To do: should only allow buyer to make no more than 1 deposit for each product
      */
     function BuyerSendPayment(string memory _tkname) external payable validDestination(agent) validDestination(seller) {
@@ -117,8 +117,8 @@ contract Escrow { //Ownable,
     function VerifyProduct(string memory _tkname) public view returns (bool) {
         require(productExists[_tkname], "Product does not exist.");
 
-        (uint256 id, string memory metadata, DigitalTwin.Verificationstatus vstatus, address addr) = digitaltwin.queryTokenFromContract(_tkname);
-        if (vstatus == DigitalTwin.Verificationstatus.PROCESSORVERIFIED) {
+        (uint256 id, string memory metadata, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+        if (keccak256(abi.encodePacked(vstatus)) == keccak256(abi.encodePacked("verified"))) {
             return true;
         } else {
             return false;
@@ -131,6 +131,7 @@ contract Escrow { //Ownable,
      * @dev removed onlyRole(BUYER_ROLE) 
      */ 
     function BuyerApprove(string memory _tkname) public {
+        require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
         stock[_tkname].state = EscrowState.BUYERAPPROVED;
     }
@@ -146,7 +147,7 @@ contract Escrow { //Ownable,
 
     /**
      * @notice If conditions are met: escrow agent releases to seller.
-     * @dev consider allowing seller to redeem without agent
+     * @dev To do: to allow seller to redeem without agent/buyer to approve without agent
      * @dev removed onlyRole(AGENT_ROLE)
      */
     function AgentConfirmTransaction (string memory _tkname) public validDestination(seller) {
