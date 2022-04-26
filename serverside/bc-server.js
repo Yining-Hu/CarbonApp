@@ -6,17 +6,19 @@ const keccak256 = require('keccak256')
 const path = './build/contracts/HalalBox.json';
 
 // for local ganache network
-const netId = '5777';
-const provider = 'http://127.0.0.1:7545';
-var sender = "0xc34D8D91A7C50a03Dac50850E0C67C73CFB0268b"; // contract owner address on local ganache network
-var instance = utils.getContract(netId,provider,path); // get the contract instance
+// const netId = '5777';
+// const provider = 'http://127.0.0.1:7545';
+// var sender = "0xc34D8D91A7C50a03Dac50850E0C67C73CFB0268b"; // contract owner address on local ganache network
+// var instance = utils.getContract(netId,provider,path); // get the contract instance
 
 // for polygon mumbai
-// const contractAddr = "0xe81e9B89030bC8805FF54B752c0c6fAC6eCFcDd7"; // Moz: "0xa4Df321308fB1c51Bb9d4c67Ea66064a54637D42"
-// var sender = "0x8eB84f95e1199ea9eB1BD4b804911c4A392189a7"; // address on the mumbai network
-// var senderPrivkey = "a419e6f435e1d8d48ae630979e5869b1ec0e81027acfe2cda9d0068650b5b00d";
-// const provider = new HDWalletProvider(senderPrivkey, "https://rpc-mumbai.maticvigil.com");
-// var instance = utils.getContractByAddr(contractAddr,provider,path); // get the contract instance
+const contractAddr = "0xd520A87dF49F00B25526F1F90a970871Ef897320"; 
+// Moz: "0xa4Df321308fB1c51Bb9d4c67Ea66064a54637D42"
+// HBox: "0xe81e9B89030bC8805FF54B752c0c6fAC6eCFcDd7"
+var sender = "0x8eB84f95e1199ea9eB1BD4b804911c4A392189a7"; // address on the mumbai network
+var senderPrivkey = "a419e6f435e1d8d48ae630979e5869b1ec0e81027acfe2cda9d0068650b5b00d";
+const provider = new HDWalletProvider(senderPrivkey, "https://rpc-mumbai.maticvigil.com");
+var instance = utils.getContractByAddr(contractAddr,provider,path); // get the contract instance
 
 var app = express();
 
