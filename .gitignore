@@ -1,7 +1,6 @@
 node_modules
 contracts/Shred.sol
 contracts/MozzarellaSupplyChain.sol
-contracts/remix_*
 build/contracts/Shred.json
 clientside/
 migrations/3_deploy_shred.js
