@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./DigitalTwin.sol";
-// import "./MyTest.sol";
 
 /**
  * @title EscrowService Contract, forked from https://github.com/AleRapchan/escrow-service
@@ -35,7 +34,6 @@ contract Escrow { //Ownable,
     using SafeMath for uint256;
 
     DigitalTwin public digitaltwin;
-    // MyTest public mytest;
     
     enum EscrowState { OFFERED, DEPOSITTAKEN, BUYERAPPROVED, BUYERDENIED, PAYMENTSUCCESSFUL, PAYMENTREVERTED }
 
@@ -81,7 +79,6 @@ contract Escrow { //Ownable,
      */
     function setAddr(address _address) public {
         digitaltwin = DigitalTwin(_address);
-        // mytest = MyTest(_address);
     }
 
     function offer(string memory _tkname , uint256 _price) public {
