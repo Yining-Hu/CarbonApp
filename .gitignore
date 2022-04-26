@@ -2,3 +2,13 @@ node_modules
 contracts/Shred.sol
 contracts/MozzarellaSupplyChain.sol
 contracts/remix_*
+build/contracts/Shred.json
+clientside/
+migrations/3_deploy_shred.js
+serverside/data_new.csv
+serverside/data.csv
+serverside/minttoken.js
+serverside/querytoken.js
+serverside/statuscheck.js
+serverside/updatetoken.js
+test/testshred.js
