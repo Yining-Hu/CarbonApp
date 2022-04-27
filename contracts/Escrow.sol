@@ -94,12 +94,11 @@ contract Escrow { //Ownable,
     /**
      * @notice Buyer can make a deposit to products on offer
      * @dev Partial payment is sent to the seller, however, can change depending on the agreement
-     * @dev To do: should only allow buyer to make no more than 1 deposit for each product
      */
     function BuyerSendPayment(string memory _tkname) external payable validDestination(agent) validDestination(seller) {
         require (msg.value >= fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
         //require (_seller == seller, "Buyer must confirm the seller address!");
-        require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!");
+        require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
         stock[_tkname].state = EscrowState.DEPOSITTAKEN;
 
         initial_payment = stock[_tkname].price.div(10); // initial payment set to be 10% of the total price
@@ -125,7 +124,6 @@ contract Escrow { //Ownable,
     /**
      * @notice Buyer can approve the payment with or without verification
      * @dev when implementing the api and front end, buyer should have the option to proceed without or with verification
-     * @dev removed onlyRole(BUYER_ROLE) 
      */ 
     function BuyerApprove(string memory _tkname) public {
         require (msg.sender == buyer);
@@ -135,9 +133,9 @@ contract Escrow { //Ownable,
 
     /**
      * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
-     * @dev removed onlyRole(BUYER_ROLE) 
      */
     function BuyerDeny (string memory _tkname) public {
+        require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
         stock[_tkname].state = EscrowState.BUYERDENIED;
     }
@@ -145,9 +143,9 @@ contract Escrow { //Ownable,
     /**
      * @notice If conditions are met: escrow agent releases to seller.
      * @dev To do: to allow seller to redeem without agent/buyer to approve without agent
-     * @dev removed onlyRole(AGENT_ROLE)
      */
     function AgentConfirmTransaction (string memory _tkname) public validDestination(seller) {
+        require (msg.sender == agent);
         require (stock[_tkname].state == EscrowState.BUYERAPPROVED , "Awaiting buyer approval!");
         seller.transfer(remaining_payment);
         stock[_tkname].state =  EscrowState.PAYMENTSUCCESSFUL;
@@ -155,9 +153,9 @@ contract Escrow { //Ownable,
 
     /**
      * @notice If conditions does not met: escrow agent revert to buyer.
-     * @dev removed onlyRole(AGENT_ROLE)
      */
     function AgentCancelTransaction (string memory _tkname) validDestination(buyer) public {
+        require (msg.sender == agent);
         require (stock[_tkname].state == EscrowState.BUYERDENIED , "Awaiting buyer denail!");
         buyer.transfer(remaining_payment); 
         stock[_tkname].state =  EscrowState.PAYMENTREVERTED;
@@ -165,9 +163,9 @@ contract Escrow { //Ownable,
 
     /**
      * @notice getters
-     * @dev removed onlyRole(AGENT_ROLE)
      */
     function GetUsers () public view returns(address, address) {
+        require (msg.sender == agent);
         return (buyer,seller);
     }
 
@@ -175,10 +173,5 @@ contract Escrow { //Ownable,
         require(productExists[_tkname], "Product does not exist.");
         bool vstatus = VerifyProduct(_tkname);
         return (stock[_tkname].price, stock[_tkname].state, vstatus);
-    }
-
-    /// @notice when testing, web3.eth.getBalance returns a string, which is inconvenient
-    function GetBalance (address addr) public view returns(uint256) {
-        return addr.balance;
     }
 }
