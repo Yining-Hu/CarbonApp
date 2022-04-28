@@ -70,9 +70,6 @@ contract Escrow is Ownable { //Ownable,
         timeout = 1 minutes;
     }
 
-    /**
-     * @notice To prevent sending tokens to 0x0 address and the contract address
-     */
     modifier validDestination(address to) {
         require(to != address(0x0), "Recipient should have a valid address!");
         require(to != address(this), "Recipient should not be the contract!");
@@ -84,10 +81,6 @@ contract Escrow is Ownable { //Ownable,
         _;
     }
 
-    /**
-     * @notice to get the deployed DigitalTwin instance for accessing stored variables
-     * @dev instead of pure inheriting
-     */
     function setAddr(address _address) public {
         digitaltwin = DigitalTwin(_address);
     }
@@ -108,7 +101,6 @@ contract Escrow is Ownable { //Ownable,
      */
     function BuyerSendPayment(string memory _tkname) external payable validDestination(agent) validDestination(seller) {
         require (msg.value >= fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
-        //require (_seller == seller, "Buyer must confirm the seller address!");
         require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
 
         stock[_tkname].state = EscrowState.DEPOSITTAKEN;
@@ -140,7 +132,6 @@ contract Escrow is Ownable { //Ownable,
      */ 
     function BuyerApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
         require (msg.sender == buyer);
-        // require (productExists[_tkname], "Product does not exist");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
         require (block.timestamp < stock[_tkname].timeout);
         seller.transfer(remaining_payment);
@@ -153,6 +144,7 @@ contract Escrow is Ownable { //Ownable,
     function BuyerDeny (string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
+        // require (block.timestamp < stock[_tkname].timeout); // after the timeout refund can be processed
         buyer.transfer(remaining_payment); 
         stock[_tkname].state = EscrowState.BUYERDENIED;
     }
@@ -186,7 +178,6 @@ contract Escrow is Ownable { //Ownable,
     }
 
     function QueryProduct (string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool) {
-        // require(productExists[_tkname], "Product does not exist.");
         bool vstatus = VerifyProduct(_tkname);
         return (stock[_tkname].price, stock[_tkname].state, vstatus);
     }
