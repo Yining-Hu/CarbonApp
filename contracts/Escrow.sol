@@ -125,7 +125,7 @@ contract Escrow is Ownable { //Ownable,
      * @notice Buyer can approve the payment with or without verification
      * @dev when implementing the api and front end, buyer should have the option to proceed without or with verification
      */ 
-    function BuyerApprove(string memory _tkname) public {
+    function BuyerApprove(string memory _tkname) public validDestination(seller) {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
         seller.transfer(remaining_payment);
@@ -135,7 +135,7 @@ contract Escrow is Ownable { //Ownable,
     /**
      * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
      */
-    function BuyerDeny (string memory _tkname) public {
+    function BuyerDeny (string memory _tkname) public validDestination(buyer) {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
         buyer.transfer(remaining_payment); 
