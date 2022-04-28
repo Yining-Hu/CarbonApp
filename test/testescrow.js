@@ -1,5 +1,6 @@
 const BigNumber = require('bignumber.js');
 const { default: Web3 } = require("web3");
+// const BN = web3.utils.BN;
 
 const escrow = artifacts.require("Escrow");
 const dt = artifacts.require("DigitalTwin");
@@ -85,21 +86,17 @@ contract('Escrow', (accounts) => {
         var seller_balance_after;
 
         seller_balance_before = await web3.eth.getBalance(seller);
-        console.log(seller_balance_before);
+        // console.log(parseInt(seller_balance_before.toString()));
 
         // buyer approve payment
         await escrowinstance.BuyerApprove(product, {from: buyer});
 
-        // agent confirm
-        await escrowinstance.AgentConfirmTransaction(product, {from: agent});
-
         // confirm that payment has proceeded
         seller_balance_after = await web3.eth.getBalance(seller);
-        console.log(seller_balance_after);
 
         // confirm the escrow state of the product
         var result = await escrowinstance.QueryProduct(product);
-        assert.equal(result[1].toString(), 4);
+        assert.equal(result[1].toString(), 2);
     })
 
     // test of a failed trade
@@ -124,12 +121,9 @@ contract('Escrow', (accounts) => {
         // buyer deny the payment
         await escrowinstance.BuyerDeny(product, {from: buyer});
 
-        // agent cancel the payment
-        await escrowinstance.AgentCancelTransaction(product, {from: agent});
-
         // confirm that money gets returned to buyer and escrow state has changed
         var result = await escrowinstance.QueryProduct(product);
-        assert.equal(result[1].toString(), 5);
+        assert.equal(result[1].toString(), 3);
     })
 
 })

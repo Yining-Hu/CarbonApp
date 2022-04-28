@@ -2,21 +2,21 @@
 pragma solidity ^0.8.0;
 
 import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "./DigitalTwin.sol";
 
 /**
  * @title EscrowService Contract, forked from https://github.com/AleRapchan/escrow-service
  * @author Yining Hu
  * @notice Building a single role access control Escrow Service using OpenZeppelin Escrow and RBAC
- * @dev To do: Removing rold based access control makes payments successful. However, this can be added manually as "requires"
  * @dev contract currently assume one buyer account and one seller account, should develop an additional wallet contract and allow new user registration
+ * @dev To do: to implement multi-sig, time-based escrow
  */
-contract Escrow { //Ownable, 
+contract Escrow is Ownable { //Ownable, 
 
     /**
      * @dev Roles are referred to by their bytes32 identifier. 
      * @dev These should be exposed in the external API and be unique.
-     * To do: to add a mapping to check if token exists and insert the requirements in query functions
      */
 
     address agentaddr;
@@ -35,7 +35,7 @@ contract Escrow { //Ownable,
 
     DigitalTwin public digitaltwin;
     
-    enum EscrowState { OFFERED, DEPOSITTAKEN, BUYERAPPROVED, BUYERDENIED, PAYMENTSUCCESSFUL, PAYMENTREVERTED }
+    enum EscrowState { OFFERED, DEPOSITTAKEN, BUYERAPPROVED, BUYERDENIED } //PAYMENTSUCCESSFUL, PAYMENTREVERTED
 
     struct Product{
         uint256 price;
@@ -128,6 +128,7 @@ contract Escrow { //Ownable,
     function BuyerApprove(string memory _tkname) public {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
+        seller.transfer(remaining_payment);
         stock[_tkname].state = EscrowState.BUYERAPPROVED;
     }
 
@@ -137,29 +138,29 @@ contract Escrow { //Ownable,
     function BuyerDeny (string memory _tkname) public {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
+        buyer.transfer(remaining_payment); 
         stock[_tkname].state = EscrowState.BUYERDENIED;
     }
 
     /**
      * @notice If conditions are met: escrow agent releases to seller.
-     * @dev To do: to allow seller to redeem without agent/buyer to approve without agent
      */
-    function AgentConfirmTransaction (string memory _tkname) public validDestination(seller) {
-        require (msg.sender == agent);
-        require (stock[_tkname].state == EscrowState.BUYERAPPROVED , "Awaiting buyer approval!");
-        seller.transfer(remaining_payment);
-        stock[_tkname].state =  EscrowState.PAYMENTSUCCESSFUL;
-    }
+    // function AgentConfirmTransaction (string memory _tkname) public validDestination(seller) {
+    //     require (msg.sender == agent);
+    //     require (stock[_tkname].state == EscrowState.BUYERAPPROVED , "Awaiting buyer approval!");
+    //     seller.transfer(remaining_payment);
+    //     stock[_tkname].state =  EscrowState.PAYMENTSUCCESSFUL;
+    // }
 
     /**
      * @notice If conditions does not met: escrow agent revert to buyer.
      */
-    function AgentCancelTransaction (string memory _tkname) validDestination(buyer) public {
-        require (msg.sender == agent);
-        require (stock[_tkname].state == EscrowState.BUYERDENIED , "Awaiting buyer denail!");
-        buyer.transfer(remaining_payment); 
-        stock[_tkname].state =  EscrowState.PAYMENTREVERTED;
-    }
+    // function AgentCancelTransaction (string memory _tkname) validDestination(buyer) public {
+    //     require (msg.sender == agent);
+    //     require (stock[_tkname].state == EscrowState.BUYERDENIED , "Awaiting buyer denail!");
+    //     buyer.transfer(remaining_payment); 
+    //     stock[_tkname].state =  EscrowState.PAYMENTREVERTED;
+    // }
 
     /**
      * @notice getters
@@ -173,5 +174,9 @@ contract Escrow { //Ownable,
         require(productExists[_tkname], "Product does not exist.");
         bool vstatus = VerifyProduct(_tkname);
         return (stock[_tkname].price, stock[_tkname].state, vstatus);
+    }
+
+    function GetBalance (address addr) public view returns(uint256) {
+        return addr.balance;
     }
 }
