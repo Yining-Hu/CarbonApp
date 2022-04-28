@@ -11,6 +11,7 @@ import "./DigitalTwin.sol";
  * @notice Building a single role access control Escrow Service using OpenZeppelin Escrow and RBAC
  * @dev contract currently assume one buyer account and one seller account, should develop an additional wallet contract and allow new user registration
  * @dev To do: to implement multi-sig, time-based escrow
+ * @dev To do: to add a product existence modifier, and a role modifier
  */
 contract Escrow is Ownable { //Ownable, 
 
@@ -31,6 +32,8 @@ contract Escrow is Ownable { //Ownable,
     uint256 public initial_payment;
     uint256 public remaining_payment;
 
+    uint256 timeout;
+
     using SafeMath for uint256;
 
     DigitalTwin public digitaltwin;
@@ -40,6 +43,7 @@ contract Escrow is Ownable { //Ownable,
     struct Product{
         uint256 price;
         EscrowState state;
+        uint256 timeout; // timeout for payment settlement
     }
 
     mapping (string => Product) public stock; // whole stock of offered items for sell in escrow arragement
@@ -62,14 +66,21 @@ contract Escrow is Ownable { //Ownable,
         buyer = payable(buyeraddr);
         seller= payable(selleraddr);
         fee = 100;
+
+        timeout = 1 minutes;
     }
 
     /**
      * @notice To prevent sending tokens to 0x0 address and the contract address
      */
-    modifier validDestination( address to ) {
-        require(to != address(0x0));
-        require(to != address(this) );
+    modifier validDestination(address to) {
+        require(to != address(0x0), "Recipient should have a valid address!");
+        require(to != address(this), "Recipient should not be the contract!");
+        _;
+    }
+
+    modifier validProduct(string memory _tkname) {
+        require(productExists[_tkname], "Product does not exist.");
         _;
     }
 
@@ -99,7 +110,9 @@ contract Escrow is Ownable { //Ownable,
         require (msg.value >= fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
         //require (_seller == seller, "Buyer must confirm the seller address!");
         require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
+
         stock[_tkname].state = EscrowState.DEPOSITTAKEN;
+        stock[_tkname].timeout = block.timestamp + timeout; // add a timeout for settlement when buyer sends deposit
 
         initial_payment = stock[_tkname].price.div(10); // initial payment set to be 10% of the total price
         remaining_payment = stock[_tkname].price.sub(initial_payment);
@@ -110,8 +123,8 @@ contract Escrow is Ownable { //Ownable,
         emit DepositTaken(_tkname, stock[_tkname].price);
     }
 
-    function VerifyProduct(string memory _tkname) public view returns (bool) {
-        require(productExists[_tkname], "Product does not exist.");
+    function VerifyProduct(string memory _tkname) public view validProduct(_tkname) returns (bool) {
+        // require(productExists[_tkname], "Product does not exist.");
 
         (uint256 id, string memory metadata, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
         if (keccak256(abi.encodePacked(vstatus)) == keccak256(abi.encodePacked("verified"))) {
@@ -125,9 +138,11 @@ contract Escrow is Ownable { //Ownable,
      * @notice Buyer can approve the payment with or without verification
      * @dev when implementing the api and front end, buyer should have the option to proceed without or with verification
      */ 
-    function BuyerApprove(string memory _tkname) public validDestination(seller) {
+    function BuyerApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
         require (msg.sender == buyer);
+        // require (productExists[_tkname], "Product does not exist");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
+        require (block.timestamp < stock[_tkname].timeout);
         seller.transfer(remaining_payment);
         stock[_tkname].state = EscrowState.BUYERAPPROVED;
     }
@@ -135,7 +150,7 @@ contract Escrow is Ownable { //Ownable,
     /**
      * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
      */
-    function BuyerDeny (string memory _tkname) public validDestination(buyer) {
+    function BuyerDeny (string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
         buyer.transfer(remaining_payment); 
@@ -170,8 +185,8 @@ contract Escrow is Ownable { //Ownable,
         return (buyer,seller);
     }
 
-    function QueryProduct (string memory _tkname) public view returns(uint256, EscrowState, bool) {
-        require(productExists[_tkname], "Product does not exist.");
+    function QueryProduct (string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool) {
+        // require(productExists[_tkname], "Product does not exist.");
         bool vstatus = VerifyProduct(_tkname);
         return (stock[_tkname].price, stock[_tkname].state, vstatus);
     }
