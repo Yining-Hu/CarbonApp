@@ -144,7 +144,7 @@ contract Escrow is Ownable { //Ownable,
     function BuyerDeny (string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
-        // require (block.timestamp < stock[_tkname].timeout); // after the timeout refund can be processed
+        require (block.timestamp > stock[_tkname].timeout); // after the timeout refund can be processed
         buyer.transfer(remaining_payment); 
         stock[_tkname].state = EscrowState.BUYERDENIED;
     }

@@ -118,6 +118,12 @@ contract('Escrow', (accounts) => {
         // deny the coffee product
         await dtinstance.verify(product, false);
 
+        // utility function to set timeout
+        function timeout(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        await timeout(100000);
+
         // buyer deny the payment
         await escrowinstance.BuyerDeny(product, {from: buyer});
 
