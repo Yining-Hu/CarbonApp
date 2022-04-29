@@ -3,8 +3,8 @@ The repository contains a set of smart contracts and NodeJs APIs for access. The
 
 ## serverside/
 A serverside application in NodeJs, with APIs for data access. Currently connected to a Moz.sol contract on Polygon testnet.
-- To mint: curl -d '{"tkid":"2022030401","GTIN":"576567567567","net_weight":"200g"}' -H "Content-Type: application/json" http://127.0.0.1:3000/mint
-- To update: curl -d '{"tkid":"2022030401","GTIN":"576567567567","net_weight":"200g"}' -H "Content-Type: application/json" http://127.0.0.1:3000/update
+- To mint: curl -d '{"tkid":"2022030401","GTIN":"576567567567","net_weight":"200g","gas":400000}' -H "Content-Type: application/json" http://127.0.0.1:3000/mint
+- To update: curl -d '{"tkid":"2022030401","GTIN":"576567567567","net_weight":"200g","gas":400000}' -H "Content-Type: application/json" http://127.0.0.1:3000/update
 - To query: curl "http://127.0.0.1:3000/view?tkid=2022030401"
 
 ## clientside/
