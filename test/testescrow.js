@@ -89,7 +89,10 @@ contract('Escrow', (accounts) => {
         // console.log(parseInt(seller_balance_before.toString()));
 
         // buyer approve payment
-        await escrowinstance.BuyerApprove(product, {from: buyer});
+        // await escrowinstance.BuyerApprove(product, {from: buyer});
+
+        // seller redeem payment
+        await escrowinstance.SellerRedeem(product, {from: seller});
 
         // confirm that payment has proceeded
         seller_balance_after = await web3.eth.getBalance(seller);

@@ -91,6 +91,13 @@ contract Escrow is Ownable { //Ownable,
         stock[_tkname] = product;
         productExists[_tkname] = true;
     }
+
+    // sign() should be used together with a deal() function, for buyer and seller to agree on a deal
+    function sign() public {
+        require (msg.sender == buyer || msg.sender == seller);
+        require (!signed[msg.sender]);
+        signed[msg.sender] = true;
+    }
     
     /**
      * @notice Buyer can make a deposit to products on offer
@@ -125,9 +132,22 @@ contract Escrow is Ownable { //Ownable,
      * @notice Buyer can approve the payment with or without verification
      * @dev when implementing the api and front end, buyer should have the option to proceed without or with verification
      */ 
-    function BuyerApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
-        require (msg.sender == buyer);
+    // function BuyerApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
+    //     require (msg.sender == buyer);
+    //     require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
+    //     require (block.timestamp < stock[_tkname].timeout);
+    //     seller.transfer(remaining_payment);
+    //     stock[_tkname].state = EscrowState.BUYERAPPROVED;
+    // }
+
+    /**
+     * @notice Seller can redeem with verification
+     * Achieves the same payment result as BuyerApprove, but requires seller to pay for execution
+     */
+    function SellerRedeem(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
+        require (msg.sender == seller);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
+        require (VerifyProduct(_tkname), "Seller cannot redeem payment of unverified product.");
         require (block.timestamp < stock[_tkname].timeout);
         seller.transfer(remaining_payment);
         stock[_tkname].state = EscrowState.BUYERAPPROVED;
