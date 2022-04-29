@@ -48,6 +48,7 @@ contract Escrow is Ownable { //Ownable,
 
     mapping (string => Product) public stock; // whole stock of offered items for sell in escrow arragement
     mapping(string => bool) public productExists;
+    mapping(address => bool) signed; // to collect signatures for multi-sig
 
     event DepositTaken(string tkname, uint256 price);
 
@@ -81,10 +82,6 @@ contract Escrow is Ownable { //Ownable,
         _;
     }
 
-    function setAddr(address _address) public {
-        digitaltwin = DigitalTwin(_address);
-    }
-
     function offer(string memory _tkname , uint256 _price) public {
         require(!productExists[_tkname], "Product is already offered.");
 
@@ -116,8 +113,6 @@ contract Escrow is Ownable { //Ownable,
     }
 
     function VerifyProduct(string memory _tkname) public view validProduct(_tkname) returns (bool) {
-        // require(productExists[_tkname], "Product does not exist.");
-
         (uint256 id, string memory metadata, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
         if (keccak256(abi.encodePacked(vstatus)) == keccak256(abi.encodePacked("verified"))) {
             return true;
@@ -141,7 +136,7 @@ contract Escrow is Ownable { //Ownable,
     /**
      * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
      */
-    function BuyerDeny (string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
+    function BuyerDeny(string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
         require (msg.sender == buyer);
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
         require (block.timestamp > stock[_tkname].timeout); // after the timeout refund can be processed
@@ -150,39 +145,19 @@ contract Escrow is Ownable { //Ownable,
     }
 
     /**
-     * @notice If conditions are met: escrow agent releases to seller.
-     */
-    // function AgentConfirmTransaction (string memory _tkname) public validDestination(seller) {
-    //     require (msg.sender == agent);
-    //     require (stock[_tkname].state == EscrowState.BUYERAPPROVED , "Awaiting buyer approval!");
-    //     seller.transfer(remaining_payment);
-    //     stock[_tkname].state =  EscrowState.PAYMENTSUCCESSFUL;
-    // }
-
-    /**
-     * @notice If conditions does not met: escrow agent revert to buyer.
-     */
-    // function AgentCancelTransaction (string memory _tkname) validDestination(buyer) public {
-    //     require (msg.sender == agent);
-    //     require (stock[_tkname].state == EscrowState.BUYERDENIED , "Awaiting buyer denail!");
-    //     buyer.transfer(remaining_payment); 
-    //     stock[_tkname].state =  EscrowState.PAYMENTREVERTED;
-    // }
-
-    /**
      * @notice getters
      */
-    function GetUsers () public view returns(address, address) {
+    function GetUsers() public view returns(address, address) {
         require (msg.sender == agent);
         return (buyer,seller);
     }
 
-    function QueryProduct (string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool) {
+    function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool) {
         bool vstatus = VerifyProduct(_tkname);
         return (stock[_tkname].price, stock[_tkname].state, vstatus);
     }
 
-    function GetBalance (address addr) public view returns(uint256) {
+    function GetBalance(address addr) public view returns(uint256) {
         return addr.balance;
     }
 }
