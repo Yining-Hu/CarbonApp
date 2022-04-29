@@ -37,12 +37,26 @@ contract('Escrow', (accounts) => {
     })
 
     // secondly offer the product on Escrow.sol
-    // error with VerifyProduct (since this func calls DigitalTwin.sol)
     it("should offer the product on Escrow.sol", async () => {
         var product = "doughnut";
         var price = 30000;
         await escrowinstance.offer(product, price, {from: seller});
     });
+
+    // should fail
+    it("should not offer a product without an existing product token", async () => {
+        var product = "burger";
+        var price = 70000;
+        let err = null;
+
+        try {
+            await escrowinstance.offer(product, price, {from: seller});
+        } catch (error) {
+            err = error;
+        }
+
+        assert.ok(err instanceof Error);
+    })
 
     // thirdly the buyer makes a deposit for the product
     // escrowinstance.GetBalance(addr) returns BNs that I cannot parse

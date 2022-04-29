@@ -82,8 +82,10 @@ contract Escrow is Ownable { //Ownable,
         _;
     }
 
+    /// @dev should also require tk to be minted on DigitalTwin.sol
     function offer(string memory _tkname , uint256 _price) public {
         require(!productExists[_tkname], "Product is already offered.");
+        require(digitaltwin.tkExists(_tkname), "Product token is not minted.");
 
         Product memory product;
         product.price = _price; /// @dev double check the conversion in Polygon
