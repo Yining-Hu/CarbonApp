@@ -8,4 +8,4 @@ A serverside application in NodeJs, with APIs for data access. Currently connect
 - To query: curl "http://127.0.0.1:3000/view?tkid=2022030401"
 
 # Escrow sequence diagram
-Open sequence.html for details.
+Open sequence.html in browser for details.
