@@ -7,5 +7,26 @@ A serverside application in NodeJs, with APIs for data access. Currently connect
 - To update: curl -d '{"tkid":"2022030401","GTIN":"576567567567","net_weight":"200g","gas":400000}' -H "Content-Type: application/json" http://127.0.0.1:3000/update
 - To query: curl "http://127.0.0.1:3000/view?tkid=2022030401"
 
-## clientside/
-A decentralised browser application in JavaScript and HTML. Intended to allow direct access for clients with a blockchain wallet such as Metamask.
+# Escrow sequence diagram
+```mermaid
+sequenceDiagram;
+autonumber
+    participant Buyer
+    participant Seller
+    participant Escrow.sol
+    participant DigitalTwin.sol
+    Seller->>DigitalTwin.sol: Mint an HalalBox NFT for a box of halal meat.
+    Seller->>Escrow.sol: Put the HalalBox on offer.
+    Buyer->>Escrow.sol: Make a deposit for HalalBox.
+    activate Escrow.sol
+    Note right of Buyer: This triggers the timer for seller to verify halal and redeem deposit.
+    Seller->>DigitalTwin.sol: ML verification of the box of halal meat.
+    Escrow.sol-->>DigitalTwin.sol: Retrieve ML verification result.
+    Buyer->>Escrow.sol: Access ML verification result, and update verification status.
+    alt is halal
+    Seller->>Escrow.sol: Redeem remaining payment before timeout.
+    deactivate Escrow.sol
+    else is not halal
+    Buyer->>Escrow.sol: Claim refund after timeout.
+    end
+```
