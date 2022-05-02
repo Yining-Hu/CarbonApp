@@ -19,8 +19,8 @@
                 activate Escrow.sol
                 Note right of Buyer: This triggers the timer for seller to verify halal and redeem deposit.
                 Seller->>DigitalTwin.sol: ML verification of the box of halal meat.
-                Escrow.sol-->>DigitalTwin.sol: Retrieve ML verification result.
                 Buyer->>Escrow.sol: Access ML verification result, and update verification status.
+                Escrow.sol-->>DigitalTwin.sol: Retrieve ML verification result.
                 alt is halal
                 Seller->>Escrow.sol: Redeem remaining payment before timeout.
                 deactivate Escrow.sol
