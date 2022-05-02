@@ -67,7 +67,7 @@ contract('Escrow', (accounts) => {
         var price = 30000;
         var fee = 100;
 
-        await escrowinstance.BuyerSendPayment(product, {from: buyer, value: price+fee});
+        await escrowinstance.BuyerDeposit(product, {from: buyer, value: price+fee});
     })
 
     // fourthly get the verification result (before ml verification)
@@ -130,7 +130,7 @@ contract('Escrow', (accounts) => {
         await escrowinstance.offer(product, price, {from: seller});
 
         // buyer make a deposit
-        await escrowinstance.BuyerSendPayment(product, {from: buyer, value: price+fee});
+        await escrowinstance.BuyerDeposit(product, {from: buyer, value: price+fee});
 
         // deny the coffee product
         await dtinstance.verify(product, false);

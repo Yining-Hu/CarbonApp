@@ -95,17 +95,17 @@ contract Escrow is Ownable { //Ownable,
     }
 
     // sign() should be used together with a deal() function, for buyer and seller to agree on a deal
-    function sign() public {
-        require (msg.sender == buyer || msg.sender == seller);
-        require (!signed[msg.sender]);
-        signed[msg.sender] = true;
-    }
+    // function sign() public {
+    //     require (msg.sender == buyer || msg.sender == seller);
+    //     require (!signed[msg.sender]);
+    //     signed[msg.sender] = true;
+    // }
     
     /**
      * @notice Buyer can make a deposit to products on offer
      * @dev Partial payment is sent to the seller, however, can change depending on the agreement
      */
-    function BuyerSendPayment(string memory _tkname) external payable validDestination(agent) validDestination(seller) {
+    function BuyerDeposit(string memory _tkname) external payable validDestination(agent) validDestination(seller) {
         require (msg.value >= fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
         require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
 
@@ -147,10 +147,10 @@ contract Escrow is Ownable { //Ownable,
      * Achieves the same payment result as BuyerApprove, but requires seller to pay for execution
      */
     function SellerRedeem(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
-        require (msg.sender == seller);
-        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
+        require (msg.sender == seller, "Only seller can call the redeem function.");
+        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
         require (VerifyProduct(_tkname), "Seller cannot redeem payment of unverified product.");
-        require (block.timestamp < stock[_tkname].timeout);
+        require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
         seller.transfer(remaining_payment);
         stock[_tkname].state = EscrowState.BUYERAPPROVED;
     }
@@ -159,10 +159,10 @@ contract Escrow is Ownable { //Ownable,
      * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
      */
     function BuyerDeny(string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
-        require (msg.sender == buyer);
-        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot deny without a deposit!");
-        require (block.timestamp > stock[_tkname].timeout); // after the timeout refund can be processed
-        buyer.transfer(remaining_payment); 
+        require (msg.sender == buyer, "Only buyer can call the deny function.");
+        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
+        require (block.timestamp > stock[_tkname].timeout, "Buyer can only claim the refund after the specified timeout.");
+        buyer.transfer(remaining_payment);
         stock[_tkname].state = EscrowState.BUYERDENIED;
     }
 
