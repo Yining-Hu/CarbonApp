@@ -36,7 +36,6 @@ app.use(express.json());
 
 /*
  * routes for interacting with DigitalTwin.sol
- * To do: to unify format of error messages, to use error.message to replace most of the manually typed return errors
  * To do: to add more fields in the mint route
  */
 app.post('/mint', function(request, response){
@@ -289,8 +288,8 @@ app.get('/checkverification',function(request, response) {
         value.methods.VerifyProduct(productid).call({from: buyer})
         .then((result) => {
             console.log(result);
-            console.log(`Verifying product identity: ${productid}, Txn hash: ${result.transactionHash}`);
-            response.write(JSON.stringify({"Txn":result.transactionHash, "Server response": "Txn successful."}));
+            console.log(`Verifying product identity: ${productid}`);
+            response.write(JSON.stringify({"verification status": result}));
             response.end('\n');
         })
         .catch((error) => {
@@ -299,11 +298,11 @@ app.get('/checkverification',function(request, response) {
             console.log(error);
 
             if (error.message.includes("gas")) {
-                response.write(JSON.stringify({"Txn":'0x', "Server response":"Txn unsuccessful. Please increase gas amount."}));
+                response.write(JSON.stringify({"Server response":"Txn unsuccessful. Please increase gas amount."}));
             } else if (error.message.includes("Product does not exist.")) {
-                response.write(JSON.stringify({"Txn":txnhash, "Server response":"Txn reverted. Please enter an existing product name."}));
+                response.write(JSON.stringify({"Server response":"Txn reverted. Please enter an existing product name."}));
             } else {
-                response.write(JSON.stringify({"Txn":txnhash, "Server response":"Please check transaction parameters."}));
+                response.write(JSON.stringify({"Server response":"Please check transaction parameters."}));
             }
             response.end();
         })
