@@ -95,8 +95,12 @@ app.post('/update', function(request, response){
 
             if (error.message.includes("gas")) {
                 response.write(JSON.stringify({"Txn":'0x', "Server response":"Txn unsuccessful. Please increase gas amount."}));
-            } else {
+            } else if (error.message.includes("Token does not exist.")) {
                 response.write(JSON.stringify({"Txn":txnhash, "Server response":"Please enter an existing token name."}));
+            } else if (error.message.includes("token owner")) {
+                response.write(JSON.stringify({"Txn":txnhash, "Server response":"Only the token owner can update the token."}));
+            } else {
+                response.write(JSON.stringify({"Txn":txnhash, "Server response":"Please check transaction parameters."}));
             }
             response.end();
         })
@@ -124,8 +128,10 @@ app.post('/sellerverify', function(request, response){
 
             if (error.message.includes("gas")) {
                 response.write(JSON.stringify({"Txn":'0x', "Server response":"Txn unsuccessful. Please increase gas amount."}));
-            } else {
+            } else if (error.message.includes("Token does not exist.")) {
                 response.write(JSON.stringify({"Txn":txnhash, "Server response":"Please enter an existing token name."}));
+            } else {
+                response.write(JSON.stringify({"Txn":txnhash, "Server response":"Please check transaction parameters."}));
             }
             response.end();
         })
@@ -151,8 +157,12 @@ app.post('/burn', function(request, response){
 
             if (error.message.includes("gas")) {
                 response.write(JSON.stringify({"Txn":'0x', "Server response":"Txn unsuccessful. Please increase gas amount."}));
-            } else {
+            } else if (error.message.includes("Token does not exist.")) {
                 response.write(JSON.stringify({"Txn":txnhash, "Server response":"Please enter an existing token name."}));
+            } else if (error.message.includes("token owner")) {
+                response.write(JSON.stringify({"Txn":txnhash, "Server response":"Only the token owner can update the token."}));
+            } else {
+                response.write(JSON.stringify({"Txn":txnhash, "Server response":"Please check transaction parameters."}));
             }
             response.end();
         })
@@ -172,7 +182,11 @@ app.get('/view', function(request, response){
             console.log(`Failed to query token: ${tkid}`);
             console.log(error);
 
-            response.write(JSON.stringify({"Server response":"Token does not exist."}));
+            if (error.message.includes("Token does not exist.")) {
+                response.write(JSON.stringify({"Server response":"Token does not exist."}));
+            } else {
+                response.write(JSON.stringify({"Server response":"Please check transaction parameters."}));
+            }
             response.end();
         })
     })
@@ -189,7 +203,11 @@ app.get('/viewall', function(request, response){
             console.log("Failed to query all tokens");
             console.log(error);
 
-            response.write(JSON.stringify({"Server response":"Only contract owner can query all tokens."}));
+            if (error.message.includes("contract owner")) {
+                response.write(JSON.stringify({"Server response":"Only contract owner can query all tokens."}));
+            } else {
+                response.write(JSON.stringify({"Server response":"Please check transaction parameters."}));
+            }
             response.end();
         })
     })
