@@ -126,7 +126,7 @@ contract DigitalTwin is ERC721 {
     }
 
     function queryAll() public view returns (string[] memory) {
-        require(msg.sender == admin); // require caller to be the contract owner
+        require(msg.sender == admin, "Only contract owner can query all tokens."); // require caller to be the contract owner
         return tks;
     }
 }
