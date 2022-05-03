@@ -293,7 +293,6 @@ app.get('/checkverification',function(request, response) {
             response.end('\n');
         })
         .catch((error) => {
-            var txnhash = Object.keys(error.data)[0];
             console.log(`Failed to verify product: ${productid}`);
             console.log(error);
 
