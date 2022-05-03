@@ -5,7 +5,7 @@
             mermaid.initialize({ startOnLoad: true });
         </script>
 
-        Escrow sequence diagram:
+        <h1>Escrow sequence diagram</h1><br>
         <div class="mermaid">
             sequenceDiagram;
             autonumber
@@ -13,19 +13,30 @@
                 participant Seller
                 participant Escrow.sol
                 participant DigitalTwin.sol
+                rect rgb(190, 150, 255)
+                Note right of DigitalTwin.sol: NFT minting
                 Seller->>DigitalTwin.sol: Mint an HalalBox NFT for a box of halal meat.
                 Seller->>Escrow.sol: Put the HalalBox on offer.
                 Buyer->>Escrow.sol: Make a deposit for HalalBox.
                 activate Escrow.sol
                 Note right of Buyer: This triggers the timer for seller to verify halal and redeem deposit.
+                end
+                rect rgb(191, 223, 255)
+                Note right of DigitalTwin.sol: ML Verification
                 Seller->>DigitalTwin.sol: ML verification of the box of halal meat.
                 Buyer->>Escrow.sol: Access ML verification result, and update verification status.
                 Escrow.sol-->>DigitalTwin.sol: Retrieve ML verification result.
+                DigitalTwin.sol-->>Escrow.sol: 
+                Escrow.sol-->>Buyer: 
+                end
+                rect rgb(200, 220, 50)
+                Note right of DigitalTwin.sol: Payment settlement
                 alt is halal
                 Seller->>Escrow.sol: Redeem remaining payment before timeout.
                 deactivate Escrow.sol
                 else is not halal
                 Buyer->>Escrow.sol: Claim refund after timeout.
+                end
                 end
         </div>
     </body>
