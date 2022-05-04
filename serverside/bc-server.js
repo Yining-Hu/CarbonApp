@@ -14,10 +14,10 @@ if (process.argv[2] == "--ganache") {
     var instance = utils.getContract(netId,provider,path); // get the contract instance
     var escrowinstance = utils.getContract(netId,provider,escrowpath);
 
-    // var sender = "0xc34D8D91A7C50a03Dac50850E0C67C73CFB0268b"; // contract owner address on local ganache network
+    // contract owner address on local ganache network
+    var sender = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C"
     var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
     var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
-    var sender = seller;
 } else if (process.argv[2] == "--mumbai") {
     const contractAddr = "0xd520A87dF49F00B25526F1F90a970871Ef897320"; 
     // Moz: "0xa4Df321308fB1c51Bb9d4c67Ea66064a54637D42"
@@ -168,12 +168,12 @@ app.post('/burn', function(request, response){
     })
 });
 
-app.get('/view', function(request, response){
+app.get('/viewtoken', function(request, response){
     var tkid = request.query.tkid;
 
     instance.then(value => {
         value.methods.queryToken(tkid).call({from:sender})
-            .then((result) => {
+        .then((result) => {
             console.log(result);
             response.json({"tokenid": tkid, "internal id": result[0], "datahash": result[1], "verification result":result[2], "owner":result[3]});
         })
@@ -191,10 +191,10 @@ app.get('/view', function(request, response){
     })
 });
 
-app.get('/viewall', function(request, response){
+app.get('/viewalltokens', function(request, response){
     instance.then(value => {
         value.methods.queryAll().call({from:sender})
-            .then((result) => {
+        .then((result) => {
             console.log(result);
             response.json({"tokenids": result});
         })
@@ -280,34 +280,6 @@ app.post('/buyerdeposit',function(request, response) {
     })
 });
 
-// buyer uses this route to check the verification result of a product
-app.get('/checkverification',function(request, response) {
-    var productid = request.query.productid;
-
-    escrowinstance.then(value => {
-        value.methods.VerifyProduct(productid).call({from: buyer})
-        .then((result) => {
-            console.log(result);
-            console.log(`Verifying product identity: ${productid}`);
-            response.write(JSON.stringify({"verification status": result}));
-            response.end('\n');
-        })
-        .catch((error) => {
-            console.log(`Failed to verify product: ${productid}`);
-            console.log(error);
-
-            if (error.message.includes("gas")) {
-                response.write(JSON.stringify({"Server response":"Txn unsuccessful. Please increase gas amount."}));
-            } else if (error.message.includes("Product does not exist.")) {
-                response.write(JSON.stringify({"Server response":"Txn reverted. Please enter an existing product name."}));
-            } else {
-                response.write(JSON.stringify({"Server response":"Please check transaction parameters."}));
-            }
-            response.end();
-        })
-    })
-})
-
 app.post('/sellerredeem',function(request, response) {
     var productid = request.body.productid;
     var gas = request.body.gas;
@@ -375,5 +347,57 @@ app.post('/buyerdeny',function(request, response) {
         })
     })
 })
+
+// currently buyer uses this route to check the verification result of a product
+// To do: to enable all participants to view
+app.get('/viewverification',function(request, response) {
+    var productid = request.query.productid;
+
+    escrowinstance.then(value => {
+        value.methods.VerifyProduct(productid).call({from: buyer})
+        .then((result) => {
+            console.log(result);
+            console.log(`Verifying product identity: ${productid}`);
+            response.write(JSON.stringify({"verification status": result}));
+            response.end('\n');
+        })
+        .catch((error) => {
+            console.log(`Failed to verify product: ${productid}`);
+            console.log(error);
+
+            if (error.message.includes("gas")) {
+                response.write(JSON.stringify({"Server response":"Txn unsuccessful. Please increase gas amount."}));
+            } else if (error.message.includes("Product does not exist.")) {
+                response.write(JSON.stringify({"Server response":"Txn reverted. Please enter an existing product name."}));
+            } else {
+                response.write(JSON.stringify({"Server response":"Please check transaction parameters."}));
+            }
+            response.end();
+        })
+    })
+})
+
+app.get('/viewproduct', function(request, response){
+    var productid = request.query.productid;
+
+    escrowinstance.then(value => {
+        value.methods.QueryProduct(productid).call({from:buyer})
+        .then((result) => {
+            console.log(result);
+            response.json({"productid": productid, "price": result[0], "escrow state": result[1], "verification":result[2]});
+        })
+        .catch((error) => {
+            console.log(`Failed to query product: ${productid}`);
+            console.log(error);
+
+            if (error.message.includes("Product does not exist.")) {
+                response.write(JSON.stringify({"Server response":"Product does not exist."}));
+            } else {
+                response.write(JSON.stringify({"Server response":"Please check transaction parameters."}));
+            }
+            response.end();
+        })
+    })
+});
 
 app.listen(3000);
