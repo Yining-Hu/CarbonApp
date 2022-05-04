@@ -365,9 +365,7 @@ app.get('/viewverification',function(request, response) {
             console.log(`Failed to verify product: ${productid}`);
             console.log(error);
 
-            if (error.message.includes("gas")) {
-                response.write(JSON.stringify({"Server response":"Txn unsuccessful. Please increase gas amount."}));
-            } else if (error.message.includes("Product does not exist.")) {
+            if (error.message.includes("Product does not exist.")) {
                 response.write(JSON.stringify({"Server response":"Txn reverted. Please enter an existing product name."}));
             } else {
                 response.write(JSON.stringify({"Server response":"Please check transaction parameters."}));
