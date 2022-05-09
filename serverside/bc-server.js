@@ -38,7 +38,7 @@ app.use(express.json());
  * routes for interacting with DigitalTwin.sol
  * To do: to add more fields in the mint route
  */
-app.post('/mint', function(request, response){
+app.post('/seller/mint', function(request, response){
     var tkid = request.body.tkid;
     var gas = request.body.gas;
     var gtin = request.body.GTIN;
@@ -71,7 +71,7 @@ app.post('/mint', function(request, response){
     })
 });
 
-app.post('/update', function(request, response){
+app.post('/seller/update', function(request, response){
     var tkid = request.body.tkid;
     var gas = request.body.gas;
     var gtin = request.body.GTIN;
@@ -107,7 +107,7 @@ app.post('/update', function(request, response){
 });
 
 // seller uses this route to verify a product. status field of the request should be true or false
-app.post('/sellerverify', function(request, response){
+app.post('/seller/verify', function(request, response){
     var tkid = request.body.tkid;
     var gas = request.body.gas;
     var status = request.body.status;
@@ -137,7 +137,7 @@ app.post('/sellerverify', function(request, response){
     })
 });
 
-app.post('/burn', function(request, response){
+app.post('/seller/burn', function(request, response){
     var tkid = request.body.tkid;
     var gas = request.body.gas;
 
@@ -216,7 +216,7 @@ app.get('/viewalltokens', function(request, response){
  * routes for interacting with Escrow.sol 
  */
 
-app.post('/offerproduct',function(request, response) {
+app.post('/seller/offerproduct',function(request, response) {
     var productid = request.body.productid;
     var price = request.body.price;
     var gas = request.body.gas;
@@ -248,7 +248,7 @@ app.post('/offerproduct',function(request, response) {
     })
 });
 
-app.post('/buyerdeposit',function(request, response) {
+app.post('/buyer/deposit',function(request, response) {
     var productid = request.body.productid;
     var paymentvalue = request.body.paymentvalue;
     var gas = request.body.gas;
@@ -280,7 +280,7 @@ app.post('/buyerdeposit',function(request, response) {
     })
 });
 
-app.post('/sellerredeem',function(request, response) {
+app.post('/seller/redeem',function(request, response) {
     var productid = request.body.productid;
     var gas = request.body.gas;
 
@@ -315,7 +315,7 @@ app.post('/sellerredeem',function(request, response) {
     })
 })
 
-app.post('/buyerdeny',function(request, response) {
+app.post('/buyer/deny',function(request, response) {
     var productid = request.body.productid;
     var gas = request.body.gas;
 
