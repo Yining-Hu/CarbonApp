@@ -6,29 +6,16 @@ const keccak256 = require('keccak256')
 const path = './build/contracts/DigitalTwin.json';
 const escrowpath = './build/contracts/Escrow.json';
 
-// choose a network based on command-line input
-if (process.argv[2] == "--ganache") {
-    const netId = '5777';
-    const provider = 'http://127.0.0.1:7545';
+const netId = '5777';
+const provider = 'http://127.0.0.1:7545';
 
-    var instance = utils.getContract(netId,provider,path); // get the contract instance
-    var escrowinstance = utils.getContract(netId,provider,escrowpath);
+var instance = utils.getContract(netId,provider,path); // get the contract instance
+var escrowinstance = utils.getContract(netId,provider,escrowpath);
 
-    // contract owner address on local ganache network
-    var sender = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C"
-    var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
-    var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
-} else if (process.argv[2] == "--mumbai") {
-    const contractAddr = "0xd520A87dF49F00B25526F1F90a970871Ef897320"; 
-    // Moz: "0xa4Df321308fB1c51Bb9d4c67Ea66064a54637D42"
-    // HBox: "0xe81e9B89030bC8805FF54B752c0c6fAC6eCFcDd7"
-    var sender = "0x8eB84f95e1199ea9eB1BD4b804911c4A392189a7"; // address on the mumbai network
-    var senderPrivkey = "a419e6f435e1d8d48ae630979e5869b1ec0e81027acfe2cda9d0068650b5b00d";
-    const provider = new HDWalletProvider(senderPrivkey, "https://rpc-mumbai.maticvigil.com");
-    var instance = utils.getContractByAddr(contractAddr,provider,path); // get the contract instance
-} else {
-    console.log("Invalid network.");
-}
+// contract owner address on local ganache network
+var sender = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C"
+var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
+var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
 
 var app = express();
 
