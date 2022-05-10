@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract DigitalTwin is ERC721 {
-    string[] public tks; // to record all tks
+    string[] public alltks; // to record all all tks
     address public admin;
 
     /**
@@ -16,13 +16,13 @@ contract DigitalTwin is ERC721 {
         PROCESSORDENIED
     }
 
-    struct ProductTk {
+    struct TkDetails {
         uint256 id;
         string metadata;
         Verificationstatus status;
     }
 
-    mapping(string => ProductTk) public producttks; // mapping of tkname => ProductTk struct
+    mapping(string => TkDetails) public tks; // mapping of tkname => ProductTk struct
     mapping(string => bool) public tkExists;
 
     event TokenUpdated(string tkname);
@@ -38,13 +38,13 @@ contract DigitalTwin is ERC721 {
 
         require(!tkExists[_tkname], "Token already exists.");
 
-        tks.push(_tkname);
-        uint256 id = tks.length;
+        alltks.push(_tkname);
+        uint256 id = alltks.length;
         _mint(msg.sender, id);
         
-        producttks[_tkname].id = id;
-        producttks[_tkname].metadata = _metadata;
-        producttks[_tkname].status = Verificationstatus.PENDING;
+        tks[_tkname].id = id;
+        tks[_tkname].metadata = _metadata;
+        tks[_tkname].status = Verificationstatus.PENDING;
 
         tkExists[_tkname] = true;
     }
@@ -56,11 +56,11 @@ contract DigitalTwin is ERC721 {
 
         require(tkExists[_tkname], "Token does not exist.");
         require(
-            ownerOf(producttks[_tkname].id) == address(msg.sender),
+            ownerOf(tks[_tkname].id) == address(msg.sender),
             "Only the token owner can update the token."
         );
 
-        producttks[_tkname].metadata = _metadata;
+        tks[_tkname].metadata = _metadata;
 
         emit TokenUpdated(_tkname);
     }
@@ -71,12 +71,16 @@ contract DigitalTwin is ERC721 {
     function verify(string memory _tkname, bool _status) public {
 
         require(tkExists[_tkname], "Token does not exist.");
+        require(
+            ownerOf(tks[_tkname].id) == address(msg.sender),
+            "Only the token owner can update verification status of the token."
+        );
 
         if (_status == true) {
-            producttks[_tkname].status = Verificationstatus.PROCESSORVERIFIED;
+            tks[_tkname].status = Verificationstatus.PROCESSORVERIFIED;
         }
         else {
-            producttks[_tkname].status = Verificationstatus.PROCESSORDENIED;
+            tks[_tkname].status = Verificationstatus.PROCESSORDENIED;
         }
 
         emit TokenVerified(_tkname);
@@ -86,12 +90,13 @@ contract DigitalTwin is ERC721 {
 
         require(tkExists[_tkname], "Token does not exist.");
         require(
-            ownerOf(producttks[_tkname].id) == address(msg.sender),
+            ownerOf(tks[_tkname].id) == address(msg.sender),
             "Only the token owner can destroy the token."
         );
 
-        _burn(producttks[_tkname].id);
-        delete producttks[_tkname];
+        _burn(tks[_tkname].id);
+        tkExists[_tkname] = false;
+        delete tks[_tkname];
     }
 
     /**
@@ -106,15 +111,15 @@ contract DigitalTwin is ERC721 {
         
         string memory status;
 
-        if (producttks[_tkname].status == Verificationstatus.PENDING) {
+        if (tks[_tkname].status == Verificationstatus.PENDING) {
             status = "pending verification";
-        } else if (producttks[_tkname].status == Verificationstatus.PROCESSORVERIFIED) {
+        } else if (tks[_tkname].status == Verificationstatus.PROCESSORVERIFIED) {
             status = "verified";
         } else {
             status = "denied";
         }
 
-        return (producttks[_tkname].id, producttks[_tkname].metadata, status, ownerOf(producttks[_tkname].id));
+        return (tks[_tkname].id, tks[_tkname].metadata, status, ownerOf(tks[_tkname].id));
     }
 
     /**
@@ -122,11 +127,11 @@ contract DigitalTwin is ERC721 {
      */
     function countToken() public view returns (uint256) {
         require(msg.sender == admin); // require caller to be the contract owner
-        return tks.length;
+        return alltks.length;
     }
 
     function queryAll() public view returns (string[] memory) {
         require(msg.sender == admin, "Only contract owner can query all tokens."); // require caller to be the contract owner
-        return tks;
+        return alltks;
     }
 }

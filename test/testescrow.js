@@ -58,6 +58,27 @@ contract('Escrow', (accounts) => {
         assert.ok(err instanceof Error);
     })
 
+    // should fail
+    it("should not offer a product that has been burned", async () => {
+        var product = "apple pie";
+        var metadata = "home made";
+
+        await dtinstance.mint(product, metadata);
+        await dtinstance.burn(product);
+
+        var price = 5678;
+
+        try {
+            await escrowinstance.offer(product, price, {from: seller});
+        } catch (error) {
+            err = error;
+        }
+        
+        assert.ok(err instanceof Error);
+    })
+
+    // To do: what happens if we first offer a product and then burn it?
+
     // thirdly the buyer makes a deposit for the product
     // escrowinstance.GetBalance(addr) returns BNs that I cannot parse
     // web3.eth.getBalance(addr) returns strings that I cannot parse

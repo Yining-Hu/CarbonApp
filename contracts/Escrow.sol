@@ -38,7 +38,7 @@ contract Escrow is Ownable { //Ownable,
 
     DigitalTwin public digitaltwin;
     
-    enum EscrowState { OFFERED, DEPOSITTAKEN, BUYERAPPROVED, BUYERDENIED } //PAYMENTSUCCESSFUL, PAYMENTREVERTED
+    enum EscrowState { OFFERED, DEPOSITTAKEN, SELLERREDEEMED, BUYERDENIED } //PAYMENTSUCCESSFUL, PAYMENTREVERTED
 
     struct Product{
         uint256 price;
@@ -152,7 +152,7 @@ contract Escrow is Ownable { //Ownable,
         require (VerifyProduct(_tkname), "Seller cannot redeem payment of unverified product.");
         require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
         seller.transfer(remaining_payment);
-        stock[_tkname].state = EscrowState.BUYERAPPROVED;
+        stock[_tkname].state = EscrowState.SELLERREDEEMED;
     }
 
     /**
