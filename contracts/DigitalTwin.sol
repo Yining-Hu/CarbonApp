@@ -3,6 +3,9 @@ pragma solidity ^0.8.0;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
+/**
+ * To do: viewalltokens still show tokens that are burned (burn is not correct)
+ */
 contract DigitalTwin is ERC721 {
     string[] public alltks; // to record all all tks
     address public admin;
