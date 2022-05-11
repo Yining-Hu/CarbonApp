@@ -13,8 +13,8 @@ const provider = 'http://127.0.0.1:7545';
 var instance = utils.getContract(netId,provider,path); // get the contract instance
 var escrowinstance = utils.getContract(netId,provider,escrowpath);
 
-// contract owner address on local ganache network
-var sender = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C";
+// addresss on local ganache network
+var agent = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C";
 var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
 var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
 
@@ -25,13 +25,13 @@ app.use(express.json());
 /*
  * routes for interacting with DigitalTwin.sol
  * To do: to add more fields in the mint route
- * To do: input check does not validate input type - for boolean and int
+ * To do: input check does not validate input type - for boolean
  */
 app.post('/seller/mint', 
-    validator.check("tkid").exists(),
-    validator.check("GTIN").exists(),
-    validator.check("net_weight").exists(),
-    validator.check("gas").exists(),
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("GTIN").exists().withMessage("Input should contain field 'GTIN'."),
+    validator.check("net_weight").exists().withMessage("Input should contain field 'net_weight'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -47,7 +47,7 @@ app.post('/seller/mint',
             var datahash = keccak256(metadata).toString('hex');
 
             instance.then(value => {
-                value.methods.mint(tkid,datahash).send({from: sender, gas: gas})
+                value.methods.mint(tkid,datahash).send({from: seller, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Minting new token: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -73,10 +73,10 @@ app.post('/seller/mint',
     })
 
 app.post('/seller/update', 
-    validator.check("tkid").exists(),
-    validator.check("GTIN").exists(),
-    validator.check("net_weight").exists(),
-    validator.check("gas").exists(),
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("GTIN").exists().withMessage("Input should contain field 'GTIN'."),
+    validator.check("net_weight").exists().withMessage("Input should contain field 'net_weight'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -92,7 +92,7 @@ app.post('/seller/update',
             var datahash = keccak256(metadata).toString('hex');
     
             instance.then(value => {
-                value.methods.update(tkid,datahash).send({from: sender, gas: gas})
+                value.methods.update(tkid,datahash).send({from: seller, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Updating token details: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -121,11 +121,9 @@ app.post('/seller/update',
 
 // seller uses this route to verify a product. status field of the request should be true or false
 app.post('/seller/verify', 
-    validator.check("tkid").exists(),
-    validator.check("status").exists(),
-    // To do: isBoolean is not defined
-    // validator.check("status"),isBoolean(),
-    validator.check("gas").exists(),
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("status").exists().withMessage("Input should contain field 'status'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -164,8 +162,8 @@ app.post('/seller/verify',
     });
 
 app.post('/seller/burn', 
-    validator.check("tkid").exists(),
-    validator.check("gas").exists(),
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -177,7 +175,7 @@ app.post('/seller/burn',
             var gas = request.body.gas;
 
             instance.then(value => {
-                value.methods.burn(tkid).send({from: sender, gas: gas})
+                value.methods.burn(tkid).send({from: seller, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Burning token: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -205,7 +203,7 @@ app.post('/seller/burn',
     });
 
 app.get('/viewtoken', 
-    validator.check("tkid").exists(),
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
 
     (request, response) => {
         var paramerrors = validator.validationResult(request);
@@ -215,7 +213,7 @@ app.get('/viewtoken',
             var tkid = request.query.tkid;
 
             instance.then(value => {
-                value.methods.queryToken(tkid).call({from:sender})
+                value.methods.queryToken(tkid).call({from:buyer})
                 .then((result) => {
                     console.log(result);
                     response.json({"tokenid": tkid, "internal_id": result[0], "datahash": result[1], "verification_result":result[2], "owner":result[3]});
@@ -239,7 +237,7 @@ app.get('/viewalltokens',
 
     (request, response) => {
         instance.then(value => {
-            value.methods.queryAll().call({from:sender})
+            value.methods.queryAll().call({from:agent})
             .then((result) => {
                 console.log(result);
                 response.json({"tokenids": result});
@@ -263,10 +261,10 @@ app.get('/viewalltokens',
  */
 
 app.post('/seller/offerproduct',
-    validator.check("productid").exists(),
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("price").isInt(),
     validator.check("price").exists(),
-    validator.check("gas").exists(),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -307,10 +305,10 @@ app.post('/seller/offerproduct',
     });
 
 app.post('/buyer/deposit',
-    validator.check("productid").exists(),
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("paymentvalue").isInt(),
-    validator.check("paymentvalue").exists(),
-    validator.check("gas").exists(),
+    validator.check("paymentvalue").exists().withMessage("Input should contain field 'paymentvalue'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -351,8 +349,8 @@ app.post('/buyer/deposit',
     });
 
 app.post('/seller/redeem',
-    validator.check("productid").exists(),
-    validator.check("gas").exists(),
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -396,8 +394,8 @@ app.post('/seller/redeem',
     })
 
 app.post('/buyer/deny',
-    validator.check("productid").exists(),
-    validator.check("gas").exists(),
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
     (request, response) => {
@@ -441,7 +439,7 @@ app.post('/buyer/deny',
 // currently buyer uses this route to check the verification result of a product
 // To do: to enable all participants to view
 app.get('/viewverification',
-    validator.check("productid").exists(),
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
 
     (request, response) => {
         var paramerrors = validator.validationResult(request);
@@ -474,7 +472,7 @@ app.get('/viewverification',
     })
 
 app.get('/viewproduct', 
-    validator.check("productid").exists(),
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
 
     (request, response) => {
         var paramerrors = validator.validationResult(request);
