@@ -58,6 +58,25 @@ contract('Escrow', (accounts) => {
         assert.ok(err instanceof Error);
     })
 
+    // test of burn
+    it("should put a false in tkExists for the burned token, remove the token from alltks", async () => {
+        var product1 = "bread";
+        var metadata1 = "30 hr recipe";
+
+        await dtinstance.mint(product1, metadata1);
+        await dtinstance.burn(product1);
+
+        try {
+            await dtinstance.queryToken(product1);
+        } catch (error) {
+            err = error;
+        }
+        assert.ok(err instanceof Error);
+
+        var alltks = await dtinstance.queryAll();
+        assert.deepEqual(alltks, ["doughnut"]);
+    })
+
     // should fail
     it("should not offer a product that has been burned", async () => {
         var product = "apple pie";

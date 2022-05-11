@@ -90,6 +90,8 @@ contract DigitalTwin is ERC721 {
     }
 
     function burn(string memory _tkname) public {
+        uint i = 0;
+        uint j;
 
         require(tkExists[_tkname], "Token does not exist.");
         require(
@@ -97,9 +99,22 @@ contract DigitalTwin is ERC721 {
             "Only the token owner can destroy the token."
         );
 
-        _burn(tks[_tkname].id);
-        tkExists[_tkname] = false;
-        delete tks[_tkname];
+        _burn(tks[_tkname].id); // transfer the token to the 0x address
+        tkExists[_tkname] = false; // change existence to false
+        delete tks[_tkname]; // delete token from the mapping
+
+        /// @dev: there doesn't seem to be a straight forward way to get all keys in a mapping - to find out
+        /// @notice: 1. find the index of an element
+        /// @notice: 2. to remove an element - shift the elements after the index and remove the last
+        while (keccak256(abi.encodePacked(alltks[i])) != keccak256(abi.encodePacked(_tkname))) {
+            i++;
+        }
+        
+        for (j=i; j<alltks.length-1; j++) {
+            alltks[j] = alltks[j+1];
+        }
+        
+        alltks.pop(); // remove the token from the alltks list
     }
 
     /**
