@@ -15,7 +15,7 @@ module.exports = {
     //  network_id: "18",       // Any network (default: none)
     },
     mumbai: {
-      provider: () => new HDWalletProvider(privKey, "https://rpc-mumbai.maticvigil.com"),
+      provider: () => new HDWalletProvider(privKey, "https://matic-mumbai.chainstacklabs.com"),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,
