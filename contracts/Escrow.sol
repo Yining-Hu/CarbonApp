@@ -12,6 +12,8 @@ import "./DigitalTwin.sol";
  * @dev contract currently assume one buyer account and one seller account, should develop an additional wallet contract and allow new user registration
  * @dev To do: to implement multi-sig, time-based escrow
  * @dev To do: to add a product existence modifier, and a role modifier
+ * @dev To do: the easiest would be to transfer both money and ownership of the product to the agent 
+ * @dev then to prevent agent from taking everything, agent needs to deposit, which can be slashed if caught faulty
  */
 contract Escrow is Ownable { //Ownable, 
 
@@ -54,12 +56,11 @@ contract Escrow is Ownable { //Ownable,
 
     /**
      * @dev before setting up any user wallet, all buyers/sellers use a single buyer/seller address, which are maintained by Beston.
-     * @dev the same goes for ownership tracking in DigitalTwin.sol.
      */
     constructor(DigitalTwin _digitaltwin, address _buyer_address, address _seller_address) {
         digitaltwin = _digitaltwin;
 
-        agentaddr = msg.sender;
+        agentaddr = msg.sender; // agent is the creator of the contract
         buyeraddr = _buyer_address;
         selleraddr = _seller_address;
 
@@ -82,16 +83,19 @@ contract Escrow is Ownable { //Ownable,
         _;
     }
 
-    /// @dev should also require tk to be minted on DigitalTwin.sol
     function offer(string memory _tkname , uint256 _price) public {
         require(!productExists[_tkname], "Product is already offered.");
         require(digitaltwin.tkExists(_tkname), "Product token is not minted.");
+        // should also require the caller to be the owner of the product
 
         Product memory product;
         product.price = _price; /// @dev double check the conversion in Polygon
         product.state = EscrowState.OFFERED;
         stock[_tkname] = product;
         productExists[_tkname] = true;
+
+        // transfer the token ownership to the agent
+        digitaltwin.transferByName(_tkname,agentaddr);
     }
 
     // sign() should be used together with a deal() function, for buyer and seller to agree on a deal
@@ -146,8 +150,9 @@ contract Escrow is Ownable { //Ownable,
      * @notice Seller can redeem with verification
      * Achieves the same payment result as BuyerApprove, but requires seller to pay for execution
      */
-    function SellerRedeem(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
-        require (msg.sender == seller, "Only seller can call the redeem function.");
+    function AgentApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
+        // require (msg.sender == seller, "Only seller can call the redeem function.");
+        require (msg.sender == agent, "Only agent can call the redeem function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
         require (VerifyProduct(_tkname), "Seller cannot redeem payment of unverified product.");
         require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
@@ -158,8 +163,9 @@ contract Escrow is Ownable { //Ownable,
     /**
      * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
      */
-    function BuyerDeny(string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
-        require (msg.sender == buyer, "Only buyer can call the deny function.");
+    function AgentDeny(string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
+        // require (msg.sender == buyer, "Only buyer can call the deny function.");
+        require (msg.sender == agent, "Only agent can call the refund function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
         require (block.timestamp > stock[_tkname].timeout, "Buyer can only claim the refund after the specified timeout.");
         buyer.transfer(remaining_payment);
@@ -169,9 +175,9 @@ contract Escrow is Ownable { //Ownable,
     /**
      * @notice getters
      */
-    function GetUsers() public view returns(address, address) {
+    function GetUsers() public view returns(address, address, address) {
         require (msg.sender == agent);
-        return (buyer,seller);
+        return (agent, buyer, seller);
     }
 
     function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool) {

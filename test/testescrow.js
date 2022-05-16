@@ -8,7 +8,7 @@ const dt = artifacts.require("DigitalTwin");
 contract('Escrow', (accounts) => {
     var escrowinstance;
     var dtinstance;
-    var agent = accounts[0];
+    // var agent = accounts[0];
     var users;
     var buyer;
     var seller;
@@ -19,15 +19,16 @@ contract('Escrow', (accounts) => {
         dtinstance = await dt.deployed();
 
         users = await escrowinstance.GetUsers();
-        buyer = users[0];
-        seller = users[1];
+        buyer = users[1];
+        seller = users[2];
+        agent = users[0]
     });
 
     // firstly mint the token on DigitalTwin.sol
     it("should mint a token on DigitalTwin.sol and allow querying", async () => {
         var product = "doughnut";
         var metadata = "180g from ww bakery";
-        await dtinstance.mint(product, metadata);
+        await dtinstance.mint(product, metadata, {from: seller});
         
         var tkdetails;
         // tkdetails = await dtinstance.queryTokenFromContract(product);
@@ -43,7 +44,7 @@ contract('Escrow', (accounts) => {
         await escrowinstance.offer(product, price, {from: seller});
     });
 
-    // should fail
+    // should fail: offering without minting 
     it("should not offer a product without an existing product token", async () => {
         var product = "burger";
         var price = 70000;
@@ -63,8 +64,8 @@ contract('Escrow', (accounts) => {
         var product1 = "bread";
         var metadata1 = "30 hr recipe";
 
-        await dtinstance.mint(product1, metadata1);
-        await dtinstance.burn(product1);
+        await dtinstance.mint(product1, metadata1, {from: seller});
+        await dtinstance.burn(product1, {from: seller});
 
         try {
             await dtinstance.queryToken(product1);
@@ -77,13 +78,13 @@ contract('Escrow', (accounts) => {
         assert.deepEqual(alltks, ["doughnut"]);
     })
 
-    // should fail
+    // should fail: offering after burning 
     it("should not offer a product that has been burned", async () => {
         var product = "apple pie";
         var metadata = "home made";
 
-        await dtinstance.mint(product, metadata);
-        await dtinstance.burn(product);
+        await dtinstance.mint(product, metadata, {from: seller});
+        await dtinstance.burn(product, {from: seller});
 
         var price = 5678;
 
@@ -96,7 +97,31 @@ contract('Escrow', (accounts) => {
         assert.ok(err instanceof Error);
     })
 
-    // To do: what happens if we first offer a product and then burn it?
+    // To do: should fail: burning after offering
+    it("should not burn a product after it is offered", async () => {
+        var product = "lemon";
+        var metadata = "rich in vitamin c";
+        var price = 7654;
+        
+        // mint the token
+        await dtinstance.mint(product, metadata, {from: seller});
+        var tkdetails1 = await dtinstance.queryToken(product);
+        console.log(tkdetails1);
+
+        // offer the product
+        await escrowinstance.offer(product, price, {from: seller});
+        var tkdetails2 = await dtinstance.queryToken(product);
+        console.log(tkdetails2);
+
+        // seller tries to burn the product, should fail
+        try {
+            await dtinstance.burn(product, {from: seller});
+        } catch (error) {
+            err = error;
+        }
+
+        assert.ok(err instanceof Error);
+    })
 
     // thirdly the buyer makes a deposit for the product
     // escrowinstance.GetBalance(addr) returns BNs that I cannot parse
@@ -111,7 +136,7 @@ contract('Escrow', (accounts) => {
     })
 
     // fourthly get the verification result (before ml verification)
-    it("should return product details", async () => {
+    it("should return product details as false before ml verification", async () => {
         var product = "doughnut";
 
         // then query the product details 
@@ -122,11 +147,11 @@ contract('Escrow', (accounts) => {
     });
 
     // get the verification result (after ml verification)
-    it("should return product details", async () => {
+    it("should return product details as true after ml verification", async () => {
         var product = "doughnut";
 
         // confirm verification result of product
-        await dtinstance.verify(product, true);
+        await dtinstance.verify(product, true, {from: agent});
 
         // then query the product details 
         var result = await escrowinstance.QueryProduct(product);
@@ -142,11 +167,8 @@ contract('Escrow', (accounts) => {
         seller_balance_before = await web3.eth.getBalance(seller);
         // console.log(parseInt(seller_balance_before.toString()));
 
-        // buyer approve payment
-        // await escrowinstance.BuyerApprove(product, {from: buyer});
-
         // seller redeem payment
-        await escrowinstance.SellerRedeem(product, {from: seller});
+        await escrowinstance.AgentApprove(product, {from: agent});
 
         // confirm that payment has proceeded
         seller_balance_after = await web3.eth.getBalance(seller);
@@ -164,7 +186,7 @@ contract('Escrow', (accounts) => {
         var fee = 100;
         
         // mint a coffee token
-        await dtinstance.mint(product, metadata);
+        await dtinstance.mint(product, metadata, {from: seller});
 
         // offer the coffee product
         await escrowinstance.offer(product, price, {from: seller});
@@ -173,7 +195,7 @@ contract('Escrow', (accounts) => {
         await escrowinstance.BuyerDeposit(product, {from: buyer, value: price+fee});
 
         // deny the coffee product
-        await dtinstance.verify(product, false);
+        await dtinstance.verify(product, false, {from: agent});
 
         // utility function to set timeout
         function timeout(ms) {
@@ -182,7 +204,7 @@ contract('Escrow', (accounts) => {
         await timeout(100000);
 
         // buyer deny the payment
-        await escrowinstance.BuyerDeny(product, {from: buyer});
+        await escrowinstance.AgentDeny(product, {from: agent});
 
         // confirm that money gets returned to buyer and escrow state has changed
         var result = await escrowinstance.QueryProduct(product);

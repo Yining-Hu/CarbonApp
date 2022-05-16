@@ -114,6 +114,14 @@ contract DigitalTwin is ERC721 {
         alltks.pop(); // remove the token from the alltks list
     }
 
+    /// @notice tx.origin is the user account that starts the call, msg.sender is the contract that calls this contract
+    function transferByName(string memory _tkname, address _to) public {
+        require(tkExists[_tkname], "Token does not exist.");
+        require(ownerOf(tks[_tkname].id) == tx.origin, "Only token owner can transfer the token.");
+
+        _transfer(tx.origin,_to,tks[_tkname].id);
+    }
+
     /**
      * @notice for js client to interact
      */

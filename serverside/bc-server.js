@@ -120,7 +120,7 @@ app.post('/seller/update',
     });
 
 // seller uses this route to verify a product. status field of the request should be true or false
-app.post('/seller/verify', 
+app.post('/agent/verify', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("status").exists().withMessage("Input should contain field 'status'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
@@ -136,7 +136,7 @@ app.post('/seller/verify',
             var gas = request.body.gas;
 
             instance.then(value => {
-                value.methods.verify(tkid,status).send({from: seller, gas: gas})
+                value.methods.verify(tkid,status).send({from: agent, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Updating halal verification result: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -348,7 +348,7 @@ app.post('/buyer/deposit',
         }
     });
 
-app.post('/seller/redeem',
+app.post('/agent/pay/seller',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -362,7 +362,7 @@ app.post('/seller/redeem',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.SellerRedeem(productid).send({from: seller, gas:gas})
+                value.methods.AgentApprove(productid).send({from: agent, gas:gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Transferring remaining payment of product: ${productid} to seller, Txn hash: ${result.transactionHash}`);
@@ -393,7 +393,7 @@ app.post('/seller/redeem',
         }
     })
 
-app.post('/buyer/deny',
+app.post('/agent/pay/buyer',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -407,7 +407,7 @@ app.post('/buyer/deny',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.BuyerDeny(productid).send({from: buyer, gas:gas})
+                value.methods.AgentDeny(productid).send({from: agent, gas:gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Transferring refund of product: ${productid} to buyer, Txn hash: ${result.transactionHash}`);
