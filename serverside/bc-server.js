@@ -16,7 +16,8 @@ var escrowinstance = utils.getContract(netId,provider,escrowpath);
 // addresss on local ganache network
 var agent = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C";
 var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
-var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
+// var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
+var seller = "0xf95898699927c25faBC614Ef1Da94E67cD7960e1";
 
 var app = express();
 
@@ -202,7 +203,7 @@ app.post('/seller/burn',
         }
     });
 
-app.get('/viewtoken', 
+app.get('/view/token', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
 
     (request, response) => {
@@ -233,14 +234,49 @@ app.get('/viewtoken',
         }
     });
 
-app.get('/viewalltokens',
+// old viewall - can only view all tkids
+// app.get('/view/tokens',
+
+//     (request, response) => {
+//         instance.then(value => {
+//             value.methods.queryAll().call({from:agent})
+//             .then((result) => {
+//                 console.log(result);
+//                 response.json({"tokenids": result});
+//             })
+//             .catch((error) => {
+//                 console.log("Failed to query all tokens");
+//                 console.log(error);
+
+//                 if (error.message.includes("contract owner")) {
+//                     response.write(JSON.stringify({"server_response":"Only contract owner can query all tokens."}));
+//                 } else {
+//                     response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+//                 }
+//                 response.end();
+//             })
+//         })
+//     });
+
+app.get('/view/all',
 
     (request, response) => {
         instance.then(value => {
-            value.methods.queryAll().call({from:agent})
+            value.methods.queryAllFields().call({from:agent})
             .then((result) => {
-                console.log(result);
-                response.json({"tokenids": result});
+                var tk = {};
+                var tkarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    tk.tkid = result[0][i];
+                    tk.internal_id = result[1][i];
+                    tk.datahash = result[2][i];
+                    tk.verification_result = result[3][i];
+                    tk.owner = result[4][i];
+                    tkarray.push({...tk});
+                }
+                console.log(tkarray);
+                response.json(tkarray);
             })
             .catch((error) => {
                 console.log("Failed to query all tokens");

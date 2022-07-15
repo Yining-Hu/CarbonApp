@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
+pragma experimental ABIEncoderV2;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
@@ -21,6 +22,8 @@ contract DigitalTwin is ERC721 {
         string metadata;
         Verificationstatus status;
     }
+
+    TkDetails[] alltkdetails;
 
     mapping(string => TkDetails) public tks; // mapping of tkname => ProductTk struct
     mapping(string => bool) public tkExists;
@@ -156,5 +159,41 @@ contract DigitalTwin is ERC721 {
     function queryAll() public view returns (string[] memory) {
         require(msg.sender == admin, "Only contract owner can query all tokens."); // require caller to be the contract owner
         return alltks;
+    }
+
+    function queryAllFields() 
+        public 
+        view 
+        returns 
+    (
+        string[] memory, 
+        uint256[] memory, 
+        string[] memory, 
+        string[] memory, 
+        address[] memory
+    ) 
+    {
+        uint256[] memory internal_id = new uint256[](alltks.length);
+        string[] memory metadata = new string[](alltks.length);
+        string[] memory status = new string[](alltks.length);
+        address[] memory owner = new address[](alltks.length);
+
+        for(uint i=0; i<alltks.length; i++){
+            internal_id[i] = tks[alltks[i]].id;
+            metadata[i] = tks[alltks[i]].metadata;
+
+            // parse the status field
+            if (tks[alltks[i]].status == Verificationstatus.PENDING) {
+                status[i] = "pending verification";
+            } else if (tks[alltks[i]].status == Verificationstatus.PROCESSORVERIFIED) {
+                status[i] = "verified";
+            } else {
+                status[i] = "denied";
+            }
+
+            owner[i] = ownerOf(tks[alltks[i]].id);
+        }
+
+        return (alltks, internal_id, metadata, status, owner);
     }
 }
