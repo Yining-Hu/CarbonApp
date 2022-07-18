@@ -235,30 +235,30 @@ app.get('/view/token',
     });
 
 // old viewall - can only view all tkids
-// app.get('/view/tokens',
-
-//     (request, response) => {
-//         instance.then(value => {
-//             value.methods.queryAll().call({from:agent})
-//             .then((result) => {
-//                 console.log(result);
-//                 response.json({"tokenids": result});
-//             })
-//             .catch((error) => {
-//                 console.log("Failed to query all tokens");
-//                 console.log(error);
-
-//                 if (error.message.includes("contract owner")) {
-//                     response.write(JSON.stringify({"server_response":"Only contract owner can query all tokens."}));
-//                 } else {
-//                     response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
-//                 }
-//                 response.end();
-//             })
-//         })
-//     });
-
 app.get('/view/all',
+
+    (request, response) => {
+        instance.then(value => {
+            value.methods.queryAll().call({from:agent})
+            .then((result) => {
+                console.log(result);
+                response.json({"tokenids": result});
+            })
+            .catch((error) => {
+                console.log("Failed to query all tokens");
+                console.log(error);
+
+                if (error.message.includes("contract owner")) {
+                    response.write(JSON.stringify({"server_response":"Only contract owner can query all tokens."}));
+                } else {
+                    response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                }
+                response.end();
+            })
+        })
+    });
+
+app.get('/view/tokens',
 
     (request, response) => {
         instance.then(value => {

@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
-pragma experimental ABIEncoderV2;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
@@ -22,8 +21,6 @@ contract DigitalTwin is ERC721 {
         string metadata;
         Verificationstatus status;
     }
-
-    TkDetails[] alltkdetails;
 
     mapping(string => TkDetails) public tks; // mapping of tkname => ProductTk struct
     mapping(string => bool) public tkExists;
