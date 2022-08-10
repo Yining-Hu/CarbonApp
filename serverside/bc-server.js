@@ -7,17 +7,26 @@ const validator = require('express-validator');
 const path = './build/contracts/DigitalTwin.json';
 const escrowpath = './build/contracts/Escrow.json';
 
+// local ganache
 const netId = '5777';
 const provider = 'http://127.0.0.1:7545';
 
-var instance = utils.getContract(netId,provider,path); // get the contract instance
-var escrowinstance = utils.getContract(netId,provider,escrowpath);
-
-// addresss on local ganache network
+// addressses on local ganache network
 var agent = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C";
 var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
-// var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
-var seller = "0xf95898699927c25faBC614Ef1Da94E67cD7960e1";
+var seller = "0xf95898699927c25faBC614Ef1Da94E67cD7960e1"; //"0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
+
+// bestonchain
+// const netId = '100';
+// const provider = 'http://125.63.52.142:8545';
+
+// addressses on bestonchain
+// var agent = "0x91398520022acd668BE51648B40da2757c0eF1bF";
+// var buyer = "0x985d87D2E7278cB2dC702Fa08FF0057D501f72C9";
+// var seller = "0x29260Ac044ca72Fc39E878d39544154CaC8521Bb";
+
+var instance = utils.getContract(netId,provider,path); // get the contract instance
+var escrowinstance = utils.getContract(netId,provider,escrowpath);
 
 var app = express();
 
