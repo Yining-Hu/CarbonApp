@@ -3,6 +3,23 @@ const express = require('express');
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const keccak256 = require('keccak256')
 const validator = require('express-validator');
+const client = require('./client.json')
+
+/**
+ * authorization middleware
+ */ 
+function authorization(request, response, next) {
+    // request needs to have the header "api-key"
+    var apikey = request.get('api-key');
+
+    if (apikey == null) {
+        return response.json({"server_response":"Please enter your ApiKey!"});
+    } else if (apikey != client['api-key']) {
+        response.json({"server_response":"User not authorized!"});
+    } else {
+        next();
+    }
+}
 
 /**
  * contract json paths
@@ -79,6 +96,9 @@ var escrowinstance = utils.getContract(netId,provider,escrowpath);
 var app = express();
 
 app.use(express.json());
+
+// use authorization middleware
+app.use(authorization);
 
 /*
  * routes for interacting with DigitalTwin.sol
