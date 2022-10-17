@@ -1,25 +1,14 @@
 const utils = require('./utils.js');
+var fs = require('fs'); 
 const express = require('express');
+const userRouter = require('express').Router();
+const visitorRouter = require('express').Router();
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const keccak256 = require('keccak256')
 const validator = require('express-validator');
 const client = require('./client.json')
-
-/**
- * authorization middleware
- */ 
-function authorization(request, response, next) {
-    // request needs to have the header "api-key"
-    var apikey = request.get('api-key');
-
-    if (apikey == null) {
-        return response.json({"server_response":"Please enter your ApiKey!"});
-    } else if (apikey != client['api-key']) {
-        response.json({"server_response":"User not authorized!"});
-    } else {
-        next();
-    }
-}
+const { timingSafeEqual } = require('crypto');
+const generator = require('generate-password');
 
 /**
  * contract json paths
@@ -94,18 +83,62 @@ var instance = utils.getContract(netId,provider,path); // get the contract insta
 var escrowinstance = utils.getContract(netId,provider,escrowpath);
 
 var app = express();
-
 app.use(express.json());
 
-// use authorization middleware
-app.use(authorization);
+/**
+ * apikey generation for visitors
+ * no authorization required 
+ * Todo: add keys to client.js
+ */
+ visitorRouter.post('/signup',
+ (request, response) => {
+     const username = request.body.username;
+
+     var apikey = generator.generate({
+         length: 30,
+         numbers: true
+     });
+
+     var client = {"username":username,"api-key":apikey};
+
+    //  fs.readFile('server/client.json', 'utf8', function readFileCallback(err, data){
+    //      if (err){
+    //          console.log(err);
+    //      } else {
+    //      obj = JSON.parse(data); //now it an object
+    //      obj.push(client);
+    //      json = JSON.stringify(obj); //convert it back to json
+    //      fs.writeFile('server/client.json', json, 'utf8', callback); // write it back 
+    //  }});
+
+     response.write(JSON.stringify({"api-key":apikey}));
+     response.end('\n');
+ })
+
+/**
+ * authorization middleware
+ */ 
+ function authorization(request, response, next) {
+    var apikey = request.get('api-key'); // request needs to have the header "api-key"
+    var target = client['api-key'];
+
+    if (apikey == null) {
+        return response.json({"server_response":"Please enter your ApiKey!"});
+    } else if (target.length != apikey.length) {
+        response.json({"server_response":"User not authorized!"});
+    } else if (!timingSafeEqual(Buffer.from(target, "utf8"), Buffer.from(apikey, "utf8"))) {
+        response.json({"server_response":"User not authorized!"});
+    } else {
+        next();
+    }
+}
 
 /*
  * routes for interacting with DigitalTwin.sol
  * To do: to add more fields in the mint route
  * To do: input check does not validate input type - for boolean
  */
-app.post('/seller/mint', 
+userRouter.post('/seller/mint', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("GTIN").exists().withMessage("Input should contain field 'GTIN'."),
     validator.check("net_weight").exists().withMessage("Input should contain field 'net_weight'."),
@@ -150,7 +183,7 @@ app.post('/seller/mint',
         }
     })
 
-app.post('/seller/update', 
+userRouter.post('/seller/update', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("GTIN").exists().withMessage("Input should contain field 'GTIN'."),
     validator.check("net_weight").exists().withMessage("Input should contain field 'net_weight'."),
@@ -198,7 +231,7 @@ app.post('/seller/update',
     });
 
 // seller uses this route to verify a product. status field of the request should be true or false
-app.post('/agent/verify', 
+userRouter.post('/agent/verify', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("status").exists().withMessage("Input should contain field 'status'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
@@ -239,7 +272,7 @@ app.post('/agent/verify',
         }
     });
 
-app.post('/seller/burn', 
+userRouter.post('/seller/burn', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -280,7 +313,7 @@ app.post('/seller/burn',
         }
     });
 
-app.get('/view/token', 
+userRouter.get('/view/token', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
 
     (request, response) => {
@@ -312,8 +345,7 @@ app.get('/view/token',
     });
 
 // old viewall - can only view all tkids
-app.get('/view/all',
-
+userRouter.get('/view/all',
     (request, response) => {
         instance.then(value => {
             value.methods.queryAll().call({from:agent})
@@ -335,8 +367,7 @@ app.get('/view/all',
         })
     });
 
-app.get('/view/tokens',
-
+userRouter.get('/view/tokens',
     (request, response) => {
         instance.then(value => {
             value.methods.queryAllFields().call({from:agent})
@@ -373,7 +404,7 @@ app.get('/view/tokens',
  * routes for interacting with Escrow.sol 
  */
 
-app.post('/seller/offerproduct',
+userRouter.post('/seller/offerproduct',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("price").isInt(),
     validator.check("price").exists(),
@@ -417,7 +448,7 @@ app.post('/seller/offerproduct',
         }
     });
 
-app.post('/buyer/deposit',
+userRouter.post('/buyer/deposit',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("paymentvalue").isInt(),
     validator.check("paymentvalue").exists().withMessage("Input should contain field 'paymentvalue'."),
@@ -461,7 +492,7 @@ app.post('/buyer/deposit',
         }
     });
 
-app.post('/agent/pay/seller',
+userRouter.post('/agent/pay/seller',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -506,7 +537,7 @@ app.post('/agent/pay/seller',
         }
     })
 
-app.post('/agent/pay/buyer',
+userRouter.post('/agent/pay/buyer',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -551,7 +582,7 @@ app.post('/agent/pay/buyer',
 
 // currently buyer uses this route to check the verification result of a product
 // To do: to enable all participants to view
-app.get('/viewverification',
+userRouter.get('/viewverification',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
 
     (request, response) => {
@@ -584,7 +615,7 @@ app.get('/viewverification',
         }
     })
 
-app.get('/viewproduct', 
+userRouter.get('/viewproduct', 
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
 
     (request, response) => {
@@ -614,5 +645,13 @@ app.get('/viewproduct',
             })
         }
     });
+
+// test
+app.use(visitorRouter);
+userRouter.use(authorization);
+app.use(userRouter);
+
+// use authorization middleware
+// app.use(authorization);
 
 app.listen(3000);
