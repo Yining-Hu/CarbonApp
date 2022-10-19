@@ -2,7 +2,6 @@ node_modules
 contracts/Shred.sol
 contracts/MozzarellaSupplyChain.sol
 build/contracts/Shred.json
-clientside/
 migrations/3_deploy_shred.js
 serverside/data_new.csv
 serverside/data.csv
@@ -11,3 +10,4 @@ serverside/querytoken.js
 serverside/statuscheck.js
 serverside/updatetoken.js
 test/testshred.js
+server/credentials/

@@ -7,7 +7,7 @@ A serverside application in NodeJs, with APIs for data access. Mainly for testin
 - To update: curl -d '{"tkid":"2022030401","GTIN":"576567567567","net_weight":"200g","gas":400000}' -H "Content-Type: application/json" http://127.0.0.1:3000/seller/update
 - To query: curl "http://127.0.0.1:3000/view/token?tkid=2022030401"
 
-All user requests are also required to have a -H "api-key: blah" header for authentication.
+All user requests are also required to have headers -H "user-name:lou" -H "api-key:Kuygrbt4kblQIiUP3HBOXGr1000" for authentication.
 Visitor needs to register.
 
 # Escrow sequence diagram
