@@ -10,7 +10,7 @@ const generator = require('generate-password');
 /**
  * command-line argument handling
  */
-if (process.argv.length != 3) {
+if (process.argv.length < 3) {
     console.error('Expected arguments for the selected blockchain network!');
     process.exit(1);
 }
@@ -73,9 +73,9 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
 /**
  * contract json paths
  */
-var path = './build/contracts/DigitalTwin.json';
+var digitaltwinpath = './build/contracts/DigitalTwin.json';
 var escrowpath = './build/contracts/Escrow.json';
-var instance = utils.getContract(netId,provider,path); // get the contract instance
+var digitaltwininstance = utils.getContract(netId,provider,digitaltwinpath);
 var escrowinstance = utils.getContract(netId,provider,escrowpath);
 
 var app = express();
@@ -173,7 +173,7 @@ app.post('/seller/mint',
             var metadata = gtin + weight;
             var datahash = keccak256(metadata).toString('hex');
 
-            instance.then(value => {
+            digitaltwininstance.then(value => {
                 value.methods.mint(tkid,datahash).send({from: seller, gas: gas})
                 .then((result) => {
                     console.log(result);
@@ -218,7 +218,7 @@ app.post('/seller/update',
             var metadata = gtin + weight;
             var datahash = keccak256(metadata).toString('hex');
     
-            instance.then(value => {
+            digitaltwininstance.then(value => {
                 value.methods.update(tkid,datahash).send({from: seller, gas: gas})
                 .then((result) => {
                     console.log(result);
@@ -262,7 +262,7 @@ app.post('/agent/verify',
             var status = request.body.status;
             var gas = request.body.gas;
 
-            instance.then(value => {
+            digitaltwininstance.then(value => {
                 value.methods.verify(tkid,status).send({from: agent, gas: gas})
                 .then((result) => {
                     console.log(result);
@@ -301,7 +301,7 @@ app.post('/seller/burn',
             var tkid = request.body.tkid;
             var gas = request.body.gas;
 
-            instance.then(value => {
+            digitaltwininstance.then(value => {
                 value.methods.burn(tkid).send({from: seller, gas: gas})
                 .then((result) => {
                     console.log(result);
@@ -339,7 +339,7 @@ app.get('/view/token',
         } else {
             var tkid = request.query.tkid;
 
-            instance.then(value => {
+            digitaltwininstance.then(value => {
                 value.methods.queryToken(tkid).call({from:buyer})
                 .then((result) => {
                     console.log(result);
@@ -363,7 +363,7 @@ app.get('/view/token',
 // old viewall - can only view all tkids
 app.get('/view/all',
     (request, response) => {
-        instance.then(value => {
+        digitaltwininstance.then(value => {
             value.methods.queryAll().call({from:agent})
             .then((result) => {
                 console.log(result);
@@ -385,7 +385,7 @@ app.get('/view/all',
 
 app.get('/view/tokens',
     (request, response) => {
-        instance.then(value => {
+        digitaltwininstance.then(value => {
             value.methods.queryAllFields().call({from:agent})
             .then((result) => {
                 var tk = {};
