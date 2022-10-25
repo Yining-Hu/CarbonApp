@@ -1,7 +1,6 @@
 const utils = require('./utils.js');
 var fs = require('fs'); 
 const express = require('express');
-const HDWalletProvider = require("@truffle/hdwallet-provider");
 const keccak256 = require('keccak256')
 const validator = require('express-validator');
 const { timingSafeEqual } = require('crypto');
