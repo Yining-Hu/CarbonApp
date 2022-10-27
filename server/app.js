@@ -140,7 +140,6 @@ app.post('/signup',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            // var tkid = request.query.tkid;
             var username = request.body.username;
 
             var apikey = generator.generate({
@@ -159,8 +158,8 @@ app.post('/signup',
 
 /*
  * routes for interacting with DigitalTwin.sol
- * To do: to add more fields in the mint route
- * To do: input check does not validate input type - for boolean
+ * Todo: to add more fields in the mint route
+ * Todo: input check does not validate input type - for boolean
  */
 app.post('/seller/mint', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
@@ -605,7 +604,7 @@ app.post('/agent/pay/buyer',
     })
 
 // currently buyer uses this route to check the verification result of a product
-// To do: to enable all participants to view
+// Todo: to enable all participants to view
 app.get('/viewverification',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
 
@@ -669,10 +668,5 @@ app.get('/viewproduct',
             })
         }
     });
-
-// test
-// app.use(visitorRouter);
-// userRouter.use(authorization);
-// app.use(userRouter);
 
 app.listen(3000);
