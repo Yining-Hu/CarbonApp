@@ -1,5 +1,6 @@
 const utils = require('./utils.js');
 var fs = require('fs'); 
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
 const keccak256 = require('keccak256')
 const validator = require('express-validator');
@@ -48,34 +49,41 @@ var agent;
 var buyer;
 var seller;
 
+var digitaltwinAddr;
+var escrowAddr;
+var digitaltwininstance;
+var escrowinstance;
+
+var digitaltwinpath = './build/contracts/DigitalTwin.json';
+var escrowpath = './build/contracts/Escrow.json';
+
 if (process.argv[2] && process.argv[2] === '-ganache') {
     var netId = '5777';
     var provider = 'http://127.0.0.1:7545';
-    
+    var digitaltwininstance = utils.getContract(netId,provider,digitaltwinpath);
+    var escrowinstance = utils.getContract(netId,provider,escrowpath);
+
     var agent = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C";
     var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
     var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
 
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
-    var netId = '100';
-    var provider = 'http://125.63.52.142:8545';
+    agent = "0x2FFC110EEdbbC076f2aDF37dE5798A1fe9E2e481";
+    buyer = "0x2FFC110EEdbbC076f2aDF37dE5798A1fe9E2e481";
+    seller = "0x32f34AF0c47f11895d7dcDb13b72f1b8AFE052F0";
+    
+    accPrivKeys = ["6c5a32ce12b866ba6d658010b90960d51ff6f9a7da1510783e872dbab11433d2","6c5a32ce12b866ba6d658010b90960d51ff6f9a7da1510783e872dbab11433d2","c796465b8a824db6ab1317cb5b238e5912a718670ac44e3fa13f71996310fa2d"];
+    provider = new HDWalletProvider(accPrivKeys, "http://125.63.52.142:8545");
 
-    var agent = "0x91398520022acd668BE51648B40da2757c0eF1bF";
-    var buyer = "0x985d87D2E7278cB2dC702Fa08FF0057D501f72C9";
-    var seller = "0x29260Ac044ca72Fc39E878d39544154CaC8521Bb";
+    digitaltwinAddr = "0x6D2b8587974Dc040D5c8FDcC1aaD77196bDbC808";
+    escrowAddr = "0xC43C49034Ac01f6182AB622B6671e568b7A0Bec8";
+    digitaltwininstance = utils.getContractByAddr(digitaltwinAddr,provider,digitaltwinpath); // get the digitaltwin contract instance
+    escrowinstance = utils.getContractByAddr(escrowAddr,provider,escrowpath); // get the escrow contract instance
 
 } else {
     console.log('Please select a blockchain network.');
     process.exit(1);
 }
-
-/**
- * contract json paths
- */
-var digitaltwinpath = './build/contracts/DigitalTwin.json';
-var escrowpath = './build/contracts/Escrow.json';
-var digitaltwininstance = utils.getContract(netId,provider,digitaltwinpath);
-var escrowinstance = utils.getContract(netId,provider,escrowpath);
 
 var app = express();
 app.use(express.json());
@@ -121,6 +129,7 @@ app.use(authorization);
 /**
  * apikey generation for visitors
  * no authorization required 
+ * Todo: check if user exists, if so offer option for changing apikey
  */
 app.post('/signup',
     validator.check("username").exists().withMessage("Input should contain field 'username'."),
