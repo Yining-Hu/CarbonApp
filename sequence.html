@@ -28,6 +28,14 @@
                 Escrow.sol-->>Seller: Pays the initial payment to seller.
                 Note over Escrow.sol: Temporarily holds the remaining payment.
                 end
+                rect rgb(255, 213, 128)
+                Note right of DigitalTwin.sol: DigiMarc Verification
+                Seller->>DigitalTwin.sol: DigiMarc verification of the packaging.
+                Buyer->>Escrow.sol: Access DigiMarc verification result, and update verification status.
+                Escrow.sol-->>DigitalTwin.sol: Retrieve DigiMarc verification result.
+                DigitalTwin.sol-->>Escrow.sol: 
+                Escrow.sol-->>Buyer: 
+                end
                 rect rgb(191, 223, 255)
                 Note right of DigitalTwin.sol: ML Verification
                 Seller->>DigitalTwin.sol: ML verification of the box of halal meat.
