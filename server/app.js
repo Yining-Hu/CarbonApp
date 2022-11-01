@@ -164,9 +164,8 @@ app.post('/signup',
                     numbers: true
                 });
     
-                var path = "/home/yih/Documents/dev/beston-dapps/server/usercredentials/"+username+".json";
                 var user = {'username':username,'apikey':apikey};
-                fs.writeFileSync(path,JSON.stringify(user));
+                fs.writeFileSync(userpath,JSON.stringify(user));
     
                 response.write(JSON.stringify({"apikey":apikey}));
                 response.end('\n');
