@@ -44,10 +44,13 @@ if (process.argv.length < 3) {
 
 var netId;
 var provider;
+var providerURL;
 
-var agent;
-var buyer;
-var seller;
+var agent, buyer, seller;
+var agentkey, buyerkey, sellerkey;
+
+var privkeyPath;
+var accPrivKeys;
 
 var digitaltwinAddr;
 var escrowAddr;
@@ -58,22 +61,30 @@ var digitaltwinpath = './build/contracts/DigitalTwin.json';
 var escrowpath = './build/contracts/Escrow.json';
 
 if (process.argv[2] && process.argv[2] === '-ganache') {
-    var netId = '5777';
-    var provider = 'http://127.0.0.1:7545';
-    var digitaltwininstance = utils.getContract(netId,provider,digitaltwinpath);
-    var escrowinstance = utils.getContract(netId,provider,escrowpath);
+    netId = '5777';
+    providerURL = 'http://127.0.0.1:7545';
+    privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/bcprivkeys/ganache/";
+    
+    agent = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).account;
+    buyer = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).account;
+    seller = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).account;
 
-    var agent = "0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C";
-    var buyer = "0x877aDf99A29e69C8f4Bb22E2aeA4C7eCefb5Cf2c";
-    var seller = "0x26eA7555392F9Cbc54c12D658B1A0a71CCBC2B9a";
+    digitaltwininstance = utils.getContract(netId,providerURL,digitaltwinpath);
+    escrowinstance = utils.getContract(netId,providerURL,escrowpath);
 
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
-    agent = "0x2FFC110EEdbbC076f2aDF37dE5798A1fe9E2e481";
-    buyer = "0x2FFC110EEdbbC076f2aDF37dE5798A1fe9E2e481";
-    seller = "0x32f34AF0c47f11895d7dcDb13b72f1b8AFE052F0";
+    privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/bcprivkeys/bestonchain/";
+
+    agent = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).account;
+    agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
+    buyer = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).account;
+    buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
+    seller = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).account;
+    sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
     
-    accPrivKeys = ["6c5a32ce12b866ba6d658010b90960d51ff6f9a7da1510783e872dbab11433d2","6c5a32ce12b866ba6d658010b90960d51ff6f9a7da1510783e872dbab11433d2","c796465b8a824db6ab1317cb5b238e5912a718670ac44e3fa13f71996310fa2d"];
-    provider = new HDWalletProvider(accPrivKeys, "http://125.63.52.142:8545");
+    accPrivKeys = [agentkey, buyerkey, sellerkey];
+    providerURL = "http://127.0.0.1:8545"
+    provider = new HDWalletProvider(accPrivKeys, providerURL);
 
     digitaltwinAddr = "0x6D2b8587974Dc040D5c8FDcC1aaD77196bDbC808";
     escrowAddr = "0xC43C49034Ac01f6182AB622B6671e568b7A0Bec8";
@@ -96,7 +107,7 @@ function authorization(request, response, next) {
     if (request.path == '/signup') return next();
         var username = request.get('user-name');
         var apikey = request.get('api-key'); // request needs to have the header "api-key"
-        var userpath = 'server/credentials/'+username+'.json';
+        var userpath = '/home/yih/Documents/dev/beston-dapps/server/usercredentials/'+username+'.json';
 
         // first check if user exists
         if (username == null) {
@@ -147,7 +158,7 @@ app.post('/signup',
                 numbers: true
             });
 
-            var path = "server/credentials/"+username+".json";
+            var path = "/home/yih/Documents/dev/beston-dapps/server/usercredentials/"+username+".json";
             var user = {'username':username,'apikey':apikey};
             fs.writeFileSync(path,JSON.stringify(user));
 
