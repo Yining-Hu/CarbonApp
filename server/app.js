@@ -140,7 +140,6 @@ app.use(authorization);
 /**
  * apikey generation for visitors
  * no authorization required 
- * Todo: check if user exists, if so offer option for changing apikey
  */
 app.post('/signup',
     validator.check("username").exists().withMessage("Input should contain field 'username'."),
@@ -153,17 +152,25 @@ app.post('/signup',
         } else {
             var username = request.body.username;
 
-            var apikey = generator.generate({
-                length: 30,
-                numbers: true
-            });
+            // check if username exists
+            var userpath = '/home/yih/Documents/dev/beston-dapps/server/usercredentials/'+username+'.json';
 
-            var path = "/home/yih/Documents/dev/beston-dapps/server/usercredentials/"+username+".json";
-            var user = {'username':username,'apikey':apikey};
-            fs.writeFileSync(path,JSON.stringify(user));
-
-            response.write(JSON.stringify({"apikey":apikey}));
-            response.end('\n');
+            if (fs.existsSync(userpath)) {
+                response.write(JSON.stringify({"server_response":"User already registered! Please contact system admin to retrieve apikey."}));
+                response.end('\n');
+            } else {
+                var apikey = generator.generate({
+                    length: 30,
+                    numbers: true
+                });
+    
+                var path = "/home/yih/Documents/dev/beston-dapps/server/usercredentials/"+username+".json";
+                var user = {'username':username,'apikey':apikey};
+                fs.writeFileSync(path,JSON.stringify(user));
+    
+                response.write(JSON.stringify({"apikey":apikey}));
+                response.end('\n');
+            }
         }
     })
 
