@@ -10,6 +10,4 @@ serverside/querytoken.js
 serverside/statuscheck.js
 serverside/updatetoken.js
 test/testshred.js
-server/credentials/
-server/bcprivkeys/
 server/otherutils.js

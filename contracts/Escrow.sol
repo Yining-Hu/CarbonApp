@@ -125,9 +125,18 @@ contract Escrow is Ownable { //Ownable,
         emit DepositTaken(_tkname, stock[_tkname].price);
     }
 
+    function VerifyPackaging(string memory _tkname) public view validProduct(_tkname) returns (bool) {
+        (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+        if (keccak256(abi.encodePacked(rstatus)) == keccak256(abi.encodePacked("packaging verified"))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function VerifyProduct(string memory _tkname) public view validProduct(_tkname) returns (bool) {
-        (uint256 id, string memory metadata, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
-        if (keccak256(abi.encodePacked(vstatus)) == keccak256(abi.encodePacked("verified"))) {
+        (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+        if (keccak256(abi.encodePacked(vstatus)) == keccak256(abi.encodePacked("product verified"))) {
             return true;
         } else {
             return false;
@@ -147,13 +156,14 @@ contract Escrow is Ownable { //Ownable,
     // }
 
     /**
-     * @notice Seller can redeem with verification
+     * @notice Seller can redeem with 2 verifications
      * Achieves the same payment result as BuyerApprove, but requires seller to pay for execution
      */
     function AgentApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
         // require (msg.sender == seller, "Only seller can call the redeem function.");
         require (msg.sender == agent, "Only agent can call the redeem function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
+        require (VerifyPackaging(_tkname, "Seller cannot redeem payment if packaging is unverified.");)
         require (VerifyProduct(_tkname), "Seller cannot redeem payment of unverified product.");
         require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
         seller.transfer(remaining_payment);
@@ -180,9 +190,10 @@ contract Escrow is Ownable { //Ownable,
         return (agent, buyer, seller);
     }
 
-    function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool) {
+    function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool, bool) {
+        bool rstatus = VerifyPackaging(_tkname);
         bool vstatus = VerifyProduct(_tkname);
-        return (stock[_tkname].price, stock[_tkname].state, vstatus);
+        return (stock[_tkname].price, stock[_tkname].state, rstatus, vstatus);
     }
 
     function GetBalance(address addr) public view returns(uint256) {

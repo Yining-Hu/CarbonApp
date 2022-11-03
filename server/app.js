@@ -113,11 +113,10 @@ function authorization(request, response, next) {
         if (username == null) {
             response.json({"server_response":"Please register and enter your username!"});
         } else if (fs.existsSync(userpath)) {
-            // load user.json
             json = fs.readFileSync(userpath);
             const credential = JSON.parse(json);
-            // get apikey
-            var target = credential.apikey;
+            const bcacc = credential.bcacc;
+            const target = credential.apikey;
         } else {
             response.json({"server_response":"Invalid username!"});
         }
@@ -130,6 +129,7 @@ function authorization(request, response, next) {
         } else if (!timingSafeEqual(Buffer.from(target, "utf8"), Buffer.from(apikey, "utf8"))) {
             response.json({"server_response":"User not authorized!"});
         } else {
+            request.body.bcacc = bcacc; // apend user's blockchain account to the request body
             next();
         }
 }
@@ -151,20 +151,21 @@ app.post('/signup',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var username = request.body.username;
+            var bcacc = request.body.bcacc;
 
-            // check if username exists
             var userpath = '/home/yih/Documents/dev/beston-dapps/server/usercredentials/'+username+'.json';
 
             if (fs.existsSync(userpath)) {
                 response.write(JSON.stringify({"server_response":"User already registered! Please contact system admin to retrieve apikey."}));
                 response.end('\n');
             } else {
+                // generate apikey
                 var apikey = generator.generate({
                     length: 30,
                     numbers: true
                 });
     
-                var user = {'username':username,'apikey':apikey};
+                var user = {'username':username, 'apikey':apikey, 'bcacc':bcacc};
                 fs.writeFileSync(userpath,JSON.stringify(user));
     
                 response.write(JSON.stringify({"apikey":apikey}));
@@ -198,7 +199,7 @@ app.post('/seller/mint',
             var datahash = keccak256(metadata).toString('hex');
 
             digitaltwininstance.then(value => {
-                value.methods.mint(tkid,datahash).send({from: seller, gas: gas})
+                value.methods.mint(tkid,datahash).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Minting new token: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -243,7 +244,7 @@ app.post('/seller/update',
             var datahash = keccak256(metadata).toString('hex');
     
             digitaltwininstance.then(value => {
-                value.methods.update(tkid,datahash).send({from: seller, gas: gas})
+                value.methods.update(tkid,datahash).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Updating token details: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -270,7 +271,52 @@ app.post('/seller/update',
         }
     });
 
-// seller uses this route to verify a product. status field of the request should be true or false
+/**
+ * agent uses the below 2 routes to verify a product and its packaging, after a token is offered as a product (ownership transferred to agent)
+ * status field of the request should be true or false
+ * Todo: to test following the event sequence
+ */
+app.post('/agent/recognize', 
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("status").exists().withMessage("Input should contain field 'status'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
+    validator.check("gas").isInt(),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var tkid = request.body.tkid;
+            var status = request.body.status;
+            var gas = request.body.gas;
+
+            digitaltwininstance.then(value => {
+                value.methods.recognize(tkid,status).send({from: request.body.bcacc, gas: gas})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Updating packing verification result: ${tkid}, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    var txnhash = Object.keys(error.data)[0];
+                    console.log(`Failed to verify packaging for token: ${tkid}, Txn hash: ${txnhash}`);
+                    console.log(error);
+
+                    if (error.message.includes("gas")) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else if (error.message.includes("Token does not exist.")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please enter an existing token name."}));
+                    } else {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
 app.post('/agent/verify', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("status").exists().withMessage("Input should contain field 'status'."),
@@ -287,7 +333,7 @@ app.post('/agent/verify',
             var gas = request.body.gas;
 
             digitaltwininstance.then(value => {
-                value.methods.verify(tkid,status).send({from: agent, gas: gas})
+                value.methods.verify(tkid,status).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Updating halal verification result: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -326,7 +372,7 @@ app.post('/seller/burn',
             var gas = request.body.gas;
 
             digitaltwininstance.then(value => {
-                value.methods.burn(tkid).send({from: seller, gas: gas})
+                value.methods.burn(tkid).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Burning token: ${tkid}, Txn hash: ${result.transactionHash}`);
@@ -364,10 +410,10 @@ app.get('/view/token',
             var tkid = request.query.tkid;
 
             digitaltwininstance.then(value => {
-                value.methods.queryToken(tkid).call({from:buyer})
+                value.methods.queryToken(tkid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"tokenid": tkid, "internal_id": result[0], "datahash": result[1], "verification_result":result[2], "owner":result[3]});
+                    response.json({"tokenid": tkid, "internal_id": result[0], "datahash": result[1], "recognition_result":result[2], "verification_result":result[3], "owner":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query token: ${tkid}`);
@@ -388,7 +434,7 @@ app.get('/view/token',
 app.get('/view/all',
     (request, response) => {
         digitaltwininstance.then(value => {
-            value.methods.queryAll().call({from:agent})
+            value.methods.queryAll().call({from: request.body.bcacc})
             .then((result) => {
                 console.log(result);
                 response.json({"tokenids": result});
@@ -410,7 +456,7 @@ app.get('/view/all',
 app.get('/view/tokens',
     (request, response) => {
         digitaltwininstance.then(value => {
-            value.methods.queryAllFields().call({from:agent})
+            value.methods.queryAllFields().call({from: request.body.bcacc})
             .then((result) => {
                 var tk = {};
                 var tkarray = [];
@@ -419,8 +465,9 @@ app.get('/view/tokens',
                     tk.tkid = result[0][i];
                     tk.internal_id = result[1][i];
                     tk.datahash = result[2][i];
-                    tk.verification_result = result[3][i];
-                    tk.owner = result[4][i];
+                    tk.recognition_result = result[3][i];
+                    tk.verification_result = result[4][i];
+                    tk.owner = result[5][i];
                     tkarray.push({...tk});
                 }
                 console.log(tkarray);
@@ -461,7 +508,7 @@ app.post('/seller/offerproduct',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.offer(productid,price).send({from: seller, gas: gas})
+                value.methods.offer(productid,price).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Listing new product: ${productid}, Txn hash: ${result.transactionHash}`);
@@ -505,7 +552,7 @@ app.post('/buyer/deposit',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.BuyerDeposit(productid).send({from: buyer, value: paymentvalue, gas: gas})
+                value.methods.BuyerDeposit(productid).send({from: request.body.bcacc, value: paymentvalue, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Buyer sending deposit for product: ${productid}, Txn hash: ${result.transactionHash}`);
@@ -546,7 +593,7 @@ app.post('/agent/pay/seller',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.AgentApprove(productid).send({from: agent, gas:gas})
+                value.methods.AgentApprove(productid).send({from: request.body.bcacc, gas:gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Transferring remaining payment of product: ${productid} to seller, Txn hash: ${result.transactionHash}`);
@@ -591,7 +638,7 @@ app.post('/agent/pay/buyer',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.AgentDeny(productid).send({from: agent, gas:gas})
+                value.methods.AgentDeny(productid).send({from: request.body.bcacc, gas:gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Transferring refund of product: ${productid} to buyer, Txn hash: ${result.transactionHash}`);
@@ -620,9 +667,7 @@ app.post('/agent/pay/buyer',
         }
     })
 
-// currently buyer uses this route to check the verification result of a product
-// Todo: to enable all participants to view
-app.get('/viewverification',
+app.get('/view/recognition',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
 
     (request, response) => {
@@ -633,7 +678,41 @@ app.get('/viewverification',
             var productid = request.query.productid;
 
             escrowinstance.then(value => {
-                value.methods.VerifyProduct(productid).call({from: buyer})
+                value.methods.VerifyPackaging(productid).call({from: request.body.bcacc})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Verifying product packaging: ${productid}`);
+                    response.write(JSON.stringify({"recognition_result": result}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    console.log(`Failed to verify product: ${productid}`);
+                    console.log(error);
+
+                    if (error.message.includes("Product does not exist.")) {
+                        response.write(JSON.stringify({"server_response":"Txn reverted. Please enter an existing product name."}));
+                    } else {
+                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    })
+
+// currently buyer uses this route to check the verification result of a product
+app.get('/view/verification',
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var productid = request.query.productid;
+
+            escrowinstance.then(value => {
+                value.methods.VerifyProduct(productid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
                     console.log(`Verifying product identity: ${productid}`);
@@ -655,7 +734,7 @@ app.get('/viewverification',
         }
     })
 
-app.get('/viewproduct', 
+app.get('/view/product', 
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
 
     (request, response) => {
@@ -666,10 +745,10 @@ app.get('/viewproduct',
             var productid = request.query.productid;
 
             escrowinstance.then(value => {
-                value.methods.QueryProduct(productid).call({from:buyer})
+                value.methods.QueryProduct(productid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"productid": productid, "price": result[0], "escrow_state": result[1], "verification_result":result[2]});
+                    response.json({"productid": productid, "price": result[0], "escrow_state": result[1], "recognition_result":result[2], "verification_result":result[3]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query product: ${productid}`);

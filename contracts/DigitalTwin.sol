@@ -8,18 +8,27 @@ contract DigitalTwin is ERC721 {
     address public admin;
 
     /**
-     * Allow consumers to access the product verification results through apis.
+     * Recognition: Packaging
+     * 
+     * Verification: Product
      */
+    enum Recognitionstatus {
+        PENDING,
+        VERIFIED,
+        DENIED
+    }
+
     enum Verificationstatus {
         PENDING,
-        PROCESSORVERIFIED,
-        PROCESSORDENIED
+        VERIFIED,
+        DENIED
     }
 
     struct TkDetails {
         uint256 id;
         string metadata;
-        Verificationstatus status;
+        Recognitionstatus rstatus;
+        Verificationstatus vstatus;
     }
 
     mapping(string => TkDetails) public tks; // mapping of tkname => ProductTk struct
@@ -44,7 +53,8 @@ contract DigitalTwin is ERC721 {
         
         tks[_tkname].id = id;
         tks[_tkname].metadata = _metadata;
-        tks[_tkname].status = Verificationstatus.PENDING;
+        tks[_tkname].rstatus = Recognitionstatus.PENDING;
+        tks[_tkname].vstatus = Verificationstatus.PENDING;
 
         tkExists[_tkname] = true;
     }
@@ -66,7 +76,28 @@ contract DigitalTwin is ERC721 {
     }
 
     /**
-     * verify is called by process upon optical verification of the product
+     * recognize is called by processor upon optical verification of the product
+     */
+    function recognize(string memory _tkname, bool _status) public {
+
+        require(tkExists[_tkname], "Token does not exist.");
+        require(
+            ownerOf(tks[_tkname].id) == address(msg.sender),
+            "Only the token owner can update verification status of the token."
+        );
+
+        if (_status == true) {
+            tks[_tkname].rstatus = Recognitionstatus.VERIFIED;
+        }
+        else {
+            tks[_tkname].rstatus = Recognitionstatus.DENIED;
+        }
+
+        emit TokenVerified(_tkname);
+    }
+
+    /**
+     * verify is called by processor upon optical verification of the product
      */
     function verify(string memory _tkname, bool _status) public {
 
@@ -77,10 +108,10 @@ contract DigitalTwin is ERC721 {
         );
 
         if (_status == true) {
-            tks[_tkname].status = Verificationstatus.PROCESSORVERIFIED;
+            tks[_tkname].vstatus = Verificationstatus.VERIFIED;
         }
         else {
-            tks[_tkname].status = Verificationstatus.PROCESSORDENIED;
+            tks[_tkname].vstatus = Verificationstatus.DENIED;
         }
 
         emit TokenVerified(_tkname);
@@ -100,7 +131,6 @@ contract DigitalTwin is ERC721 {
         tkExists[_tkname] = false; // change existence to false
         delete tks[_tkname]; // delete token from the mapping
 
-        /// @dev: there doesn't seem to be a straight forward way to get all keys in a mapping - to find out
         /// @notice: 1. find the index of an element
         /// @notice: 2. to remove an element - shift the elements after the index and remove the last
         while (keccak256(abi.encodePacked(alltks[i])) != keccak256(abi.encodePacked(_tkname))) {
@@ -128,21 +158,30 @@ contract DigitalTwin is ERC721 {
     function queryToken(string memory _tkname)
         public
         view
-        returns (uint256, string memory, string memory, address)
+        returns (uint256, string memory, string memory, string memory, address)
     {
         require(tkExists[_tkname], "Token does not exist.");
         
-        string memory status;
+        string memory rstatus;
+        string memory vstatus;
 
-        if (tks[_tkname].status == Verificationstatus.PENDING) {
-            status = "pending verification";
-        } else if (tks[_tkname].status == Verificationstatus.PROCESSORVERIFIED) {
-            status = "verified";
+        if (tks[_tkname].rstatus == Recognitionstatus.PENDING) {
+            rstatus = "pending packaging verification";
+        } else if (tks[_tkname].rstatus == Recognitionstatus.VERIFIED) {
+            rstatus = "packaging verified";
         } else {
-            status = "denied";
+            rstatus = "packaging denied";
         }
 
-        return (tks[_tkname].id, tks[_tkname].metadata, status, ownerOf(tks[_tkname].id));
+        if (tks[_tkname].vstatus == Verificationstatus.PENDING) {
+            vstatus = "pending product verification";
+        } else if (tks[_tkname].vstatus == Verificationstatus.VERIFIED) {
+            vstatus = "product verified";
+        } else {
+            vstatus = "product denied";
+        }
+
+        return (tks[_tkname].id, tks[_tkname].metadata, rstatus, vstatus, ownerOf(tks[_tkname].id));
     }
 
     /**
@@ -179,13 +218,20 @@ contract DigitalTwin is ERC721 {
             internal_id[i] = tks[alltks[i]].id;
             metadata[i] = tks[alltks[i]].metadata;
 
-            // parse the status field
-            if (tks[alltks[i]].status == Verificationstatus.PENDING) {
-                status[i] = "pending verification";
-            } else if (tks[alltks[i]].status == Verificationstatus.PROCESSORVERIFIED) {
-                status[i] = "verified";
+            if (tks[alltks[i]].rstatus == Recognitionstatus.PENDING) {
+                status[i] = "pending packaging verification";
+            } else if (tks[alltks[i]].rstatus == Recognitionstatus.VERIFIED) {
+                status[i] = "packaging verified";
             } else {
-                status[i] = "denied";
+                status[i] = "packaging denied";
+            }
+
+            if (tks[alltks[i]].vstatus == Verificationstatus.PENDING) {
+                status[i] = "pending product verification";
+            } else if (tks[alltks[i]].vstatus == Verificationstatus.VERIFIED) {
+                status[i] = "product verified";
+            } else {
+                status[i] = "product denied";
             }
 
             owner[i] = ownerOf(tks[alltks[i]].id);
