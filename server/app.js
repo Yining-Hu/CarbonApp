@@ -1,17 +1,65 @@
 const utils = require('./utils.js');
-var fs = require('fs'); 
+const fs = require('fs'); 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
 const keccak256 = require('keccak256')
 const validator = require('express-validator');
-const { timingSafeEqual } = require('crypto');
-const generator = require('generate-password');
+const signup = require('./signup.js');
+const middlewares = require('./middlewares.js');
+
+var app = express();
+app.use(express.json());
 
 /**
  * command-line argument handling
  */
 if (process.argv.length < 3) {
     console.error('Expected arguments for the selected blockchain network!');
+    process.exit(1);
+}
+
+var netId, provider, providerURL;
+
+var privkeyPath;
+var accPrivKeys;
+
+var digitaltwinAddr;
+var escrowAddr;
+var digitaltwininstance;
+var escrowinstance;
+
+var digitaltwinpath = './build/contracts/DigitalTwin.json';
+var escrowpath = './build/contracts/Escrow.json';
+
+if (process.argv[2] && process.argv[2] === '-ganache') {
+    netId = '5777';
+    providerURL = 'http://127.0.0.1:7545';
+    privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/bcprivkeys/ganache/";
+
+    digitaltwininstance = utils.getContract(netId,providerURL,digitaltwinpath);
+    escrowinstance = utils.getContract(netId,providerURL,escrowpath);
+
+} else if (process.argv[2] && process.argv[2] === '-bestonchain') {
+    privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/bcprivkeys/bestonchain/";
+
+    var agent = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).account;
+    var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
+    var buyer = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).account;
+    var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
+    var seller = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).account;
+    var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
+    
+    accPrivKeys = [agentkey, buyerkey, sellerkey];
+    providerURL = "http://127.0.0.1:8545"
+    provider = new HDWalletProvider(accPrivKeys, providerURL);
+
+    digitaltwinAddr = "0x6D2b8587974Dc040D5c8FDcC1aaD77196bDbC808";
+    escrowAddr = "0xC43C49034Ac01f6182AB622B6671e568b7A0Bec8";
+    digitaltwininstance = utils.getContractByAddr(digitaltwinAddr,provider,digitaltwinpath); // get the digitaltwin contract instance
+    escrowinstance = utils.getContractByAddr(escrowAddr,provider,escrowpath); // get the escrow contract instance
+
+} else {
+    console.log('Please select a blockchain network.');
     process.exit(1);
 }
 
@@ -42,137 +90,9 @@ if (process.argv.length < 3) {
  * Warning: should avoid using bestonchain on laptop as it wastes disk space
  */
 
-var netId;
-var provider;
-var providerURL;
+app.use(middlewares.authorization);
 
-var agent, buyer, seller;
-var agentkey, buyerkey, sellerkey;
-
-var privkeyPath;
-var accPrivKeys;
-
-var digitaltwinAddr;
-var escrowAddr;
-var digitaltwininstance;
-var escrowinstance;
-
-var digitaltwinpath = './build/contracts/DigitalTwin.json';
-var escrowpath = './build/contracts/Escrow.json';
-
-if (process.argv[2] && process.argv[2] === '-ganache') {
-    netId = '5777';
-    providerURL = 'http://127.0.0.1:7545';
-    privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/bcprivkeys/ganache/";
-    
-    agent = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).account;
-    buyer = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).account;
-    seller = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).account;
-
-    digitaltwininstance = utils.getContract(netId,providerURL,digitaltwinpath);
-    escrowinstance = utils.getContract(netId,providerURL,escrowpath);
-
-} else if (process.argv[2] && process.argv[2] === '-bestonchain') {
-    privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/bcprivkeys/bestonchain/";
-
-    agent = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).account;
-    agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-    buyer = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).account;
-    buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-    seller = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).account;
-    sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
-    
-    accPrivKeys = [agentkey, buyerkey, sellerkey];
-    providerURL = "http://127.0.0.1:8545"
-    provider = new HDWalletProvider(accPrivKeys, providerURL);
-
-    digitaltwinAddr = "0x6D2b8587974Dc040D5c8FDcC1aaD77196bDbC808";
-    escrowAddr = "0xC43C49034Ac01f6182AB622B6671e568b7A0Bec8";
-    digitaltwininstance = utils.getContractByAddr(digitaltwinAddr,provider,digitaltwinpath); // get the digitaltwin contract instance
-    escrowinstance = utils.getContractByAddr(escrowAddr,provider,escrowpath); // get the escrow contract instance
-
-} else {
-    console.log('Please select a blockchain network.');
-    process.exit(1);
-}
-
-var app = express();
-app.use(express.json());
-
-/**
- * authorization middleware
- * Todo: change input validation to validator based
- */ 
-function authorization(request, response, next) {
-    if (request.path == '/signup') return next();
-        var username = request.get('user-name');
-        var apikey = request.get('api-key'); // request needs to have the header "api-key"
-        var userpath = '/home/yih/Documents/dev/beston-dapps/server/usercredentials/'+username+'.json';
-
-        // first check if user exists
-        if (username == null) {
-            response.json({"server_response":"Please register and enter your username!"});
-        } else if (fs.existsSync(userpath)) {
-            json = fs.readFileSync(userpath);
-            const credential = JSON.parse(json);
-            const bcacc = credential.bcacc;
-            const target = credential.apikey;
-        } else {
-            response.json({"server_response":"Invalid username!"});
-        }
-
-        // then check if the apikey is correct
-        if (apikey == null) {
-            response.json({"server_response":"Please enter your ApiKey!"});
-        } else if (target.length != apikey.length) {
-            response.json({"server_response":"User not authorized!"});
-        } else if (!timingSafeEqual(Buffer.from(target, "utf8"), Buffer.from(apikey, "utf8"))) {
-            response.json({"server_response":"User not authorized!"});
-        } else {
-            request.body.bcacc = bcacc; // apend user's blockchain account to the request body
-            next();
-        }
-}
-
-// use authorization middleware
-app.use(authorization);
-
-/**
- * apikey generation for visitors
- * no authorization required 
- */
-app.post('/signup',
-    validator.check("username").exists().withMessage("Input should contain field 'username'."),
-
-    (request, response) => {
-
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var username = request.body.username;
-            var bcacc = request.body.bcacc;
-
-            var userpath = '/home/yih/Documents/dev/beston-dapps/server/usercredentials/'+username+'.json';
-
-            if (fs.existsSync(userpath)) {
-                response.write(JSON.stringify({"server_response":"User already registered! Please contact system admin to retrieve apikey."}));
-                response.end('\n');
-            } else {
-                // generate apikey
-                var apikey = generator.generate({
-                    length: 30,
-                    numbers: true
-                });
-    
-                var user = {'username':username, 'apikey':apikey, 'bcacc':bcacc};
-                fs.writeFileSync(userpath,JSON.stringify(user));
-    
-                response.write(JSON.stringify({"apikey":apikey}));
-                response.end('\n');
-            }
-        }
-    })
+app.use('/signup', signup);
 
 /*
  * routes for interacting with DigitalTwin.sol

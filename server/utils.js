@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-const getWeb3 = async (provider) => {
-    var Web3 = require('web3');
+const getWeb3 = (provider) => {
+    const Web3 = require('web3');
     var web3 = new Web3(provider); // privnet
 
     return web3;
