@@ -7,17 +7,6 @@ const validator = require('express-validator');
 const signup = require('./signup.js');
 const middlewares = require('./middlewares.js');
 
-var app = express();
-app.use(express.json());
-
-/**
- * command-line argument handling
- */
-if (process.argv.length < 3) {
-    console.error('Expected arguments for the selected blockchain network!');
-    process.exit(1);
-}
-
 var netId, provider, providerURL;
 
 var privkeyPath;
@@ -31,6 +20,14 @@ var escrowinstance;
 var digitaltwinpath = './build/contracts/DigitalTwin.json';
 var escrowpath = './build/contracts/Escrow.json';
 
+/**
+ * command-line argument handling
+ */
+ if (process.argv.length < 3) {
+    console.error('Expected arguments for the selected blockchain network!');
+    process.exit(1);
+}
+
 if (process.argv[2] && process.argv[2] === '-ganache') {
     netId = '5777';
     providerURL = 'http://127.0.0.1:7545';
@@ -42,11 +39,12 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
     privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/bcprivkeys/bestonchain/";
 
-    var agent = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).account;
+    // var agent = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).account;
+    // var buyer = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).account;
+    // var seller = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).account;
+    
     var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-    var buyer = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).account;
     var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-    var seller = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).account;
     var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
     
     accPrivKeys = [agentkey, buyerkey, sellerkey];
@@ -89,6 +87,9 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
  * 
  * Warning: should avoid using bestonchain on laptop as it wastes disk space
  */
+
+var app = express();
+app.use(express.json());
 
 app.use(middlewares.authorization);
 

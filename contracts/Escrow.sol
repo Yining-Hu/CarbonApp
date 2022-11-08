@@ -163,7 +163,7 @@ contract Escrow is Ownable { //Ownable,
         // require (msg.sender == seller, "Only seller can call the redeem function.");
         require (msg.sender == agent, "Only agent can call the redeem function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
-        require (VerifyPackaging(_tkname, "Seller cannot redeem payment if packaging is unverified.");)
+        require (VerifyPackaging(_tkname), "Seller cannot redeem payment if packaging is unverified.");
         require (VerifyProduct(_tkname), "Seller cannot redeem payment of unverified product.");
         require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
         seller.transfer(remaining_payment);
