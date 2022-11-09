@@ -206,12 +206,14 @@ contract DigitalTwin is ERC721 {
         uint256[] memory, 
         string[] memory, 
         string[] memory, 
+        string[] memory,
         address[] memory
     ) 
     {
         uint256[] memory internal_id = new uint256[](alltks.length);
         string[] memory metadata = new string[](alltks.length);
-        string[] memory status = new string[](alltks.length);
+        string[] memory rstatus = new string[](alltks.length);
+        string[] memory vstatus = new string[](alltks.length);
         address[] memory owner = new address[](alltks.length);
 
         for(uint i=0; i<alltks.length; i++){
@@ -219,24 +221,24 @@ contract DigitalTwin is ERC721 {
             metadata[i] = tks[alltks[i]].metadata;
 
             if (tks[alltks[i]].rstatus == Recognitionstatus.PENDING) {
-                status[i] = "pending packaging verification";
+                rstatus[i] = "pending packaging verification";
             } else if (tks[alltks[i]].rstatus == Recognitionstatus.VERIFIED) {
-                status[i] = "packaging verified";
+                rstatus[i] = "packaging verified";
             } else {
-                status[i] = "packaging denied";
+                rstatus[i] = "packaging denied";
             }
 
             if (tks[alltks[i]].vstatus == Verificationstatus.PENDING) {
-                status[i] = "pending product verification";
+                vstatus[i] = "pending product verification";
             } else if (tks[alltks[i]].vstatus == Verificationstatus.VERIFIED) {
-                status[i] = "product verified";
+                vstatus[i] = "product verified";
             } else {
-                status[i] = "product denied";
+                vstatus[i] = "product denied";
             }
 
             owner[i] = ownerOf(tks[alltks[i]].id);
         }
 
-        return (alltks, internal_id, metadata, status, owner);
+        return (alltks, internal_id, metadata, rstatus, vstatus, owner);
     }
 }
