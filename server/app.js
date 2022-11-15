@@ -11,17 +11,17 @@ if (process.argv.length < 3) {
 }
 
 if (process.argv[2] && process.argv[2] === '-ganache') {
-    escrowroute = require('./routers/ganache/escrowrouter.js');
-    digitaltwinroute = require('./routers/ganache/digitaltwinrouter.js');
-    generalroute = require('./routers/ganache/general.js');
-    signup = require('./routers/ganache/signup.js');
-    middlewares = require('./routers/ganache/middlewares.js');
+    escrowroute = require('./routes/ganache/escrowrouter.js');
+    digitaltwinroute = require('./routes/ganache/digitaltwinrouter.js');
+    generalroute = require('./routes/ganache/general.js');
+    signup = require('./routes/ganache/signup.js');
+    middlewares = require('./routes/ganache/middlewares.js');
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
-    escrowroute = require('./routers/bestonchain/escrowrouter.js');
-    digitaltwinroute = require('./routers/bestonchain/digitaltwinrouter.js');
-    generalroute = require('./routers/bestonchain/general.js');
-    signup = require('./routers/bestonchain/signup.js');
-    middlewares = require('./routers/bestonchain/middlewares.js');
+    escrowroute = require('./routes/bestonchain/escrowrouter.js');
+    digitaltwinroute = require('./routes/bestonchain/digitaltwinrouter.js');
+    generalroute = require('./routes/bestonchain/general.js');
+    signup = require('./routes/bestonchain/signup.js');
+    middlewares = require('./routes/bestonchain/middlewares.js');
 } else {
     console.log('Please select a blockchain network.');
     process.exit(1);
