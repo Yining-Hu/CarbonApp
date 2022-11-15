@@ -249,7 +249,7 @@ router.get('/view/products',
 router.get('/balance', (request, response) => {
     var username = request.get('user-name');
     var user = JSON.parse(fs.readFileSync(privkeyPath+username+'.json'));
-    var bcacc = user.account;
+    var bcacc = user.bcacc;
 
     escrowinstance.then(value => {
         value.methods.GetBalance(bcacc).call({from: request.body.bcacc})
