@@ -2370,7 +2370,7 @@
                 }
               ]
             },
-            "name": "abi_encode_t_struct$_AnimalGroup_$1994_memory_ptr_to_t_struct$_AnimalGroup_$1994_memory_ptr_fromStack",
+            "name": "abi_encode_t_struct$_AnimalGroup_$2026_memory_ptr_to_t_struct$_AnimalGroup_$2026_memory_ptr_fromStack",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -2917,7 +2917,7 @@
                       }
                     ],
                     "functionName": {
-                      "name": "abi_encode_t_struct$_AnimalGroup_$1994_memory_ptr_to_t_struct$_AnimalGroup_$1994_memory_ptr_fromStack",
+                      "name": "abi_encode_t_struct$_AnimalGroup_$2026_memory_ptr_to_t_struct$_AnimalGroup_$2026_memory_ptr_fromStack",
                       "nodeType": "YulIdentifier",
                       "src": "5553:101:20"
                     },
@@ -2929,7 +2929,7 @@
                 }
               ]
             },
-            "name": "abi_encode_tuple_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$1994_memory_ptr__to_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$1994_memory_ptr__fromStack_reversed",
+            "name": "abi_encode_tuple_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$2026_memory_ptr__to_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$2026_memory_ptr__fromStack_reversed",
             "nodeType": "YulFunctionDefinition",
             "parameters": [
               {
@@ -5869,7 +5869,7 @@
           }
         ]
       },
-      "contents": "{\n\n    function abi_decode_available_length_t_string_memory_ptr(src, length, end) -> array {\n        array := allocate_memory(array_allocation_size_t_string_memory_ptr(length))\n        mstore(array, length)\n        let dst := add(array, 0x20)\n        if gt(add(src, length), end) { revert_error_987264b3b1d58a9c7f8255e93e81c77d86d6299019c33110a076957a3e06e2ae() }\n        copy_calldata_to_memory(src, dst, length)\n    }\n\n    // string\n    function abi_decode_t_string_memory_ptr(offset, end) -> array {\n        if iszero(slt(add(offset, 0x1f), end)) { revert_error_1b9f4a0a5773e33b91aa01db23bf8c55fce1411167c872835e7fa00a4f17d46d() }\n        let length := calldataload(offset)\n        array := abi_decode_available_length_t_string_memory_ptr(add(offset, 0x20), length, end)\n    }\n\n    function abi_decode_t_uint256(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_t_uint56(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_uint56(value)\n    }\n\n    function abi_decode_tuple_t_string_memory_ptrt_string_memory_ptrt_uint256t_uint56t_uint256t_uint256(headStart, dataEnd) -> value0, value1, value2, value3, value4, value5 {\n        if slt(sub(dataEnd, headStart), 192) { revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() }\n\n        {\n\n            let offset := calldataload(add(headStart, 0))\n            if gt(offset, 0xffffffffffffffff) { revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() }\n\n            value0 := abi_decode_t_string_memory_ptr(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := calldataload(add(headStart, 32))\n            if gt(offset, 0xffffffffffffffff) { revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() }\n\n            value1 := abi_decode_t_string_memory_ptr(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 64\n\n            value2 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 96\n\n            value3 := abi_decode_t_uint56(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 128\n\n            value4 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 160\n\n            value5 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint256(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_address_to_t_address_fromStack(value, pos) {\n        mstore(pos, cleanup_t_address(value))\n    }\n\n    function abi_encode_t_bool_to_t_bool_fromStack(value, pos) {\n        mstore(pos, cleanup_t_bool(value))\n    }\n\n    function abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value, pos) -> end {\n        let length := array_length_t_string_memory_ptr(value)\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, length)\n        copy_memory_to_memory(add(value, 0x20), pos, length)\n        end := add(pos, round_up_to_mul_of_32(length))\n    }\n\n    // struct HerdRegistry.AnimalGroup -> struct HerdRegistry.AnimalGroup\n    function abi_encode_t_struct$_AnimalGroup_$1994_memory_ptr_to_t_struct$_AnimalGroup_$1994_memory_ptr_fromStack(value, pos)  {\n        let tail := add(pos, 0x80)\n\n        {\n            // mature\n\n            let memberValue0 := mload(add(value, 0x00))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x00))\n        }\n\n        {\n            // heifer\n\n            let memberValue0 := mload(add(value, 0x20))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x20))\n        }\n\n        {\n            // dry\n\n            let memberValue0 := mload(add(value, 0x40))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x40))\n        }\n\n        {\n            // fresh\n\n            let memberValue0 := mload(add(value, 0x60))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x60))\n        }\n\n    }\n\n    function abi_encode_t_uint256_to_t_uint256(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_t_uint256_to_t_uint256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_tuple_t_bool__to_t_bool__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_bool_to_t_bool_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$1994_memory_ptr__to_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$1994_memory_ptr__fromStack_reversed(headStart , value3, value2, value1, value0) -> tail {\n        tail := add(headStart, 224)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value0,  tail)\n\n        abi_encode_t_address_to_t_address_fromStack(value1,  add(headStart, 32))\n\n        mstore(add(headStart, 64), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value2,  tail)\n\n        abi_encode_t_struct$_AnimalGroup_$1994_memory_ptr_to_t_struct$_AnimalGroup_$1994_memory_ptr_fromStack(value3,  add(headStart, 96))\n\n    }\n\n    function abi_encode_tuple_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint256_t_uint256_t_uint256__to_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint256_t_uint256_t_uint256__fromStack_reversed(headStart , value5, value4, value3, value2, value1, value0) -> tail {\n        tail := add(headStart, 192)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value0,  tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value1,  tail)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value2,  add(headStart, 64))\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value3,  add(headStart, 96))\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value4,  add(headStart, 128))\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value5,  add(headStart, 160))\n\n    }\n\n    function abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function allocate_memory(size) -> memPtr {\n        memPtr := allocate_unbounded()\n        finalize_allocation(memPtr, size)\n    }\n\n    function allocate_unbounded() -> memPtr {\n        memPtr := mload(64)\n    }\n\n    function array_allocation_size_t_string_memory_ptr(length) -> size {\n        // Make sure we can allocate memory without overflow\n        if gt(length, 0xffffffffffffffff) { panic_error_0x41() }\n\n        size := round_up_to_mul_of_32(length)\n\n        // add length slot\n        size := add(size, 0x20)\n\n    }\n\n    function array_length_t_string_memory_ptr(value) -> length {\n\n        length := mload(value)\n\n    }\n\n    function array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, length) -> updated_pos {\n        mstore(pos, length)\n        updated_pos := add(pos, 0x20)\n    }\n\n    function cleanup_t_address(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function cleanup_t_bool(value) -> cleaned {\n        cleaned := iszero(iszero(value))\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint56(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffff)\n    }\n\n    function copy_calldata_to_memory(src, dst, length) {\n        calldatacopy(dst, src, length)\n        // clear end\n        mstore(add(dst, length), 0)\n    }\n\n    function copy_memory_to_memory(src, dst, length) {\n        let i := 0\n        for { } lt(i, length) { i := add(i, 32) }\n        {\n            mstore(add(dst, i), mload(add(src, i)))\n        }\n        if gt(i, length)\n        {\n            // clear end\n            mstore(add(dst, length), 0)\n        }\n    }\n\n    function extract_byte_array_length(data) -> length {\n        length := div(data, 2)\n        let outOfPlaceEncoding := and(data, 1)\n        if iszero(outOfPlaceEncoding) {\n            length := and(length, 0x7f)\n        }\n\n        if eq(outOfPlaceEncoding, lt(length, 32)) {\n            panic_error_0x22()\n        }\n    }\n\n    function finalize_allocation(memPtr, size) {\n        let newFreePtr := add(memPtr, round_up_to_mul_of_32(size))\n        // protect against overflow\n        if or(gt(newFreePtr, 0xffffffffffffffff), lt(newFreePtr, memPtr)) { panic_error_0x41() }\n        mstore(64, newFreePtr)\n    }\n\n    function increment_t_uint256(value) -> ret {\n        value := cleanup_t_uint256(value)\n        if eq(value, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff) { panic_error_0x11() }\n        ret := add(value, 1)\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x22() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x22)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x41() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x41)\n        revert(0, 0x24)\n    }\n\n    function revert_error_1b9f4a0a5773e33b91aa01db23bf8c55fce1411167c872835e7fa00a4f17d46d() {\n        revert(0, 0)\n    }\n\n    function revert_error_987264b3b1d58a9c7f8255e93e81c77d86d6299019c33110a076957a3e06e2ae() {\n        revert(0, 0)\n    }\n\n    function revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() {\n        revert(0, 0)\n    }\n\n    function revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() {\n        revert(0, 0)\n    }\n\n    function round_up_to_mul_of_32(value) -> result {\n        result := and(add(value, 31), not(31))\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint56(value) {\n        if iszero(eq(value, cleanup_t_uint56(value))) { revert(0, 0) }\n    }\n\n}\n",
+      "contents": "{\n\n    function abi_decode_available_length_t_string_memory_ptr(src, length, end) -> array {\n        array := allocate_memory(array_allocation_size_t_string_memory_ptr(length))\n        mstore(array, length)\n        let dst := add(array, 0x20)\n        if gt(add(src, length), end) { revert_error_987264b3b1d58a9c7f8255e93e81c77d86d6299019c33110a076957a3e06e2ae() }\n        copy_calldata_to_memory(src, dst, length)\n    }\n\n    // string\n    function abi_decode_t_string_memory_ptr(offset, end) -> array {\n        if iszero(slt(add(offset, 0x1f), end)) { revert_error_1b9f4a0a5773e33b91aa01db23bf8c55fce1411167c872835e7fa00a4f17d46d() }\n        let length := calldataload(offset)\n        array := abi_decode_available_length_t_string_memory_ptr(add(offset, 0x20), length, end)\n    }\n\n    function abi_decode_t_uint256(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_uint256(value)\n    }\n\n    function abi_decode_t_uint56(offset, end) -> value {\n        value := calldataload(offset)\n        validator_revert_t_uint56(value)\n    }\n\n    function abi_decode_tuple_t_string_memory_ptrt_string_memory_ptrt_uint256t_uint56t_uint256t_uint256(headStart, dataEnd) -> value0, value1, value2, value3, value4, value5 {\n        if slt(sub(dataEnd, headStart), 192) { revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() }\n\n        {\n\n            let offset := calldataload(add(headStart, 0))\n            if gt(offset, 0xffffffffffffffff) { revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() }\n\n            value0 := abi_decode_t_string_memory_ptr(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := calldataload(add(headStart, 32))\n            if gt(offset, 0xffffffffffffffff) { revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() }\n\n            value1 := abi_decode_t_string_memory_ptr(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 64\n\n            value2 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 96\n\n            value3 := abi_decode_t_uint56(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 128\n\n            value4 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n        {\n\n            let offset := 160\n\n            value5 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_decode_tuple_t_uint256(headStart, dataEnd) -> value0 {\n        if slt(sub(dataEnd, headStart), 32) { revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() }\n\n        {\n\n            let offset := 0\n\n            value0 := abi_decode_t_uint256(add(headStart, offset), dataEnd)\n        }\n\n    }\n\n    function abi_encode_t_address_to_t_address_fromStack(value, pos) {\n        mstore(pos, cleanup_t_address(value))\n    }\n\n    function abi_encode_t_bool_to_t_bool_fromStack(value, pos) {\n        mstore(pos, cleanup_t_bool(value))\n    }\n\n    function abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value, pos) -> end {\n        let length := array_length_t_string_memory_ptr(value)\n        pos := array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, length)\n        copy_memory_to_memory(add(value, 0x20), pos, length)\n        end := add(pos, round_up_to_mul_of_32(length))\n    }\n\n    // struct HerdRegistry.AnimalGroup -> struct HerdRegistry.AnimalGroup\n    function abi_encode_t_struct$_AnimalGroup_$2026_memory_ptr_to_t_struct$_AnimalGroup_$2026_memory_ptr_fromStack(value, pos)  {\n        let tail := add(pos, 0x80)\n\n        {\n            // mature\n\n            let memberValue0 := mload(add(value, 0x00))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x00))\n        }\n\n        {\n            // heifer\n\n            let memberValue0 := mload(add(value, 0x20))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x20))\n        }\n\n        {\n            // dry\n\n            let memberValue0 := mload(add(value, 0x40))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x40))\n        }\n\n        {\n            // fresh\n\n            let memberValue0 := mload(add(value, 0x60))\n            abi_encode_t_uint256_to_t_uint256(memberValue0, add(pos, 0x60))\n        }\n\n    }\n\n    function abi_encode_t_uint256_to_t_uint256(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_t_uint256_to_t_uint256_fromStack(value, pos) {\n        mstore(pos, cleanup_t_uint256(value))\n    }\n\n    function abi_encode_tuple_t_bool__to_t_bool__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_bool_to_t_bool_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function abi_encode_tuple_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$2026_memory_ptr__to_t_string_memory_ptr_t_address_t_string_memory_ptr_t_struct$_AnimalGroup_$2026_memory_ptr__fromStack_reversed(headStart , value3, value2, value1, value0) -> tail {\n        tail := add(headStart, 224)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value0,  tail)\n\n        abi_encode_t_address_to_t_address_fromStack(value1,  add(headStart, 32))\n\n        mstore(add(headStart, 64), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value2,  tail)\n\n        abi_encode_t_struct$_AnimalGroup_$2026_memory_ptr_to_t_struct$_AnimalGroup_$2026_memory_ptr_fromStack(value3,  add(headStart, 96))\n\n    }\n\n    function abi_encode_tuple_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint256_t_uint256_t_uint256__to_t_string_memory_ptr_t_string_memory_ptr_t_uint256_t_uint256_t_uint256_t_uint256__fromStack_reversed(headStart , value5, value4, value3, value2, value1, value0) -> tail {\n        tail := add(headStart, 192)\n\n        mstore(add(headStart, 0), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value0,  tail)\n\n        mstore(add(headStart, 32), sub(tail, headStart))\n        tail := abi_encode_t_string_memory_ptr_to_t_string_memory_ptr_fromStack(value1,  tail)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value2,  add(headStart, 64))\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value3,  add(headStart, 96))\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value4,  add(headStart, 128))\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value5,  add(headStart, 160))\n\n    }\n\n    function abi_encode_tuple_t_uint256__to_t_uint256__fromStack_reversed(headStart , value0) -> tail {\n        tail := add(headStart, 32)\n\n        abi_encode_t_uint256_to_t_uint256_fromStack(value0,  add(headStart, 0))\n\n    }\n\n    function allocate_memory(size) -> memPtr {\n        memPtr := allocate_unbounded()\n        finalize_allocation(memPtr, size)\n    }\n\n    function allocate_unbounded() -> memPtr {\n        memPtr := mload(64)\n    }\n\n    function array_allocation_size_t_string_memory_ptr(length) -> size {\n        // Make sure we can allocate memory without overflow\n        if gt(length, 0xffffffffffffffff) { panic_error_0x41() }\n\n        size := round_up_to_mul_of_32(length)\n\n        // add length slot\n        size := add(size, 0x20)\n\n    }\n\n    function array_length_t_string_memory_ptr(value) -> length {\n\n        length := mload(value)\n\n    }\n\n    function array_storeLengthForEncoding_t_string_memory_ptr_fromStack(pos, length) -> updated_pos {\n        mstore(pos, length)\n        updated_pos := add(pos, 0x20)\n    }\n\n    function cleanup_t_address(value) -> cleaned {\n        cleaned := cleanup_t_uint160(value)\n    }\n\n    function cleanup_t_bool(value) -> cleaned {\n        cleaned := iszero(iszero(value))\n    }\n\n    function cleanup_t_uint160(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffffffffffffffffffffffffffffff)\n    }\n\n    function cleanup_t_uint256(value) -> cleaned {\n        cleaned := value\n    }\n\n    function cleanup_t_uint56(value) -> cleaned {\n        cleaned := and(value, 0xffffffffffffff)\n    }\n\n    function copy_calldata_to_memory(src, dst, length) {\n        calldatacopy(dst, src, length)\n        // clear end\n        mstore(add(dst, length), 0)\n    }\n\n    function copy_memory_to_memory(src, dst, length) {\n        let i := 0\n        for { } lt(i, length) { i := add(i, 32) }\n        {\n            mstore(add(dst, i), mload(add(src, i)))\n        }\n        if gt(i, length)\n        {\n            // clear end\n            mstore(add(dst, length), 0)\n        }\n    }\n\n    function extract_byte_array_length(data) -> length {\n        length := div(data, 2)\n        let outOfPlaceEncoding := and(data, 1)\n        if iszero(outOfPlaceEncoding) {\n            length := and(length, 0x7f)\n        }\n\n        if eq(outOfPlaceEncoding, lt(length, 32)) {\n            panic_error_0x22()\n        }\n    }\n\n    function finalize_allocation(memPtr, size) {\n        let newFreePtr := add(memPtr, round_up_to_mul_of_32(size))\n        // protect against overflow\n        if or(gt(newFreePtr, 0xffffffffffffffff), lt(newFreePtr, memPtr)) { panic_error_0x41() }\n        mstore(64, newFreePtr)\n    }\n\n    function increment_t_uint256(value) -> ret {\n        value := cleanup_t_uint256(value)\n        if eq(value, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff) { panic_error_0x11() }\n        ret := add(value, 1)\n    }\n\n    function panic_error_0x11() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x11)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x22() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x22)\n        revert(0, 0x24)\n    }\n\n    function panic_error_0x41() {\n        mstore(0, 35408467139433450592217433187231851964531694900788300625387963629091585785856)\n        mstore(4, 0x41)\n        revert(0, 0x24)\n    }\n\n    function revert_error_1b9f4a0a5773e33b91aa01db23bf8c55fce1411167c872835e7fa00a4f17d46d() {\n        revert(0, 0)\n    }\n\n    function revert_error_987264b3b1d58a9c7f8255e93e81c77d86d6299019c33110a076957a3e06e2ae() {\n        revert(0, 0)\n    }\n\n    function revert_error_c1322bf8034eace5e0b5c7295db60986aa89aae5e0ea0873e4689e076861a5db() {\n        revert(0, 0)\n    }\n\n    function revert_error_dbdddcbe895c83990c08b3492a0e83918d802a52331272ac6fdb6a7c4aea3b1b() {\n        revert(0, 0)\n    }\n\n    function round_up_to_mul_of_32(value) -> result {\n        result := and(add(value, 31), not(31))\n    }\n\n    function validator_revert_t_uint256(value) {\n        if iszero(eq(value, cleanup_t_uint256(value))) { revert(0, 0) }\n    }\n\n    function validator_revert_t_uint56(value) {\n        if iszero(eq(value, cleanup_t_uint56(value))) { revert(0, 0) }\n    }\n\n}\n",
       "id": 20,
       "language": "Yul",
       "name": "#utility.yul"
@@ -5883,15 +5883,15 @@
     "absolutePath": "project:/contracts/carbon/HerdRegistry.sol",
     "exportedSymbols": {
       "HerdRegistry": [
-        2106
+        2138
       ]
     },
-    "id": 2107,
+    "id": 2139,
     "license": "UNLICENSED",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1985,
+        "id": 2017,
         "literals": [
           "solidity",
           "^",
@@ -5907,9 +5907,9 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 2106,
+        "id": 2138,
         "linearizedBaseContracts": [
-          2106
+          2138
         ],
         "name": "HerdRegistry",
         "nameLocation": "74:12:5",
@@ -5917,16 +5917,16 @@
         "nodes": [
           {
             "canonicalName": "HerdRegistry.AnimalGroup",
-            "id": 1994,
+            "id": 2026,
             "members": [
               {
                 "constant": false,
-                "id": 1987,
+                "id": 2019,
                 "mutability": "mutable",
                 "name": "mature",
                 "nameLocation": "131:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "123:14:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -5935,7 +5935,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1986,
+                  "id": 2018,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "123:7:5",
@@ -5948,12 +5948,12 @@
               },
               {
                 "constant": false,
-                "id": 1989,
+                "id": 2021,
                 "mutability": "mutable",
                 "name": "heifer",
                 "nameLocation": "155:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "147:14:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -5962,7 +5962,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1988,
+                  "id": 2020,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "147:7:5",
@@ -5975,12 +5975,12 @@
               },
               {
                 "constant": false,
-                "id": 1991,
+                "id": 2023,
                 "mutability": "mutable",
                 "name": "dry",
                 "nameLocation": "179:3:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "171:11:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -5989,7 +5989,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1990,
+                  "id": 2022,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "171:7:5",
@@ -6002,12 +6002,12 @@
               },
               {
                 "constant": false,
-                "id": 1993,
+                "id": 2025,
                 "mutability": "mutable",
                 "name": "fresh",
                 "nameLocation": "200:5:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "192:13:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -6016,7 +6016,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1992,
+                  "id": 2024,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "192:7:5",
@@ -6031,22 +6031,22 @@
             "name": "AnimalGroup",
             "nameLocation": "101:11:5",
             "nodeType": "StructDefinition",
-            "scope": 2106,
+            "scope": 2138,
             "src": "94:118:5",
             "visibility": "public"
           },
           {
             "canonicalName": "HerdRegistry.Herd",
-            "id": 2004,
+            "id": 2036,
             "members": [
               {
                 "constant": false,
-                "id": 1996,
+                "id": 2028,
                 "mutability": "mutable",
                 "name": "farm",
                 "nameLocation": "322:4:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "315:11:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -6055,7 +6055,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 1995,
+                  "id": 2027,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "315:6:5",
@@ -6068,12 +6068,12 @@
               },
               {
                 "constant": false,
-                "id": 1998,
+                "id": 2030,
                 "mutability": "mutable",
                 "name": "farmer",
                 "nameLocation": "344:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "336:14:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -6082,7 +6082,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1997,
+                  "id": 2029,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "336:7:5",
@@ -6096,12 +6096,12 @@
               },
               {
                 "constant": false,
-                "id": 2000,
+                "id": 2032,
                 "mutability": "mutable",
                 "name": "location",
                 "nameLocation": "367:8:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "360:15:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -6110,7 +6110,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 1999,
+                  "id": 2031,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "360:6:5",
@@ -6123,33 +6123,33 @@
               },
               {
                 "constant": false,
-                "id": 2003,
+                "id": 2035,
                 "mutability": "mutable",
                 "name": "groups",
                 "nameLocation": "397:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "385:18:5",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage_ptr",
+                  "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage_ptr",
                   "typeString": "struct HerdRegistry.AnimalGroup"
                 },
                 "typeName": {
-                  "id": 2002,
+                  "id": 2034,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 2001,
+                    "id": 2033,
                     "name": "AnimalGroup",
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 1994,
+                    "referencedDeclaration": 2026,
                     "src": "385:11:5"
                   },
-                  "referencedDeclaration": 1994,
+                  "referencedDeclaration": 2026,
                   "src": "385:11:5",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage_ptr",
+                    "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage_ptr",
                     "typeString": "struct HerdRegistry.AnimalGroup"
                   }
                 },
@@ -6159,30 +6159,30 @@
             "name": "Herd",
             "nameLocation": "300:4:5",
             "nodeType": "StructDefinition",
-            "scope": 2106,
+            "scope": 2138,
             "src": "293:117:5",
             "visibility": "public"
           },
           {
             "constant": false,
             "functionSelector": "ba0df24d",
-            "id": 2009,
+            "id": 2041,
             "mutability": "mutable",
             "name": "herds",
             "nameLocation": "448:5:5",
             "nodeType": "VariableDeclaration",
-            "scope": 2106,
+            "scope": 2138,
             "src": "416:37:5",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
               "typeString": "mapping(uint256 => struct HerdRegistry.Herd)"
             },
             "typeName": {
-              "id": 2008,
+              "id": 2040,
               "keyType": {
-                "id": 2005,
+                "id": 2037,
                 "name": "uint256",
                 "nodeType": "ElementaryTypeName",
                 "src": "424:7:5",
@@ -6194,23 +6194,23 @@
               "nodeType": "Mapping",
               "src": "416:24:5",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd)"
               },
               "valueType": {
-                "id": 2007,
+                "id": 2039,
                 "nodeType": "UserDefinedTypeName",
                 "pathNode": {
-                  "id": 2006,
+                  "id": 2038,
                   "name": "Herd",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 2004,
+                  "referencedDeclaration": 2036,
                   "src": "435:4:5"
                 },
-                "referencedDeclaration": 2004,
+                "referencedDeclaration": 2036,
                 "src": "435:4:5",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_Herd_$2004_storage_ptr",
+                  "typeIdentifier": "t_struct$_Herd_$2036_storage_ptr",
                   "typeString": "struct HerdRegistry.Herd"
                 }
               }
@@ -6220,12 +6220,12 @@
           {
             "constant": false,
             "functionSelector": "29bea640",
-            "id": 2013,
+            "id": 2045,
             "mutability": "mutable",
             "name": "herdExists",
             "nameLocation": "491:10:5",
             "nodeType": "VariableDeclaration",
-            "scope": 2106,
+            "scope": 2138,
             "src": "459:42:5",
             "stateVariable": true,
             "storageLocation": "default",
@@ -6234,9 +6234,9 @@
               "typeString": "mapping(uint256 => bool)"
             },
             "typeName": {
-              "id": 2012,
+              "id": 2044,
               "keyType": {
-                "id": 2010,
+                "id": 2042,
                 "name": "uint256",
                 "nodeType": "ElementaryTypeName",
                 "src": "467:7:5",
@@ -6252,7 +6252,7 @@
                 "typeString": "mapping(uint256 => bool)"
               },
               "valueType": {
-                "id": 2011,
+                "id": 2043,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "478:4:5",
@@ -6267,12 +6267,12 @@
           {
             "constant": false,
             "functionSelector": "8b61a3f3",
-            "id": 2015,
+            "id": 2047,
             "mutability": "mutable",
             "name": "herdCount",
             "nameLocation": "522:9:5",
             "nodeType": "VariableDeclaration",
-            "scope": 2106,
+            "scope": 2138,
             "src": "507:24:5",
             "stateVariable": true,
             "storageLocation": "default",
@@ -6281,7 +6281,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 2014,
+              "id": 2046,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "507:7:5",
@@ -6294,13 +6294,13 @@
           },
           {
             "body": {
-              "id": 2056,
+              "id": 2088,
               "nodeType": "Block",
               "src": "738:190:5",
               "statements": [
                 {
                   "expression": {
-                    "id": 2031,
+                    "id": 2063,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -6310,11 +6310,11 @@
                     "prefix": false,
                     "src": "752:11:5",
                     "subExpression": {
-                      "id": 2030,
+                      "id": 2062,
                       "name": "herdCount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2015,
+                      "referencedDeclaration": 2047,
                       "src": "752:9:5",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -6326,37 +6326,37 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 2032,
+                  "id": 2064,
                   "nodeType": "ExpressionStatement",
                   "src": "752:11:5"
                 },
                 {
                   "expression": {
-                    "id": 2048,
+                    "id": 2080,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 2033,
+                        "id": 2065,
                         "name": "herds",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2009,
+                        "referencedDeclaration": 2041,
                         "src": "777:5:5",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                           "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                         }
                       },
-                      "id": 2035,
+                      "id": 2067,
                       "indexExpression": {
-                        "id": 2034,
+                        "id": 2066,
                         "name": "herdCount",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2015,
+                        "referencedDeclaration": 2047,
                         "src": "783:9:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -6370,7 +6370,7 @@
                       "nodeType": "IndexAccess",
                       "src": "777:16:5",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                        "typeIdentifier": "t_struct$_Herd_$2036_storage",
                         "typeString": "struct HerdRegistry.Herd storage ref"
                       }
                     },
@@ -6379,11 +6379,11 @@
                     "rightHandSide": {
                       "arguments": [
                         {
-                          "id": 2037,
+                          "id": 2069,
                           "name": "_farm",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2017,
+                          "referencedDeclaration": 2049,
                           "src": "801:5:5",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -6392,7 +6392,7 @@
                         },
                         {
                           "expression": {
-                            "id": 2038,
+                            "id": 2070,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -6403,7 +6403,7 @@
                               "typeString": "msg"
                             }
                           },
-                          "id": 2039,
+                          "id": 2071,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -6417,11 +6417,11 @@
                           }
                         },
                         {
-                          "id": 2040,
+                          "id": 2072,
                           "name": "_location",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2019,
+                          "referencedDeclaration": 2051,
                           "src": "820:9:5",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -6431,11 +6431,11 @@
                         {
                           "arguments": [
                             {
-                              "id": 2042,
+                              "id": 2074,
                               "name": "_mature",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2021,
+                              "referencedDeclaration": 2053,
                               "src": "843:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -6443,11 +6443,11 @@
                               }
                             },
                             {
-                              "id": 2043,
+                              "id": 2075,
                               "name": "_heifer",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2023,
+                              "referencedDeclaration": 2055,
                               "src": "852:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint56",
@@ -6455,11 +6455,11 @@
                               }
                             },
                             {
-                              "id": 2044,
+                              "id": 2076,
                               "name": "_dry",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2025,
+                              "referencedDeclaration": 2057,
                               "src": "861:4:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -6467,11 +6467,11 @@
                               }
                             },
                             {
-                              "id": 2045,
+                              "id": 2077,
                               "name": "_fresh",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2027,
+                              "referencedDeclaration": 2059,
                               "src": "867:6:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -6498,18 +6498,18 @@
                                 "typeString": "uint256"
                               }
                             ],
-                            "id": 2041,
+                            "id": 2073,
                             "name": "AnimalGroup",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1994,
+                            "referencedDeclaration": 2026,
                             "src": "831:11:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_struct$_AnimalGroup_$1994_storage_ptr_$",
+                              "typeIdentifier": "t_type$_t_struct$_AnimalGroup_$2026_storage_ptr_$",
                               "typeString": "type(struct HerdRegistry.AnimalGroup storage pointer)"
                             }
                           },
-                          "id": 2046,
+                          "id": 2078,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -6520,7 +6520,7 @@
                           "src": "831:43:5",
                           "tryCall": false,
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_memory_ptr",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_memory_ptr",
                             "typeString": "struct HerdRegistry.AnimalGroup memory"
                           }
                         }
@@ -6540,22 +6540,22 @@
                             "typeString": "string memory"
                           },
                           {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_memory_ptr",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_memory_ptr",
                             "typeString": "struct HerdRegistry.AnimalGroup memory"
                           }
                         ],
-                        "id": 2036,
+                        "id": 2068,
                         "name": "Herd",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2004,
+                        "referencedDeclaration": 2036,
                         "src": "796:4:5",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_struct$_Herd_$2004_storage_ptr_$",
+                          "typeIdentifier": "t_type$_t_struct$_Herd_$2036_storage_ptr_$",
                           "typeString": "type(struct HerdRegistry.Herd storage pointer)"
                         }
                       },
-                      "id": 2047,
+                      "id": 2079,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -6566,47 +6566,47 @@
                       "src": "796:79:5",
                       "tryCall": false,
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Herd_$2004_memory_ptr",
+                        "typeIdentifier": "t_struct$_Herd_$2036_memory_ptr",
                         "typeString": "struct HerdRegistry.Herd memory"
                       }
                     },
                     "src": "777:98:5",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                      "typeIdentifier": "t_struct$_Herd_$2036_storage",
                       "typeString": "struct HerdRegistry.Herd storage ref"
                     }
                   },
-                  "id": 2049,
+                  "id": 2081,
                   "nodeType": "ExpressionStatement",
                   "src": "777:98:5"
                 },
                 {
                   "expression": {
-                    "id": 2054,
+                    "id": 2086,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 2050,
+                        "id": 2082,
                         "name": "herdExists",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2013,
+                        "referencedDeclaration": 2045,
                         "src": "889:10:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
                           "typeString": "mapping(uint256 => bool)"
                         }
                       },
-                      "id": 2052,
+                      "id": 2084,
                       "indexExpression": {
-                        "id": 2051,
+                        "id": 2083,
                         "name": "herdCount",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2015,
+                        "referencedDeclaration": 2047,
                         "src": "900:9:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -6628,7 +6628,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "74727565",
-                      "id": 2053,
+                      "id": 2085,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -6648,14 +6648,14 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 2055,
+                  "id": 2087,
                   "nodeType": "ExpressionStatement",
                   "src": "889:28:5"
                 }
               ]
             },
             "functionSelector": "3d898bc8",
-            "id": 2057,
+            "id": 2089,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -6663,17 +6663,17 @@
             "nameLocation": "547:12:5",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2028,
+              "id": 2060,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2017,
+                  "id": 2049,
                   "mutability": "mutable",
                   "name": "_farm",
                   "nameLocation": "583:5:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "569:19:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -6682,7 +6682,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2016,
+                    "id": 2048,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "569:6:5",
@@ -6695,12 +6695,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2019,
+                  "id": 2051,
                   "mutability": "mutable",
                   "name": "_location",
                   "nameLocation": "613:9:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "599:23:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -6709,7 +6709,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2018,
+                    "id": 2050,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "599:6:5",
@@ -6722,12 +6722,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2021,
+                  "id": 2053,
                   "mutability": "mutable",
                   "name": "_mature",
                   "nameLocation": "640:7:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "632:15:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -6736,7 +6736,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2020,
+                    "id": 2052,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "632:7:5",
@@ -6749,12 +6749,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2023,
+                  "id": 2055,
                   "mutability": "mutable",
                   "name": "_heifer",
                   "nameLocation": "665:7:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "658:14:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -6763,7 +6763,7 @@
                     "typeString": "uint56"
                   },
                   "typeName": {
-                    "id": 2022,
+                    "id": 2054,
                     "name": "uint56",
                     "nodeType": "ElementaryTypeName",
                     "src": "658:6:5",
@@ -6776,12 +6776,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2025,
+                  "id": 2057,
                   "mutability": "mutable",
                   "name": "_dry",
                   "nameLocation": "691:4:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "683:12:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -6790,7 +6790,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2024,
+                    "id": 2056,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "683:7:5",
@@ -6803,12 +6803,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2027,
+                  "id": 2059,
                   "mutability": "mutable",
                   "name": "_fresh",
                   "nameLocation": "714:6:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "706:14:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -6817,7 +6817,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2026,
+                    "id": 2058,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "706:7:5",
@@ -6832,12 +6832,12 @@
               "src": "559:162:5"
             },
             "returnParameters": {
-              "id": 2029,
+              "id": 2061,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "738:0:5"
             },
-            "scope": 2106,
+            "scope": 2138,
             "src": "538:390:5",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -6845,7 +6845,7 @@
           },
           {
             "body": {
-              "id": 2104,
+              "id": 2136,
               "nodeType": "Block",
               "src": "1169:253:5",
               "statements": [
@@ -6855,24 +6855,24 @@
                       {
                         "expression": {
                           "baseExpression": {
-                            "id": 2074,
+                            "id": 2106,
                             "name": "herds",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2009,
+                            "referencedDeclaration": 2041,
                             "src": "1190:5:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                               "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                             }
                           },
-                          "id": 2076,
+                          "id": 2108,
                           "indexExpression": {
-                            "id": 2075,
+                            "id": 2107,
                             "name": "_herdID",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2059,
+                            "referencedDeclaration": 2091,
                             "src": "1196:7:5",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -6886,18 +6886,18 @@
                           "nodeType": "IndexAccess",
                           "src": "1190:14:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                            "typeIdentifier": "t_struct$_Herd_$2036_storage",
                             "typeString": "struct HerdRegistry.Herd storage ref"
                           }
                         },
-                        "id": 2077,
+                        "id": 2109,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "farm",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1996,
+                        "referencedDeclaration": 2028,
                         "src": "1190:19:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_storage",
@@ -6907,24 +6907,24 @@
                       {
                         "expression": {
                           "baseExpression": {
-                            "id": 2078,
+                            "id": 2110,
                             "name": "herds",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2009,
+                            "referencedDeclaration": 2041,
                             "src": "1223:5:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                               "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                             }
                           },
-                          "id": 2080,
+                          "id": 2112,
                           "indexExpression": {
-                            "id": 2079,
+                            "id": 2111,
                             "name": "_herdID",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2059,
+                            "referencedDeclaration": 2091,
                             "src": "1229:7:5",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -6938,18 +6938,18 @@
                           "nodeType": "IndexAccess",
                           "src": "1223:14:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                            "typeIdentifier": "t_struct$_Herd_$2036_storage",
                             "typeString": "struct HerdRegistry.Herd storage ref"
                           }
                         },
-                        "id": 2081,
+                        "id": 2113,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "location",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 2000,
+                        "referencedDeclaration": 2032,
                         "src": "1223:23:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_storage",
@@ -6960,24 +6960,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2082,
+                              "id": 2114,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1260:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2084,
+                            "id": 2116,
                             "indexExpression": {
-                              "id": 2083,
+                              "id": 2115,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1266:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -6991,32 +6991,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1260:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2085,
+                          "id": 2117,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1260:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2086,
+                        "id": 2118,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "mature",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1987,
+                        "referencedDeclaration": 2019,
                         "src": "1260:28:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -7027,24 +7027,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2087,
+                              "id": 2119,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1302:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2089,
+                            "id": 2121,
                             "indexExpression": {
-                              "id": 2088,
+                              "id": 2120,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1308:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -7058,32 +7058,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1302:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2090,
+                          "id": 2122,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1302:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2091,
+                        "id": 2123,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "heifer",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1989,
+                        "referencedDeclaration": 2021,
                         "src": "1302:28:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -7094,24 +7094,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2092,
+                              "id": 2124,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1344:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2094,
+                            "id": 2126,
                             "indexExpression": {
-                              "id": 2093,
+                              "id": 2125,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1350:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -7125,32 +7125,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1344:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2095,
+                          "id": 2127,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1344:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2096,
+                        "id": 2128,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "dry",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1991,
+                        "referencedDeclaration": 2023,
                         "src": "1344:25:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -7161,24 +7161,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2097,
+                              "id": 2129,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1383:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2099,
+                            "id": 2131,
                             "indexExpression": {
-                              "id": 2098,
+                              "id": 2130,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1389:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -7192,32 +7192,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1383:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2100,
+                          "id": 2132,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1383:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2101,
+                        "id": 2133,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "fresh",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1993,
+                        "referencedDeclaration": 2025,
                         "src": "1383:27:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -7225,7 +7225,7 @@
                         }
                       }
                     ],
-                    "id": 2102,
+                    "id": 2134,
                     "isConstant": false,
                     "isInlineArray": false,
                     "isLValue": false,
@@ -7238,15 +7238,15 @@
                       "typeString": "tuple(string storage ref,string storage ref,uint256,uint256,uint256,uint256)"
                     }
                   },
-                  "functionReturnParameters": 2073,
-                  "id": 2103,
+                  "functionReturnParameters": 2105,
+                  "id": 2135,
                   "nodeType": "Return",
                   "src": "1183:228:5"
                 }
               ]
             },
             "functionSelector": "db572f35",
-            "id": 2105,
+            "id": 2137,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -7254,17 +7254,17 @@
             "nameLocation": "943:8:5",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2060,
+              "id": 2092,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2059,
+                  "id": 2091,
                   "mutability": "mutable",
                   "name": "_herdID",
                   "nameLocation": "960:7:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "952:15:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -7273,7 +7273,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2058,
+                    "id": 2090,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "952:7:5",
@@ -7288,17 +7288,17 @@
               "src": "951:17:5"
             },
             "returnParameters": {
-              "id": 2073,
+              "id": 2105,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2062,
+                  "id": 2094,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1029:13:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -7307,7 +7307,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2061,
+                    "id": 2093,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1029:6:5",
@@ -7320,12 +7320,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2064,
+                  "id": 2096,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1057:13:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -7334,7 +7334,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2063,
+                    "id": 2095,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1057:6:5",
@@ -7347,12 +7347,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2066,
+                  "id": 2098,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1085:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -7361,7 +7361,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2065,
+                    "id": 2097,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1085:7:5",
@@ -7374,12 +7374,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2068,
+                  "id": 2100,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1107:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -7388,7 +7388,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2067,
+                    "id": 2099,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1107:7:5",
@@ -7401,12 +7401,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2070,
+                  "id": 2102,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1129:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -7415,7 +7415,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2069,
+                    "id": 2101,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1129:7:5",
@@ -7428,12 +7428,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2072,
+                  "id": 2104,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1151:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -7442,7 +7442,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2071,
+                    "id": 2103,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1151:7:5",
@@ -7456,14 +7456,14 @@
               ],
               "src": "1015:144:5"
             },
-            "scope": 2106,
+            "scope": 2138,
             "src": "934:488:5",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 2107,
+        "scope": 2139,
         "src": "65:1359:5",
         "usedErrors": []
       }
@@ -7474,15 +7474,15 @@
     "absolutePath": "project:/contracts/carbon/HerdRegistry.sol",
     "exportedSymbols": {
       "HerdRegistry": [
-        2106
+        2138
       ]
     },
-    "id": 2107,
+    "id": 2139,
     "license": "UNLICENSED",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1985,
+        "id": 2017,
         "literals": [
           "solidity",
           "^",
@@ -7498,9 +7498,9 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 2106,
+        "id": 2138,
         "linearizedBaseContracts": [
-          2106
+          2138
         ],
         "name": "HerdRegistry",
         "nameLocation": "74:12:5",
@@ -7508,16 +7508,16 @@
         "nodes": [
           {
             "canonicalName": "HerdRegistry.AnimalGroup",
-            "id": 1994,
+            "id": 2026,
             "members": [
               {
                 "constant": false,
-                "id": 1987,
+                "id": 2019,
                 "mutability": "mutable",
                 "name": "mature",
                 "nameLocation": "131:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "123:14:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7526,7 +7526,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1986,
+                  "id": 2018,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "123:7:5",
@@ -7539,12 +7539,12 @@
               },
               {
                 "constant": false,
-                "id": 1989,
+                "id": 2021,
                 "mutability": "mutable",
                 "name": "heifer",
                 "nameLocation": "155:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "147:14:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7553,7 +7553,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1988,
+                  "id": 2020,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "147:7:5",
@@ -7566,12 +7566,12 @@
               },
               {
                 "constant": false,
-                "id": 1991,
+                "id": 2023,
                 "mutability": "mutable",
                 "name": "dry",
                 "nameLocation": "179:3:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "171:11:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7580,7 +7580,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1990,
+                  "id": 2022,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "171:7:5",
@@ -7593,12 +7593,12 @@
               },
               {
                 "constant": false,
-                "id": 1993,
+                "id": 2025,
                 "mutability": "mutable",
                 "name": "fresh",
                 "nameLocation": "200:5:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 2026,
                 "src": "192:13:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7607,7 +7607,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1992,
+                  "id": 2024,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
                   "src": "192:7:5",
@@ -7622,22 +7622,22 @@
             "name": "AnimalGroup",
             "nameLocation": "101:11:5",
             "nodeType": "StructDefinition",
-            "scope": 2106,
+            "scope": 2138,
             "src": "94:118:5",
             "visibility": "public"
           },
           {
             "canonicalName": "HerdRegistry.Herd",
-            "id": 2004,
+            "id": 2036,
             "members": [
               {
                 "constant": false,
-                "id": 1996,
+                "id": 2028,
                 "mutability": "mutable",
                 "name": "farm",
                 "nameLocation": "322:4:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "315:11:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7646,7 +7646,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 1995,
+                  "id": 2027,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "315:6:5",
@@ -7659,12 +7659,12 @@
               },
               {
                 "constant": false,
-                "id": 1998,
+                "id": 2030,
                 "mutability": "mutable",
                 "name": "farmer",
                 "nameLocation": "344:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "336:14:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7673,7 +7673,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1997,
+                  "id": 2029,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "336:7:5",
@@ -7687,12 +7687,12 @@
               },
               {
                 "constant": false,
-                "id": 2000,
+                "id": 2032,
                 "mutability": "mutable",
                 "name": "location",
                 "nameLocation": "367:8:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "360:15:5",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7701,7 +7701,7 @@
                   "typeString": "string"
                 },
                 "typeName": {
-                  "id": 1999,
+                  "id": 2031,
                   "name": "string",
                   "nodeType": "ElementaryTypeName",
                   "src": "360:6:5",
@@ -7714,33 +7714,33 @@
               },
               {
                 "constant": false,
-                "id": 2003,
+                "id": 2035,
                 "mutability": "mutable",
                 "name": "groups",
                 "nameLocation": "397:6:5",
                 "nodeType": "VariableDeclaration",
-                "scope": 2004,
+                "scope": 2036,
                 "src": "385:18:5",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage_ptr",
+                  "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage_ptr",
                   "typeString": "struct HerdRegistry.AnimalGroup"
                 },
                 "typeName": {
-                  "id": 2002,
+                  "id": 2034,
                   "nodeType": "UserDefinedTypeName",
                   "pathNode": {
-                    "id": 2001,
+                    "id": 2033,
                     "name": "AnimalGroup",
                     "nodeType": "IdentifierPath",
-                    "referencedDeclaration": 1994,
+                    "referencedDeclaration": 2026,
                     "src": "385:11:5"
                   },
-                  "referencedDeclaration": 1994,
+                  "referencedDeclaration": 2026,
                   "src": "385:11:5",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage_ptr",
+                    "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage_ptr",
                     "typeString": "struct HerdRegistry.AnimalGroup"
                   }
                 },
@@ -7750,30 +7750,30 @@
             "name": "Herd",
             "nameLocation": "300:4:5",
             "nodeType": "StructDefinition",
-            "scope": 2106,
+            "scope": 2138,
             "src": "293:117:5",
             "visibility": "public"
           },
           {
             "constant": false,
             "functionSelector": "ba0df24d",
-            "id": 2009,
+            "id": 2041,
             "mutability": "mutable",
             "name": "herds",
             "nameLocation": "448:5:5",
             "nodeType": "VariableDeclaration",
-            "scope": 2106,
+            "scope": 2138,
             "src": "416:37:5",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
               "typeString": "mapping(uint256 => struct HerdRegistry.Herd)"
             },
             "typeName": {
-              "id": 2008,
+              "id": 2040,
               "keyType": {
-                "id": 2005,
+                "id": 2037,
                 "name": "uint256",
                 "nodeType": "ElementaryTypeName",
                 "src": "424:7:5",
@@ -7785,23 +7785,23 @@
               "nodeType": "Mapping",
               "src": "416:24:5",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd)"
               },
               "valueType": {
-                "id": 2007,
+                "id": 2039,
                 "nodeType": "UserDefinedTypeName",
                 "pathNode": {
-                  "id": 2006,
+                  "id": 2038,
                   "name": "Herd",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 2004,
+                  "referencedDeclaration": 2036,
                   "src": "435:4:5"
                 },
-                "referencedDeclaration": 2004,
+                "referencedDeclaration": 2036,
                 "src": "435:4:5",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_Herd_$2004_storage_ptr",
+                  "typeIdentifier": "t_struct$_Herd_$2036_storage_ptr",
                   "typeString": "struct HerdRegistry.Herd"
                 }
               }
@@ -7811,12 +7811,12 @@
           {
             "constant": false,
             "functionSelector": "29bea640",
-            "id": 2013,
+            "id": 2045,
             "mutability": "mutable",
             "name": "herdExists",
             "nameLocation": "491:10:5",
             "nodeType": "VariableDeclaration",
-            "scope": 2106,
+            "scope": 2138,
             "src": "459:42:5",
             "stateVariable": true,
             "storageLocation": "default",
@@ -7825,9 +7825,9 @@
               "typeString": "mapping(uint256 => bool)"
             },
             "typeName": {
-              "id": 2012,
+              "id": 2044,
               "keyType": {
-                "id": 2010,
+                "id": 2042,
                 "name": "uint256",
                 "nodeType": "ElementaryTypeName",
                 "src": "467:7:5",
@@ -7843,7 +7843,7 @@
                 "typeString": "mapping(uint256 => bool)"
               },
               "valueType": {
-                "id": 2011,
+                "id": 2043,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "478:4:5",
@@ -7858,12 +7858,12 @@
           {
             "constant": false,
             "functionSelector": "8b61a3f3",
-            "id": 2015,
+            "id": 2047,
             "mutability": "mutable",
             "name": "herdCount",
             "nameLocation": "522:9:5",
             "nodeType": "VariableDeclaration",
-            "scope": 2106,
+            "scope": 2138,
             "src": "507:24:5",
             "stateVariable": true,
             "storageLocation": "default",
@@ -7872,7 +7872,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 2014,
+              "id": 2046,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "507:7:5",
@@ -7885,13 +7885,13 @@
           },
           {
             "body": {
-              "id": 2056,
+              "id": 2088,
               "nodeType": "Block",
               "src": "738:190:5",
               "statements": [
                 {
                   "expression": {
-                    "id": 2031,
+                    "id": 2063,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -7901,11 +7901,11 @@
                     "prefix": false,
                     "src": "752:11:5",
                     "subExpression": {
-                      "id": 2030,
+                      "id": 2062,
                       "name": "herdCount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2015,
+                      "referencedDeclaration": 2047,
                       "src": "752:9:5",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -7917,37 +7917,37 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 2032,
+                  "id": 2064,
                   "nodeType": "ExpressionStatement",
                   "src": "752:11:5"
                 },
                 {
                   "expression": {
-                    "id": 2048,
+                    "id": 2080,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 2033,
+                        "id": 2065,
                         "name": "herds",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2009,
+                        "referencedDeclaration": 2041,
                         "src": "777:5:5",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                           "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                         }
                       },
-                      "id": 2035,
+                      "id": 2067,
                       "indexExpression": {
-                        "id": 2034,
+                        "id": 2066,
                         "name": "herdCount",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2015,
+                        "referencedDeclaration": 2047,
                         "src": "783:9:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -7961,7 +7961,7 @@
                       "nodeType": "IndexAccess",
                       "src": "777:16:5",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                        "typeIdentifier": "t_struct$_Herd_$2036_storage",
                         "typeString": "struct HerdRegistry.Herd storage ref"
                       }
                     },
@@ -7970,11 +7970,11 @@
                     "rightHandSide": {
                       "arguments": [
                         {
-                          "id": 2037,
+                          "id": 2069,
                           "name": "_farm",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2017,
+                          "referencedDeclaration": 2049,
                           "src": "801:5:5",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -7983,7 +7983,7 @@
                         },
                         {
                           "expression": {
-                            "id": 2038,
+                            "id": 2070,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -7994,7 +7994,7 @@
                               "typeString": "msg"
                             }
                           },
-                          "id": 2039,
+                          "id": 2071,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -8008,11 +8008,11 @@
                           }
                         },
                         {
-                          "id": 2040,
+                          "id": 2072,
                           "name": "_location",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2019,
+                          "referencedDeclaration": 2051,
                           "src": "820:9:5",
                           "typeDescriptions": {
                             "typeIdentifier": "t_string_memory_ptr",
@@ -8022,11 +8022,11 @@
                         {
                           "arguments": [
                             {
-                              "id": 2042,
+                              "id": 2074,
                               "name": "_mature",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2021,
+                              "referencedDeclaration": 2053,
                               "src": "843:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8034,11 +8034,11 @@
                               }
                             },
                             {
-                              "id": 2043,
+                              "id": 2075,
                               "name": "_heifer",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2023,
+                              "referencedDeclaration": 2055,
                               "src": "852:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint56",
@@ -8046,11 +8046,11 @@
                               }
                             },
                             {
-                              "id": 2044,
+                              "id": 2076,
                               "name": "_dry",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2025,
+                              "referencedDeclaration": 2057,
                               "src": "861:4:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8058,11 +8058,11 @@
                               }
                             },
                             {
-                              "id": 2045,
+                              "id": 2077,
                               "name": "_fresh",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2027,
+                              "referencedDeclaration": 2059,
                               "src": "867:6:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8089,18 +8089,18 @@
                                 "typeString": "uint256"
                               }
                             ],
-                            "id": 2041,
+                            "id": 2073,
                             "name": "AnimalGroup",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1994,
+                            "referencedDeclaration": 2026,
                             "src": "831:11:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_type$_t_struct$_AnimalGroup_$1994_storage_ptr_$",
+                              "typeIdentifier": "t_type$_t_struct$_AnimalGroup_$2026_storage_ptr_$",
                               "typeString": "type(struct HerdRegistry.AnimalGroup storage pointer)"
                             }
                           },
-                          "id": 2046,
+                          "id": 2078,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -8111,7 +8111,7 @@
                           "src": "831:43:5",
                           "tryCall": false,
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_memory_ptr",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_memory_ptr",
                             "typeString": "struct HerdRegistry.AnimalGroup memory"
                           }
                         }
@@ -8131,22 +8131,22 @@
                             "typeString": "string memory"
                           },
                           {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_memory_ptr",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_memory_ptr",
                             "typeString": "struct HerdRegistry.AnimalGroup memory"
                           }
                         ],
-                        "id": 2036,
+                        "id": 2068,
                         "name": "Herd",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2004,
+                        "referencedDeclaration": 2036,
                         "src": "796:4:5",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_struct$_Herd_$2004_storage_ptr_$",
+                          "typeIdentifier": "t_type$_t_struct$_Herd_$2036_storage_ptr_$",
                           "typeString": "type(struct HerdRegistry.Herd storage pointer)"
                         }
                       },
-                      "id": 2047,
+                      "id": 2079,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -8157,47 +8157,47 @@
                       "src": "796:79:5",
                       "tryCall": false,
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Herd_$2004_memory_ptr",
+                        "typeIdentifier": "t_struct$_Herd_$2036_memory_ptr",
                         "typeString": "struct HerdRegistry.Herd memory"
                       }
                     },
                     "src": "777:98:5",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                      "typeIdentifier": "t_struct$_Herd_$2036_storage",
                       "typeString": "struct HerdRegistry.Herd storage ref"
                     }
                   },
-                  "id": 2049,
+                  "id": 2081,
                   "nodeType": "ExpressionStatement",
                   "src": "777:98:5"
                 },
                 {
                   "expression": {
-                    "id": 2054,
+                    "id": 2086,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 2050,
+                        "id": 2082,
                         "name": "herdExists",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2013,
+                        "referencedDeclaration": 2045,
                         "src": "889:10:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
                           "typeString": "mapping(uint256 => bool)"
                         }
                       },
-                      "id": 2052,
+                      "id": 2084,
                       "indexExpression": {
-                        "id": 2051,
+                        "id": 2083,
                         "name": "herdCount",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2015,
+                        "referencedDeclaration": 2047,
                         "src": "900:9:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -8219,7 +8219,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "hexValue": "74727565",
-                      "id": 2053,
+                      "id": 2085,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -8239,14 +8239,14 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 2055,
+                  "id": 2087,
                   "nodeType": "ExpressionStatement",
                   "src": "889:28:5"
                 }
               ]
             },
             "functionSelector": "3d898bc8",
-            "id": 2057,
+            "id": 2089,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -8254,17 +8254,17 @@
             "nameLocation": "547:12:5",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2028,
+              "id": 2060,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2017,
+                  "id": 2049,
                   "mutability": "mutable",
                   "name": "_farm",
                   "nameLocation": "583:5:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "569:19:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -8273,7 +8273,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2016,
+                    "id": 2048,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "569:6:5",
@@ -8286,12 +8286,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2019,
+                  "id": 2051,
                   "mutability": "mutable",
                   "name": "_location",
                   "nameLocation": "613:9:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "599:23:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -8300,7 +8300,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2018,
+                    "id": 2050,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "599:6:5",
@@ -8313,12 +8313,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2021,
+                  "id": 2053,
                   "mutability": "mutable",
                   "name": "_mature",
                   "nameLocation": "640:7:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "632:15:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8327,7 +8327,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2020,
+                    "id": 2052,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "632:7:5",
@@ -8340,12 +8340,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2023,
+                  "id": 2055,
                   "mutability": "mutable",
                   "name": "_heifer",
                   "nameLocation": "665:7:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "658:14:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8354,7 +8354,7 @@
                     "typeString": "uint56"
                   },
                   "typeName": {
-                    "id": 2022,
+                    "id": 2054,
                     "name": "uint56",
                     "nodeType": "ElementaryTypeName",
                     "src": "658:6:5",
@@ -8367,12 +8367,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2025,
+                  "id": 2057,
                   "mutability": "mutable",
                   "name": "_dry",
                   "nameLocation": "691:4:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "683:12:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8381,7 +8381,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2024,
+                    "id": 2056,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "683:7:5",
@@ -8394,12 +8394,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2027,
+                  "id": 2059,
                   "mutability": "mutable",
                   "name": "_fresh",
                   "nameLocation": "714:6:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2057,
+                  "scope": 2089,
                   "src": "706:14:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8408,7 +8408,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2026,
+                    "id": 2058,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "706:7:5",
@@ -8423,12 +8423,12 @@
               "src": "559:162:5"
             },
             "returnParameters": {
-              "id": 2029,
+              "id": 2061,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "738:0:5"
             },
-            "scope": 2106,
+            "scope": 2138,
             "src": "538:390:5",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -8436,7 +8436,7 @@
           },
           {
             "body": {
-              "id": 2104,
+              "id": 2136,
               "nodeType": "Block",
               "src": "1169:253:5",
               "statements": [
@@ -8446,24 +8446,24 @@
                       {
                         "expression": {
                           "baseExpression": {
-                            "id": 2074,
+                            "id": 2106,
                             "name": "herds",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2009,
+                            "referencedDeclaration": 2041,
                             "src": "1190:5:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                               "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                             }
                           },
-                          "id": 2076,
+                          "id": 2108,
                           "indexExpression": {
-                            "id": 2075,
+                            "id": 2107,
                             "name": "_herdID",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2059,
+                            "referencedDeclaration": 2091,
                             "src": "1196:7:5",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -8477,18 +8477,18 @@
                           "nodeType": "IndexAccess",
                           "src": "1190:14:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                            "typeIdentifier": "t_struct$_Herd_$2036_storage",
                             "typeString": "struct HerdRegistry.Herd storage ref"
                           }
                         },
-                        "id": 2077,
+                        "id": 2109,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "farm",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1996,
+                        "referencedDeclaration": 2028,
                         "src": "1190:19:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_storage",
@@ -8498,24 +8498,24 @@
                       {
                         "expression": {
                           "baseExpression": {
-                            "id": 2078,
+                            "id": 2110,
                             "name": "herds",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2009,
+                            "referencedDeclaration": 2041,
                             "src": "1223:5:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                              "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                               "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                             }
                           },
-                          "id": 2080,
+                          "id": 2112,
                           "indexExpression": {
-                            "id": 2079,
+                            "id": 2111,
                             "name": "_herdID",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2059,
+                            "referencedDeclaration": 2091,
                             "src": "1229:7:5",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -8529,18 +8529,18 @@
                           "nodeType": "IndexAccess",
                           "src": "1223:14:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                            "typeIdentifier": "t_struct$_Herd_$2036_storage",
                             "typeString": "struct HerdRegistry.Herd storage ref"
                           }
                         },
-                        "id": 2081,
+                        "id": 2113,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "location",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 2000,
+                        "referencedDeclaration": 2032,
                         "src": "1223:23:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_storage",
@@ -8551,24 +8551,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2082,
+                              "id": 2114,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1260:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2084,
+                            "id": 2116,
                             "indexExpression": {
-                              "id": 2083,
+                              "id": 2115,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1266:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8582,32 +8582,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1260:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2085,
+                          "id": 2117,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1260:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2086,
+                        "id": 2118,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "mature",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1987,
+                        "referencedDeclaration": 2019,
                         "src": "1260:28:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -8618,24 +8618,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2087,
+                              "id": 2119,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1302:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2089,
+                            "id": 2121,
                             "indexExpression": {
-                              "id": 2088,
+                              "id": 2120,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1308:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8649,32 +8649,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1302:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2090,
+                          "id": 2122,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1302:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2091,
+                        "id": 2123,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "heifer",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1989,
+                        "referencedDeclaration": 2021,
                         "src": "1302:28:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -8685,24 +8685,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2092,
+                              "id": 2124,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1344:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2094,
+                            "id": 2126,
                             "indexExpression": {
-                              "id": 2093,
+                              "id": 2125,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1350:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8716,32 +8716,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1344:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2095,
+                          "id": 2127,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1344:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2096,
+                        "id": 2128,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "dry",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1991,
+                        "referencedDeclaration": 2023,
                         "src": "1344:25:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -8752,24 +8752,24 @@
                         "expression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 2097,
+                              "id": 2129,
                               "name": "herds",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2009,
+                              "referencedDeclaration": 2041,
                               "src": "1383:5:5",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2004_storage_$",
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_Herd_$2036_storage_$",
                                 "typeString": "mapping(uint256 => struct HerdRegistry.Herd storage ref)"
                               }
                             },
-                            "id": 2099,
+                            "id": 2131,
                             "indexExpression": {
-                              "id": 2098,
+                              "id": 2130,
                               "name": "_herdID",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2059,
+                              "referencedDeclaration": 2091,
                               "src": "1389:7:5",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8783,32 +8783,32 @@
                             "nodeType": "IndexAccess",
                             "src": "1383:14:5",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Herd_$2004_storage",
+                              "typeIdentifier": "t_struct$_Herd_$2036_storage",
                               "typeString": "struct HerdRegistry.Herd storage ref"
                             }
                           },
-                          "id": 2100,
+                          "id": 2132,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "groups",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 2003,
+                          "referencedDeclaration": 2035,
                           "src": "1383:21:5",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_struct$_AnimalGroup_$1994_storage",
+                            "typeIdentifier": "t_struct$_AnimalGroup_$2026_storage",
                             "typeString": "struct HerdRegistry.AnimalGroup storage ref"
                           }
                         },
-                        "id": 2101,
+                        "id": 2133,
                         "isConstant": false,
                         "isLValue": true,
                         "isPure": false,
                         "lValueRequested": false,
                         "memberName": "fresh",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 1993,
+                        "referencedDeclaration": 2025,
                         "src": "1383:27:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -8816,7 +8816,7 @@
                         }
                       }
                     ],
-                    "id": 2102,
+                    "id": 2134,
                     "isConstant": false,
                     "isInlineArray": false,
                     "isLValue": false,
@@ -8829,15 +8829,15 @@
                       "typeString": "tuple(string storage ref,string storage ref,uint256,uint256,uint256,uint256)"
                     }
                   },
-                  "functionReturnParameters": 2073,
-                  "id": 2103,
+                  "functionReturnParameters": 2105,
+                  "id": 2135,
                   "nodeType": "Return",
                   "src": "1183:228:5"
                 }
               ]
             },
             "functionSelector": "db572f35",
-            "id": 2105,
+            "id": 2137,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -8845,17 +8845,17 @@
             "nameLocation": "943:8:5",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2060,
+              "id": 2092,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2059,
+                  "id": 2091,
                   "mutability": "mutable",
                   "name": "_herdID",
                   "nameLocation": "960:7:5",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "952:15:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8864,7 +8864,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2058,
+                    "id": 2090,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "952:7:5",
@@ -8879,17 +8879,17 @@
               "src": "951:17:5"
             },
             "returnParameters": {
-              "id": 2073,
+              "id": 2105,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2062,
+                  "id": 2094,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1029:13:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -8898,7 +8898,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2061,
+                    "id": 2093,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1029:6:5",
@@ -8911,12 +8911,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2064,
+                  "id": 2096,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1057:13:5",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -8925,7 +8925,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2063,
+                    "id": 2095,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1057:6:5",
@@ -8938,12 +8938,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2066,
+                  "id": 2098,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1085:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8952,7 +8952,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2065,
+                    "id": 2097,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1085:7:5",
@@ -8965,12 +8965,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2068,
+                  "id": 2100,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1107:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8979,7 +8979,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2067,
+                    "id": 2099,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1107:7:5",
@@ -8992,12 +8992,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2070,
+                  "id": 2102,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1129:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -9006,7 +9006,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2069,
+                    "id": 2101,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1129:7:5",
@@ -9019,12 +9019,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 2072,
+                  "id": 2104,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2105,
+                  "scope": 2137,
                   "src": "1151:7:5",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -9033,7 +9033,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 2071,
+                    "id": 2103,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1151:7:5",
@@ -9047,14 +9047,14 @@
               ],
               "src": "1015:144:5"
             },
-            "scope": 2106,
+            "scope": 2138,
             "src": "934:488:5",
             "stateMutability": "view",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 2107,
+        "scope": 2139,
         "src": "65:1359:5",
         "usedErrors": []
       }
@@ -9067,7 +9067,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.1",
-  "updatedAt": "2022-11-03T00:11:09.565Z",
+  "updatedAt": "2022-11-14T23:45:44.872Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

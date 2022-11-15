@@ -48,9 +48,9 @@ contract Escrow is Ownable { //Ownable,
         uint256 timeout; // timeout for payment settlement
     }
 
-    mapping (string => Product) public stock; // whole stock of offered items for sell in escrow arragement
+    string[] allproducts;
+    mapping (string => Product) public stock; // whole stock of offered items for sale in escrow arragement
     mapping(string => bool) public productExists;
-    mapping(address => bool) signed; // to collect signatures for multi-sig
 
     event DepositTaken(string tkname, uint256 price);
 
@@ -67,9 +67,9 @@ contract Escrow is Ownable { //Ownable,
         agent = payable(agentaddr);
         buyer = payable(buyeraddr);
         seller= payable(selleraddr);
-        fee = 100;
+        fee = 1000000000; // 1e9, based on estimated agent cost
 
-        timeout = 1 minutes;
+        timeout = 3 minutes;
     }
 
     modifier validDestination(address to) {
@@ -93,17 +93,11 @@ contract Escrow is Ownable { //Ownable,
         product.state = EscrowState.OFFERED;
         stock[_tkname] = product;
         productExists[_tkname] = true;
+        allproducts.push(_tkname);
 
         // transfer the token ownership to the agent
         digitaltwin.transferByName(_tkname,agentaddr);
     }
-
-    // sign() should be used together with a deal() function, for buyer and seller to agree on a deal
-    // function sign() public {
-    //     require (msg.sender == buyer || msg.sender == seller);
-    //     require (!signed[msg.sender]);
-    //     signed[msg.sender] = true;
-    // }
     
     /**
      * @notice Buyer can make a deposit to products on offer
@@ -190,10 +184,54 @@ contract Escrow is Ownable { //Ownable,
         return (agent, buyer, seller);
     }
 
-    function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, EscrowState, bool, bool) {
-        bool rstatus = VerifyPackaging(_tkname);
-        bool vstatus = VerifyProduct(_tkname);
-        return (stock[_tkname].price, stock[_tkname].state, rstatus, vstatus);
+    function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, string memory) {
+        string memory state;
+
+        if (stock[_tkname].state == EscrowState.OFFERED) {
+            state = "product on offer";
+        } else if (stock[_tkname].state == EscrowState.DEPOSITTAKEN) {
+            state = "deposit taken";
+        } else if (stock[_tkname].state == EscrowState.SELLERREDEEMED) {
+            state = "payment successful";
+        } else if (stock[_tkname].state == EscrowState.BUYERDENIED) {
+            state = "payment returned";
+        } else {
+            state = "unknown escrow state";
+        }
+
+        return (stock[_tkname].price, state);
+    }
+
+    function QueryAllProducts() 
+        public
+        view
+        returns
+    (
+        string[] memory, 
+        uint256[] memory, 
+        string[] memory
+    )
+    {
+        uint256[] memory prices = new uint256[](allproducts.length);
+        string[] memory states = new string[](allproducts.length);
+
+        for(uint i=0; i<allproducts.length; i++){
+            prices[i] = stock[allproducts[i]].price;
+
+            if (stock[allproducts[i]].state == EscrowState.OFFERED) {
+                states[i] = "product on offer";
+            } else if (stock[allproducts[i]].state == EscrowState.DEPOSITTAKEN) {
+                states[i] = "deposit taken";
+            } else if (stock[allproducts[i]].state == EscrowState.SELLERREDEEMED) {
+                states[i] = "payment successful";
+            } else if (stock[allproducts[i]].state == EscrowState.BUYERDENIED) {
+                states[i] = "payment returned";
+            } else {
+                states[i] = "unknown escrow state";
+            }
+        }
+
+        return (allproducts, prices, states);
     }
 
     function GetBalance(address addr) public view returns(uint256) {

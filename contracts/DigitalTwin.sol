@@ -140,7 +140,7 @@ contract DigitalTwin is ERC721 {
         for (j=i; j<alltks.length-1; j++) {
             alltks[j] = alltks[j+1];
         }
-
+        
         alltks.pop(); // remove the token from the alltks list
     }
 

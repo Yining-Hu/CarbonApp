@@ -16,7 +16,7 @@ router.post('/',
             var username = request.body.username;
             var bcacc = request.body.bcacc;
 
-            var userpath = '/home/yih/Documents/dev/beston-dapps/server/usercredentials/'+username+'.json';
+            var userpath = '/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/'+username+'.json';
 
             if (fs.existsSync(userpath)) {
                 response.write(JSON.stringify({"server_response":"User already registered! Please contact system admin to retrieve apikey."}));
@@ -27,10 +27,6 @@ router.post('/',
                     length: 30,
                     numbers: true
                 });
-
-                // Todo: generate blockchain account upon user registration, add to response and to user file
-                // web3 = utils.getWeb3(providerURL);
-                // var accobj = web3.eth.accounts.create();
     
                 var user = {'username':username, 'apikey':apikey, 'bcacc':bcacc};
                 fs.writeFileSync(userpath,JSON.stringify(user));

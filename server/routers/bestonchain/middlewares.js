@@ -10,7 +10,7 @@ module.exports = {
         if (request.path.includes('/signup')) return next();
             var username = request.get('user-name');
             var apikey = request.get('api-key'); // request needs to have the header "api-key"
-            var userpath = '/home/yih/Documents/dev/beston-dapps/server/usercredentials/'+username+'.json';
+            var userpath = '/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/'+username+'.json';
             var bcacc, target;
     
             // first check if user exists
