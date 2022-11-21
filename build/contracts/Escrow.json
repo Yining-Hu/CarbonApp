@@ -42372,8 +42372,8 @@
         }
       },
       "links": {},
-      "address": "0xC43C49034Ac01f6182AB622B6671e568b7A0Bec8",
-      "transactionHash": "0x5695bdebaeac17297956e936fbe4555b4616635f58bf5bf08ee9b5c09428b0d9"
+      "address": "0xA8265FE34356E78b40686fe0377d1a5628A916B9",
+      "transactionHash": "0x6a48ef2445b0f3a2f0952c23ad5295fb05f5dcfd575b49b41a010af7ade7e4a0"
     },
     "5777": {
       "events": {
@@ -42422,7 +42422,7 @@
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2022-11-21T05:12:08.438Z",
+  "updatedAt": "2022-11-21T20:25:15.935Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Yining Hu",

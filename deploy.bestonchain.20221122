@@ -1,0 +1,63 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'bestonchain'
+> Network id:      100
+> Block gas limit: 1342177280 (0x50000000)
+
+
+4_deploy_escrow.js
+==================
+
+   Replacing 'DigitalTwin'
+   -----------------------
+   > transaction hash:    0xe5bed09fd2f7bf829b2196d959d5abbf4cb865f1fb097f33b352e4ef67dcaffd
+   > Blocks: 2            Seconds: 4
+   > contract address:    0x5De3828920Ed4998907154aa5B9D8Bbe4D130aE2
+   > block number:        19192
+   > block timestamp:     1669062299
+   > account:             0x2FFC110EEdbbC076f2aDF37dE5798A1fe9E2e481
+   > balance:             500.0000000010000006
+   > gas used:            4604457 (0x464229)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 19194)
+
+   Replacing 'Escrow'
+   ------------------
+   > transaction hash:    0x6a48ef2445b0f3a2f0952c23ad5295fb05f5dcfd575b49b41a010af7ade7e4a0
+   > Blocks: 1            Seconds: 4
+   > contract address:    0xA8265FE34356E78b40686fe0377d1a5628A916B9
+   > block number:        19196
+   > block timestamp:     1669062308
+   > account:             0x2FFC110EEdbbC076f2aDF37dE5798A1fe9E2e481
+   > balance:             500.0000000010000006
+   > gas used:            3856598 (0x3ad8d6)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 19198)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0 ETH
+
+
