@@ -17,18 +17,8 @@ import "./DigitalTwin.sol";
  */
 contract Escrow is Ownable { //Ownable, 
 
-    /**
-     * @dev Roles are referred to by their bytes32 identifier. 
-     * @dev These should be exposed in the external API and be unique.
-     */
-
     address agentaddr;
-    address buyeraddr;
-    address selleraddr;
-
     address payable agent;
-    address payable buyer;
-    address payable seller;
     
     uint256 public fee;
     uint256 public initial_payment;
@@ -44,6 +34,8 @@ contract Escrow is Ownable { //Ownable,
 
     struct Product{
         uint256 price;
+        address payable buyer;
+        address payable seller;
         EscrowState state;
         uint256 timeout; // timeout for payment settlement
     }
@@ -57,16 +49,12 @@ contract Escrow is Ownable { //Ownable,
     /**
      * @dev before setting up any user wallet, all buyers/sellers use a single buyer/seller address, which are maintained by Beston.
      */
-    constructor(DigitalTwin _digitaltwin, address _buyer_address, address _seller_address) {
+    constructor(DigitalTwin _digitaltwin) {
         digitaltwin = _digitaltwin;
 
         agentaddr = msg.sender; // agent is the creator of the contract
-        buyeraddr = _buyer_address;
-        selleraddr = _seller_address;
 
         agent = payable(agentaddr);
-        buyer = payable(buyeraddr);
-        seller= payable(selleraddr);
         fee = 1000000000; // 1e9, based on estimated agent cost
 
         timeout = 3 minutes;
@@ -86,11 +74,15 @@ contract Escrow is Ownable { //Ownable,
     function offer(string memory _tkname , uint256 _price) public {
         require(!productExists[_tkname], "Product is already offered.");
         require(digitaltwin.tkExists(_tkname), "Product token is not minted.");
+
         // should also require the caller to be the owner of the product
+        (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+        require(msg.sender == addr, "Only owner of a token can offer it as a product.");
 
         Product memory product;
         product.price = _price; /// @dev double check the conversion in Polygon
         product.state = EscrowState.OFFERED;
+        product.seller = payable(msg.sender);
         stock[_tkname] = product;
         productExists[_tkname] = true;
         allproducts.push(_tkname);
@@ -103,10 +95,11 @@ contract Escrow is Ownable { //Ownable,
      * @notice Buyer can make a deposit to products on offer
      * @dev Partial payment is sent to the seller, however, can change depending on the agreement
      */
-    function BuyerDeposit(string memory _tkname) external payable validDestination(agent) validDestination(seller) {
-        require (msg.value >= fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
+    function BuyerDeposit(string memory _tkname) external payable validDestination(agent) validDestination(stock[_tkname].seller) {
+        require (msg.value == fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
         require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
 
+        stock[_tkname].buyer = payable(msg.sender);
         stock[_tkname].state = EscrowState.DEPOSITTAKEN;
         stock[_tkname].timeout = block.timestamp + timeout; // add a timeout for settlement when buyer sends deposit
 
@@ -114,7 +107,7 @@ contract Escrow is Ownable { //Ownable,
         remaining_payment = stock[_tkname].price.sub(initial_payment);
 
         agent.transfer(fee);
-        seller.transfer(initial_payment);
+        stock[_tkname].seller.transfer(initial_payment);
 
         emit DepositTaken(_tkname, stock[_tkname].price);
     }
@@ -153,38 +146,32 @@ contract Escrow is Ownable { //Ownable,
      * @notice Seller can redeem with 2 verifications
      * Achieves the same payment result as BuyerApprove, but requires seller to pay for execution
      */
-    function AgentApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
-        // require (msg.sender == seller, "Only seller can call the redeem function.");
+    function AgentApprove(string memory _tkname) public validDestination(stock[_tkname].seller) validProduct(_tkname) {
         require (msg.sender == agent, "Only agent can call the redeem function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
-        require (VerifyPackaging(_tkname), "Seller cannot redeem payment if packaging is unverified.");
-        require (VerifyProduct(_tkname), "Seller cannot redeem payment of unverified product.");
+        require (VerifyPackaging(_tkname), "Agent cannot aprove payment if packaging is unverified.");
+        require (VerifyProduct(_tkname), "Agent cannot aprove payment of unverified product.");
         require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
-        seller.transfer(remaining_payment);
+        stock[_tkname].seller.transfer(remaining_payment);
         stock[_tkname].state = EscrowState.SELLERREDEEMED;
     }
 
     /**
      * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
      */
-    function AgentDeny(string memory _tkname) public validDestination(buyer) validProduct(_tkname) {
-        // require (msg.sender == buyer, "Only buyer can call the deny function.");
+    function AgentDeny(string memory _tkname) public validDestination(stock[_tkname].buyer) validProduct(_tkname) {
         require (msg.sender == agent, "Only agent can call the refund function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
-        require (block.timestamp > stock[_tkname].timeout, "Buyer can only claim the refund after the specified timeout.");
-        buyer.transfer(remaining_payment);
+        require (block.timestamp > stock[_tkname].timeout, "Agent can issue the refund after the specified timeout.");
+        stock[_tkname].buyer.transfer(remaining_payment);
         stock[_tkname].state = EscrowState.BUYERDENIED;
     }
 
     /**
      * @notice getters
      */
-    function GetUsers() public view returns(address, address, address) {
-        require (msg.sender == agent);
-        return (agent, buyer, seller);
-    }
 
-    function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, string memory) {
+    function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, string memory, address, address) {
         string memory state;
 
         if (stock[_tkname].state == EscrowState.OFFERED) {
@@ -199,7 +186,7 @@ contract Escrow is Ownable { //Ownable,
             state = "unknown escrow state";
         }
 
-        return (stock[_tkname].price, state);
+        return (stock[_tkname].price, state, stock[_tkname].seller, stock[_tkname].buyer);
     }
 
     function QueryAllProducts() 
@@ -209,11 +196,15 @@ contract Escrow is Ownable { //Ownable,
     (
         string[] memory, 
         uint256[] memory, 
-        string[] memory
+        string[] memory,
+        address[] memory,
+        address[] memory
     )
     {
         uint256[] memory prices = new uint256[](allproducts.length);
         string[] memory states = new string[](allproducts.length);
+        address[] memory sellers = new address[](allproducts.length);
+        address[] memory buyers = new address[](allproducts.length);
 
         for(uint i=0; i<allproducts.length; i++){
             prices[i] = stock[allproducts[i]].price;
@@ -229,9 +220,12 @@ contract Escrow is Ownable { //Ownable,
             } else {
                 states[i] = "unknown escrow state";
             }
+
+            sellers[i] = stock[allproducts[i]].seller;
+            buyers[i] = stock[allproducts[i]].buyer;
         }
 
-        return (allproducts, prices, states);
+        return (allproducts, prices, states, sellers, buyers);
     }
 
     function GetBalance(address addr) public view returns(uint256) {

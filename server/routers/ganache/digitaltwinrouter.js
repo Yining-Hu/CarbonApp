@@ -115,7 +115,7 @@ router.post('/seller/update',
  * Todo: to test following the event sequence
  */
 router.post('/agent/recognize', 
-    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("productid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("status").exists().withMessage("Input should contain field 'status'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -156,7 +156,7 @@ router.post('/agent/recognize',
     });
 
 router.post('/agent/verify', 
-    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("productid").exists().withMessage("Input should contain field 'tkid'."),
     validator.check("status").exists().withMessage("Input should contain field 'status'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
