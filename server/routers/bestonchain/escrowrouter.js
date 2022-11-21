@@ -204,7 +204,7 @@ router.get('/view/product',
                 value.methods.QueryProduct(productid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"productid": productid, "price": result[0], "escrow_state": result[1], "recognition_result":result[2], "verification_result":result[3]});
+                    response.json({"productid": productid, "price": result[0], "escrow_state": result[1], "seller":result[2], "buyer":result[3]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query product: ${productid}`);
@@ -233,6 +233,8 @@ router.get('/view/products',
                     product.productid = result[0][i];
                     product.price = result[1][i];
                     product.state = result[2][i];
+                    product.seller = result[3][i];
+                    product.buyer = result[4][i];
                     productarray.push({...product});
                 }
                 console.log(productarray);
