@@ -1,8 +1,22 @@
+const utils = require('../../utils.js');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
 const fs = require('fs'); 
 const router = express.Router();
 const validator = require('express-validator');
 const generator = require('generate-password');
+
+var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
+
+var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
+var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
+var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
+
+var accPrivKeys = [agentkey, buyerkey, sellerkey];
+var providerURL = "http://127.0.0.1:8545"
+var provider = new HDWalletProvider(accPrivKeys, providerURL);
+
+var web3 = utils.getWeb3(provider);
 
 router.post('/',
     validator.check("username").exists().withMessage("Input should contain field 'username'."),
@@ -16,7 +30,7 @@ router.post('/',
             var username = request.body.username;
             var bcacc = request.body.bcacc;
 
-            var userpath = '/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/'+username+'.json';
+            var userpath = '/home/yining/dev/beston-dapps/server/credentials/bestonchain/'+username+'.json';
 
             if (fs.existsSync(userpath)) {
                 response.write(JSON.stringify({"server_response":"User already registered! Please contact system admin to retrieve apikey."}));
@@ -36,5 +50,11 @@ router.post('/',
             }
         }
     })
+
+router.get('/bcacc', (request, response) => {
+    var acc = web3.eth.accounts.create();
+    console.log(`bcacc: ${acc.address}, privateKey: ${acc.privateKey}`);
+    response.json({'bcacc': acc.address, 'privateKey': acc.privateKey});
+}) 
 
 module.exports = router;

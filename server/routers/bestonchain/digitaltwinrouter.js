@@ -53,6 +53,7 @@ router.post('/seller/mint',
                 })
                 .catch((error) => {
                     if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
                     } else {
                         var txnhash = error.receipt.transactionHash;

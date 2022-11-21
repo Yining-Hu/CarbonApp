@@ -4,6 +4,9 @@ const router = express.Router();
 const validator = require('express-validator');
 const generator = require('generate-password');
 
+var providerURL = 'http://127.0.0.1:7545';
+var web3 = utils.getWeb3(providerURL);
+
 router.post('/',
     validator.check("username").exists().withMessage("Input should contain field 'username'."),
 
@@ -36,5 +39,11 @@ router.post('/',
             }
         }
     })
+
+router.get('/bcacc', (request, response) => {
+    var acc = web3.eth.accounts.create();
+    console.log(`bcacc: ${acc.address}, privateKey: ${acc.privateKey}`);
+    response.json({'bcacc': acc.address, 'privateKey': acc.privateKey});
+}) 
 
 module.exports = router;
