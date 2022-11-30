@@ -232,7 +232,7 @@ router.get('/view/products',
                 for (i=0;i<result[0].length;i++) {
                     product.productid = result[0][i];
                     product.price = result[1][i];
-                    product.state = result[2][i];
+                    product.escrow_state = result[2][i];
                     product.seller = result[3][i];
                     product.buyer = result[4][i];
                     productarray.push({...product});
