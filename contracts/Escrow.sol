@@ -2,20 +2,20 @@
 pragma solidity ^0.8.0;
 
 import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "./DigitalTwin.sol";
+import "./BToken.sol";
 
 /**
  * @title EscrowService Contract, forked from https://github.com/AleRapchan/escrow-service
  * @author Yining Hu
  * @notice Building a single role access control Escrow Service using OpenZeppelin Escrow and RBAC
  * @dev contract currently assume one buyer account and one seller account, should develop an additional wallet contract and allow new user registration
- * @dev To do: to implement multi-sig, time-based escrow
- * @dev To do: to add a product existence modifier, and a role modifier
- * @dev To do: the easiest would be to transfer both money and ownership of the product to the agent 
+ * @dev Todo: to implement multi-sig, time-based escrow
+ * @dev Todo: to add a product existence modifier, and a role modifier
+ * @dev Todo: the easiest would be to transfer both money and ownership of the product to the agent 
  * @dev then to prevent agent from taking everything, agent needs to deposit, which can be slashed if caught faulty
  */
-contract Escrow is Ownable { //Ownable, 
+contract Escrow {
 
     address agentaddr;
     address payable agent;
@@ -26,9 +26,13 @@ contract Escrow is Ownable { //Ownable,
 
     uint256 timeout;
 
+    uint256 btkprice;
+    uint256 public tokenSold;
+
     using SafeMath for uint256;
 
     DigitalTwin public digitaltwin;
+    BToken public btk;
     
     enum EscrowState { OFFERED, DEPOSITTAKEN, SELLERREDEEMED, BUYERDENIED } //PAYMENTSUCCESSFUL, PAYMENTREVERTED
 
@@ -49,8 +53,10 @@ contract Escrow is Ownable { //Ownable,
     /**
      * @dev before setting up any user wallet, all buyers/sellers use a single buyer/seller address, which are maintained by Beston.
      */
-    constructor(DigitalTwin _digitaltwin) {
+    constructor(DigitalTwin _digitaltwin, BToken _btoken, uint _btkprice) {
         digitaltwin = _digitaltwin;
+        btk = _btoken;
+        btkprice = _btkprice;
 
         agentaddr = msg.sender; // agent is the creator of the contract
 
@@ -70,6 +76,24 @@ contract Escrow is Ownable { //Ownable,
         require(productExists[_tkname], "Product does not exist.");
         _;
     }
+
+    // buyTokens sends BTokens to participants
+    function buyTokens(uint256 _numOfTokens) public payable {
+        require(msg.value == _numOfTokens.mul(btkprice));
+        require(
+            btk.balanceOf(address(this)) >= _numOfTokens,
+            "Requires the deployed AutomaticPayment contract to hold more tokens than requested."
+        );
+
+        btk.balanceOf(msg.sender) += _numOfTokens;
+        btk.balanceOf(address(this)) -= _numOfTokens;
+
+        tokenSold += _numOfTokens; // keep track of tokens that are sold
+    }
+
+    function getTokenBalance(address _addr) external view returns(uint) {
+        return btk.balanceOf(_addr);
+    }    
 
     function offer(string memory _tkname , uint256 _price) public {
         require(!productExists[_tkname], "Product is already offered.");
