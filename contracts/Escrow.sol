@@ -85,8 +85,7 @@ contract Escrow {
             "Requires the deployed AutomaticPayment contract to hold more tokens than requested."
         );
 
-        btk.balanceOf(msg.sender) += _numOfTokens;
-        btk.balanceOf(address(this)) -= _numOfTokens;
+        btk.transfer(msg.sender, _numOfTokens); // contract transfer _numOfTokens to the caller of this function
 
         tokenSold += _numOfTokens; // keep track of tokens that are sold
     }
@@ -136,24 +135,6 @@ contract Escrow {
         emit DepositTaken(_tkname, stock[_tkname].price);
     }
 
-    function VerifyPackaging(string memory _tkname) public view validProduct(_tkname) returns (bool) {
-        (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
-        if (keccak256(abi.encodePacked(rstatus)) == keccak256(abi.encodePacked("packaging verified"))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function VerifyProduct(string memory _tkname) public view validProduct(_tkname) returns (bool) {
-        (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
-        if (keccak256(abi.encodePacked(vstatus)) == keccak256(abi.encodePacked("product verified"))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * @notice Buyer can approve the payment with or without verification
      * @dev when implementing the api and front end, buyer should have the option to proceed without or with verification
@@ -192,8 +173,68 @@ contract Escrow {
     }
 
     /**
+     * the functions below are for payments using btks
+     * Todo: after confirming that function works, remove the payable keyword
+     */
+    function BuyerDepositWithBTK(string memory _tkname) external payable validDestination(agent) validDestination(stock[_tkname].seller) {
+        require (msg.value == fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
+        require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
+
+        stock[_tkname].buyer = payable(msg.sender);
+        stock[_tkname].state = EscrowState.DEPOSITTAKEN;
+        stock[_tkname].timeout = block.timestamp + timeout; // add a timeout for settlement when buyer sends deposit
+
+        initial_payment = stock[_tkname].price.div(10); // initial payment set to be 10% of the total price
+        remaining_payment = stock[_tkname].price.sub(initial_payment);
+
+        btk.transfer(agent, fee);
+        btk.transfer(stock[_tkname].seller, initial_payment);
+        
+        emit DepositTaken(_tkname, stock[_tkname].price);
+    }
+
+    function AgentApproveWithBTK(string memory _tkname) public validDestination(stock[_tkname].seller) validProduct(_tkname) {
+        require (msg.sender == agent, "Only agent can call the redeem function.");
+        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
+        require (VerifyPackaging(_tkname), "Agent cannot aprove payment if packaging is unverified.");
+        require (VerifyProduct(_tkname), "Agent cannot aprove payment of unverified product.");
+        require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
+        btk.transfer(stock[_tkname].seller, remaining_payment);
+        stock[_tkname].state = EscrowState.SELLERREDEEMED;
+    }
+
+    /**
+     * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
+     */
+    function AgentDenyWithBTK(string memory _tkname) public validDestination(stock[_tkname].buyer) validProduct(_tkname) {
+        require (msg.sender == agent, "Only agent can call the refund function.");
+        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
+        require (block.timestamp > stock[_tkname].timeout, "Agent can issue the refund after the specified timeout.");
+        btk.transfer(stock[_tkname].buyer, remaining_payment);
+        stock[_tkname].state = EscrowState.BUYERDENIED;
+    }
+
+    /**
      * @notice getters
      */
+
+    function VerifyPackaging(string memory _tkname) public view validProduct(_tkname) returns (bool) {
+        (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+        if (keccak256(abi.encodePacked(rstatus)) == keccak256(abi.encodePacked("packaging verified"))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function VerifyProduct(string memory _tkname) public view validProduct(_tkname) returns (bool) {
+        (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+        if (keccak256(abi.encodePacked(vstatus)) == keccak256(abi.encodePacked("product verified"))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     function QueryProduct(string memory _tkname) public view validProduct(_tkname) returns(uint256, string memory, address, address) {
         string memory state;
