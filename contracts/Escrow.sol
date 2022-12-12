@@ -11,7 +11,6 @@ import "./BToken.sol";
  * @notice Building a single role access control Escrow Service using OpenZeppelin Escrow and RBAC
  * @dev contract currently assume one buyer account and one seller account, should develop an additional wallet contract and allow new user registration
  * @dev Todo: to implement multi-sig, time-based escrow
- * @dev Todo: to add a product existence modifier, and a role modifier
  * @dev Todo: the easiest would be to transfer both money and ownership of the product to the agent 
  * @dev then to prevent agent from taking everything, agent needs to deposit, which can be slashed if caught faulty
  */
@@ -79,10 +78,10 @@ contract Escrow {
 
     // buyTokens sends BTokens to participants
     function buyTokens(uint256 _numOfTokens) public payable {
-        require(msg.value == _numOfTokens.mul(btkprice));
+        require(msg.value == _numOfTokens.mul(btkprice), "Requires payment value to equal price of tokens.");
         require(
             btk.balanceOf(address(this)) >= _numOfTokens,
-            "Requires the deployed AutomaticPayment contract to hold more tokens than requested."
+            "Requires the deployed BToken contract to hold more tokens than requested."
         );
 
         btk.transfer(msg.sender, _numOfTokens); // contract transfer _numOfTokens to the caller of this function

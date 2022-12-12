@@ -1,6 +1,6 @@
 const express = require('express');
 
-var escrowroute, digitaltwinroute, generalroute, signup, middlewares;
+var escrowroute, digitaltwinroute, btkroute, generalroute, signup, middlewares;
 
 /**
  * command-line argument handling
@@ -13,6 +13,7 @@ if (process.argv.length < 3) {
 if (process.argv[2] && process.argv[2] === '-ganache') {
     escrowroute = require('./routers/ganache/escrowrouter.js');
     digitaltwinroute = require('./routers/ganache/digitaltwinrouter.js');
+    btkroute = require('./routers/ganache/btkrouter.js');
     generalroute = require('./routers/ganache/general.js');
     signup = require('./routers/ganache/signup.js');
     middlewares = require('./routers/ganache/middlewares.js');
@@ -34,6 +35,7 @@ app.use(middlewares.authorization);
 
 app.use('/signup', signup);
 app.use('/digitaltwin', digitaltwinroute);
+app.use('/btk', btkroute);
 app.use('/escrow', escrowroute);
 app.use('/general', generalroute);
 

@@ -16,7 +16,7 @@ contract BToken {
 
     mapping(address => uint) public balanceOf;
 
-    constructor(uint _initialSupply) public {
+    constructor(uint _initialSupply) {
         owner = msg.sender;
         balanceOf[owner] = _initialSupply;
         totalSupply = _initialSupply;

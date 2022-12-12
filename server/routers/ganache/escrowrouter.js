@@ -12,6 +12,48 @@ var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/ganac
 var escrowpath = './build/contracts/Escrow.json';
 var escrowinstance = utils.getContract(netId,providerURL,escrowpath);
 
+router.post('/buytokens',
+    validator.check("amount").exists(),
+    validator.check("amount").isInt(),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
+    validator.check("gas").isInt(),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var amount = request.body.amount;
+            var gas = request.body.gas;
+
+            escrowinstance.then(value => {
+                value.methods.buyTokens(amount).send({from: request.body.bcacc, gas: gas, value: amount})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Purchasing ${amount} BTK, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    console.log(error);
+                    var txnhash = Object.keys(error.data)[0];
+                    console.log(`Failed to purchase BTK, Txn hash: ${txnhash}`);
+
+                    if (error.message.includes("gas")) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else if (error.message.includes("price")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Not enough Matic for the purchased BTK."}));
+                    } else if (error.message.includes("contract")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Trying to purchase more tokens than total supply."}));
+                    } else {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
 router.post('/seller/offer',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
     validator.check("price").isInt(),
