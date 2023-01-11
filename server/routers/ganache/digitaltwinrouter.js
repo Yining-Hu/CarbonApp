@@ -125,21 +125,21 @@ router.post('/agent/recognize',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var tkid = request.body.tkid;
+            var productid = request.body.productid;
             var status = request.body.status;
             var gas = request.body.gas;
 
             digitaltwininstance.then(value => {
-                value.methods.recognize(tkid,status).send({from: request.body.bcacc, gas: gas})
+                value.methods.recognize(productid,status).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
-                    console.log(`Updating packing verification result: ${tkid}, Txn hash: ${result.transactionHash}`);
+                    console.log(`Updating packing verification result: ${productid}, Txn hash: ${result.transactionHash}`);
                     response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
                     response.end('\n');
                 })
                 .catch((error) => {
                     var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to verify packaging for token: ${tkid}, Txn hash: ${txnhash}`);
+                    console.log(`Failed to verify packaging for token: ${productid}, Txn hash: ${txnhash}`);
                     console.log(error);
 
                     if (error.message.includes("gas")) {
@@ -166,21 +166,21 @@ router.post('/agent/verify',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var tkid = request.body.tkid;
+            var productid = request.body.productid;
             var status = request.body.status;
             var gas = request.body.gas;
 
             digitaltwininstance.then(value => {
-                value.methods.verify(tkid,status).send({from: request.body.bcacc, gas: gas})
+                value.methods.verify(productid,status).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
-                    console.log(`Updating halal verification result: ${tkid}, Txn hash: ${result.transactionHash}`);
+                    console.log(`Updating halal verification result: ${productid}, Txn hash: ${result.transactionHash}`);
                     response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
                     response.end('\n');
                 })
                 .catch((error) => {
                     var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to verify token: ${tkid}, Txn hash: ${txnhash}`);
+                    console.log(`Failed to verify token: ${productid}, Txn hash: ${txnhash}`);
                     console.log(error);
 
                     if (error.message.includes("gas")) {

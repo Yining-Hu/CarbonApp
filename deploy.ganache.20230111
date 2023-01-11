@@ -1,0 +1,138 @@
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/BToken.sol
+> Compiling ./contracts/DigitalTwin.sol
+> Compiling ./contracts/Escrow.sol
+> Compiling ./contracts/Migrations.sol
+> Compilation warnings encountered:
+
+    Warning: Unused local variable.
+  --> project:/contracts/Escrow.sol:71:10:
+   |
+71 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |          ^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/Escrow.sol:71:22:
+   |
+71 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |                      ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/Escrow.sol:71:46:
+   |
+71 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |                                              ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/Escrow.sol:71:69:
+   |
+71 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |                                                                     ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:147:10:
+    |
+147 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |          ^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:147:22:
+    |
+147 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |                      ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:147:69:
+    |
+147 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |                                                                     ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:147:92:
+    |
+147 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |                                                                                            ^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:156:10:
+    |
+156 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |          ^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:156:22:
+    |
+156 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |                      ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:156:46:
+    |
+156 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |                                              ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/Escrow.sol:156:92:
+    |
+156 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+    |                                                                                            ^^^^^^^^^^^^
+
+
+> Artifacts written to /home/yih/Documents/dev/beston-dapps/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.7+commit.e28d00a7.Emscripten.clang
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+5_deploy_escrow.js
+==================
+
+   Deploying 'DigitalTwin'
+   -----------------------
+   > transaction hash:    0x0bf682fcc11963748f6d2cc783ddcbd6615cab14f9031691da8a98e5e93388ab
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xff60a29F87db701e0358bA395115286Fee31dDd8
+   > block number:        5135
+   > block timestamp:     1673412440
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             103.3975873460000252
+   > gas used:            4604445 (0x46421d)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0920889 ETH
+
+
+   Deploying 'Escrow'
+   ------------------
+   > transaction hash:    0x11788eb330793c0359cf97999f431404754fdde1ca7bec85ba16323061bd48b2
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x7a9d6a8399E0254Cf9376D90A8cb4b7f41064f77
+   > block number:        5136
+   > block timestamp:     1673412440
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             103.2950265460000252
+   > gas used:            5128040 (0x4e3f68)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.1025608 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:           0.1946497 ETH
+
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.1946497 ETH
+
+

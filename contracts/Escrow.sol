@@ -16,17 +16,9 @@ import "./BToken.sol";
  */
 contract Escrow {
 
-    address agentaddr;
-    address payable agent;
-    
-    uint256 public fee;
-    uint256 public initial_payment;
-    uint256 public remaining_payment;
-
+    address agent;
+    uint256 public fee_btk;
     uint256 timeout;
-
-    uint256 btkprice;
-    uint256 public tokenSold;
 
     using SafeMath for uint256;
 
@@ -37,8 +29,8 @@ contract Escrow {
 
     struct Product{
         uint256 price;
-        address payable buyer;
-        address payable seller;
+        address buyer;
+        address seller;
         EscrowState state;
         uint256 timeout; // timeout for payment settlement
     }
@@ -52,17 +44,12 @@ contract Escrow {
     /**
      * @dev before setting up any user wallet, all buyers/sellers use a single buyer/seller address, which are maintained by Beston.
      */
-    constructor(DigitalTwin _digitaltwin, BToken _btoken, uint _btkprice) {
+    constructor(DigitalTwin _digitaltwin) {
         digitaltwin = _digitaltwin;
-        btk = _btoken;
-        btkprice = _btkprice;
-
-        agentaddr = msg.sender; // agent is the creator of the contract
-
-        agent = payable(agentaddr);
-        fee = 1000000000; // 1e9, based on estimated agent cost
-
-        timeout = 3 minutes;
+        btk = new BToken("BT", "BT", 1000000);
+        agent = msg.sender;
+        fee_btk = 1;
+        timeout = 5 minutes;
     }
 
     modifier validDestination(address to) {
@@ -76,23 +63,6 @@ contract Escrow {
         _;
     }
 
-    // buyTokens sends BTokens to participants
-    function buyTokens(uint256 _numOfTokens) public payable {
-        require(msg.value == _numOfTokens.mul(btkprice), "Requires payment value to equal price of tokens.");
-        require(
-            btk.balanceOf(address(this)) >= _numOfTokens,
-            "Requires the deployed BToken contract to hold more tokens than requested."
-        );
-
-        btk.transfer(msg.sender, _numOfTokens); // contract transfer _numOfTokens to the caller of this function
-
-        tokenSold += _numOfTokens; // keep track of tokens that are sold
-    }
-
-    function getTokenBalance(address _addr) external view returns(uint) {
-        return btk.balanceOf(_addr);
-    }    
-
     function offer(string memory _tkname , uint256 _price) public {
         require(!productExists[_tkname], "Product is already offered.");
         require(digitaltwin.tkExists(_tkname), "Product token is not minted.");
@@ -104,90 +74,48 @@ contract Escrow {
         Product memory product;
         product.price = _price; /// @dev double check the conversion in Polygon
         product.state = EscrowState.OFFERED;
-        product.seller = payable(msg.sender);
+        product.seller = msg.sender;
         stock[_tkname] = product;
         productExists[_tkname] = true;
         allproducts.push(_tkname);
 
         // transfer the token ownership to the agent
-        digitaltwin.transferByName(_tkname,agentaddr);
+        digitaltwin.transferByName(_tkname,agent);
     }
-    
+
+    /**
+     * buyBTK allows a caller to buy BTK from Escrow
+     * sellBTK allows a caller to sell BTK to Escrow
+     */
+    function buyBTK() payable public {
+        uint256 amountTobuy = msg.value;
+        uint256 dexBalance = btk.balanceOf(address(this));
+        require(amountTobuy > 0, "You need to send some ether");
+        require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
+        btk.transfer(msg.sender, amountTobuy);
+    }
+
+    function sellBTK(uint256 amount) public {
+        require(amount > 0, "You need to sell at least some tokens");
+        uint256 allowance = btk.allowance(msg.sender, address(this));
+        require(allowance >= amount, "Check the token allowance");
+        btk.transferFrom(msg.sender, address(this), amount); // msg.sender is the caller, address(this) is Escrow
+        payable(msg.sender).transfer(amount);
+    }
+
     /**
      * @notice Buyer can make a deposit to products on offer
-     * @dev Partial payment is sent to the seller, however, can change depending on the agreement
      */
-    function BuyerDeposit(string memory _tkname) external payable validDestination(agent) validDestination(stock[_tkname].seller) {
-        require (msg.value == fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
+    function BuyerDepositWithBTK(string memory _tkname, uint256 _deposit) external validDestination(agent) validProduct(_tkname) {
+        require (_deposit == fee_btk + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
         require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
 
-        stock[_tkname].buyer = payable(msg.sender);
+        stock[_tkname].buyer = payable(msg.sender); //Todo: this doesn't need to be payable
         stock[_tkname].state = EscrowState.DEPOSITTAKEN;
         stock[_tkname].timeout = block.timestamp + timeout; // add a timeout for settlement when buyer sends deposit
 
-        initial_payment = stock[_tkname].price.div(10); // initial payment set to be 10% of the total price
-        remaining_payment = stock[_tkname].price.sub(initial_payment);
-
-        agent.transfer(fee);
-        stock[_tkname].seller.transfer(initial_payment);
-
-        emit DepositTaken(_tkname, stock[_tkname].price);
-    }
-
-    /**
-     * @notice Buyer can approve the payment with or without verification
-     * @dev when implementing the api and front end, buyer should have the option to proceed without or with verification
-     */ 
-    // function BuyerApprove(string memory _tkname) public validDestination(seller) validProduct(_tkname) {
-    //     require (msg.sender == buyer);
-    //     require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "Buyer cannot approve without a deposit!");
-    //     require (block.timestamp < stock[_tkname].timeout);
-    //     seller.transfer(remaining_payment);
-    //     stock[_tkname].state = EscrowState.BUYERAPPROVED;
-    // }
-
-    /**
-     * @notice Seller can redeem with 2 verifications
-     * Achieves the same payment result as BuyerApprove, but requires seller to pay for execution
-     */
-    function AgentApprove(string memory _tkname) public validDestination(stock[_tkname].seller) validProduct(_tkname) {
-        require (msg.sender == agent, "Only agent can call the redeem function.");
-        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
-        require (VerifyPackaging(_tkname), "Agent cannot aprove payment if packaging is unverified.");
-        require (VerifyProduct(_tkname), "Agent cannot aprove payment of unverified product.");
-        require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
-        stock[_tkname].seller.transfer(remaining_payment);
-        stock[_tkname].state = EscrowState.SELLERREDEEMED;
-    }
-
-    /**
-     * @notice Buyer can deny the payment upon unsatisfactory verification result or for other reasons.
-     */
-    function AgentDeny(string memory _tkname) public validDestination(stock[_tkname].buyer) validProduct(_tkname) {
-        require (msg.sender == agent, "Only agent can call the refund function.");
-        require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
-        require (block.timestamp > stock[_tkname].timeout, "Agent can issue the refund after the specified timeout.");
-        stock[_tkname].buyer.transfer(remaining_payment);
-        stock[_tkname].state = EscrowState.BUYERDENIED;
-    }
-
-    /**
-     * the functions below are for payments using btks
-     * Todo: after confirming that function works, remove the payable keyword
-     */
-    function BuyerDepositWithBTK(string memory _tkname) external payable validDestination(agent) validDestination(stock[_tkname].seller) {
-        require (msg.value == fee + stock[_tkname].price, "Please make sure your deposit covers both the product price and agent fee!");
-        require (stock[_tkname].state == EscrowState.OFFERED , "Product is not on offer!"); // this also blocks buyer from making duplicatd deposit
-
-        stock[_tkname].buyer = payable(msg.sender);
-        stock[_tkname].state = EscrowState.DEPOSITTAKEN;
-        stock[_tkname].timeout = block.timestamp + timeout; // add a timeout for settlement when buyer sends deposit
-
-        initial_payment = stock[_tkname].price.div(10); // initial payment set to be 10% of the total price
-        remaining_payment = stock[_tkname].price.sub(initial_payment);
-
-        btk.transfer(agent, fee);
-        btk.transfer(stock[_tkname].seller, initial_payment);
+        btk.transferFrom(msg.sender, address(this), _deposit); // buyer transfers the deposit to Escrow (provided that buyer approves separately)
+        btk.transfer(agent, fee_btk); // buyer transfers the agent fee via Escrow, this msg.sender is Escrow
         
         emit DepositTaken(_tkname, stock[_tkname].price);
     }
@@ -195,10 +123,8 @@ contract Escrow {
     function AgentApproveWithBTK(string memory _tkname) public validDestination(stock[_tkname].seller) validProduct(_tkname) {
         require (msg.sender == agent, "Only agent can call the redeem function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
-        require (VerifyPackaging(_tkname), "Agent cannot aprove payment if packaging is unverified.");
-        require (VerifyProduct(_tkname), "Agent cannot aprove payment of unverified product.");
-        require (block.timestamp < stock[_tkname].timeout, "Seller can only redeem before the specified timeout.");
-        btk.transfer(stock[_tkname].seller, remaining_payment);
+        require (block.timestamp < stock[_tkname].timeout, "Agent can only approve the payment before the specified timeout.");
+        btk.transfer(stock[_tkname].seller, stock[_tkname].price); // Escrow transfers the product price to seller
         stock[_tkname].state = EscrowState.SELLERREDEEMED;
     }
 
@@ -208,8 +134,8 @@ contract Escrow {
     function AgentDenyWithBTK(string memory _tkname) public validDestination(stock[_tkname].buyer) validProduct(_tkname) {
         require (msg.sender == agent, "Only agent can call the refund function.");
         require (stock[_tkname].state == EscrowState.DEPOSITTAKEN, "No deposit found for this product.");
-        require (block.timestamp > stock[_tkname].timeout, "Agent can issue the refund after the specified timeout.");
-        btk.transfer(stock[_tkname].buyer, remaining_payment);
+        require (block.timestamp > stock[_tkname].timeout, "Agent can only issue the refund after the specified timeout.");
+        btk.transfer(stock[_tkname].buyer, stock[_tkname].price);
         stock[_tkname].state = EscrowState.BUYERDENIED;
     }
 
