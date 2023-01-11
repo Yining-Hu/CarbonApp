@@ -36,6 +36,25 @@ const getContractByAddr = async (address, provider, path) => {
     return instance;
 };
 
+// Todo: currently only specific to the btk() method, to generalise
+const getSubContract = async (netId, provider, cpath, scpath) => {
+    var Contract = require('web3-eth-contract');
+    Contract.setProvider(provider);
+
+    var rawContract = fs.readFileSync(cpath);
+    var contractData = JSON.parse(rawContract);
+    var abi = contractData.abi;
+    var address = contractData.networks[netId].address;
+
+    var instance = await new Contract(abi, address);
+
+    var scaddr = await instance.methods.btk().call();
+    console.log(scaddr);
+    var subinstance = await getContractByAddr(scaddr, provider, scpath);
+
+    return subinstance;
+}
+
 function parseData(file) {
     let data = [];
     return new Promise((resolve, reject) => {
@@ -66,4 +85,4 @@ async function getData(datapath) {
     }
 }
 
-module.exports = {getWeb3, getContract, getContractByAddr, parseData, getData};
+module.exports = {getWeb3, getContract, getContractByAddr, getSubContract, parseData, getData};

@@ -9,15 +9,9 @@ var netId = '5777';
 var providerURL = 'http://127.0.0.1:7545';
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/ganache/";
 
+var escrowpath = './build/contracts/Escrow.json';
 var btkpath = './build/contracts/BToken.json';
-/**
- * Todo: to automate the following steps
- * steps to get btkaddr
- * 1. start app.js
- * 2. call route /escrow/addr/btk
- */
-var btkaddr = "0x5874500c1004B4cC65264660cBec757433e26294";
-var btkinstance = utils.getContractByAddr(btkaddr, providerURL, btkpath);
+var btkinstance = utils.getSubContract(netId, providerURL, escrowpath, btkpath);
 
 router.post('/approve',
     validator.check("spender").exists().withMessage("Input should contain field 'spender'."),
@@ -30,7 +24,11 @@ router.post('/approve',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var spender = request.body.spender; //Todo: if receipient is a string like "buyer", convert the string to their bcacc
+            var spender = request.body.spender; 
+            //Todo: if receipient is a string like "buyer", convert the string to their bcacc
+            // var user = JSON.parse(fs.readFileSync(privkeyPath+request.body.spender+'.json'));
+            // var spender = user.bcacc;
+            
             var amount = request.body.amount;
             var gas = request.body.gas;
 
@@ -59,8 +57,7 @@ router.post('/approve',
     });
 
 router.get('/balance', (request, response) => {
-    var username = request.get('user-name');
-    var user = JSON.parse(fs.readFileSync(privkeyPath+username+'.json'));
+    var user = JSON.parse(fs.readFileSync(privkeyPath+request.get('user-name')+'.json'));
     var bcacc = user.bcacc;
 
     btkinstance.then(value => {
