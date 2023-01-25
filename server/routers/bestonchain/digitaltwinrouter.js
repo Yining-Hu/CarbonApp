@@ -14,12 +14,12 @@ var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
 var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
 
 var accPrivKeys = [agentkey, buyerkey, sellerkey];
-var providerURL = "http://127.0.0.1:8545"
+var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var digitaltwinpath = '/home/yih/Documents/dev/beston-dapps/build/contracts/DigitalTwin.json';
-var digitaltwinAddr = "0x5De3828920Ed4998907154aa5B9D8Bbe4D130aE2";
-var digitaltwininstance = utils.getContractByAddr(digitaltwinAddr,provider,digitaltwinpath); // get the digitaltwin contract instance
+var digitaltwinAddr = "0x431379c85a19c9f8Aa7C2d42e01001FfbbE60569";
+var digitaltwininstance = utils.getContract("addr",digitaltwinAddr,provider,digitaltwinpath); // get the digitaltwin contract instance
 
 router.post('/seller/mint',
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),

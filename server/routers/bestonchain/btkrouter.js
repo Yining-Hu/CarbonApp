@@ -1,17 +1,25 @@
 const utils = require('../../utils.js');
 const fs = require('fs');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
 const validator = require('express-validator');
 const router = express.Router();
 router.use(express.json());
 
-var netId = '5777';
-var providerURL = 'http://127.0.0.1:7545';
-var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/ganache/";
+var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
+
+var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
+var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
+var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
+
+var accPrivKeys = [agentkey, buyerkey, sellerkey];
+var providerURL = "http://127.0.0.1:8545"
+var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var escrowpath = './build/contracts/Escrow.json';
+var escrowAddr = "0xFc11f68165E5361650B8D65C07bB82BeDF963848";
 var btkpath = './build/contracts/BToken.json';
-var btkinstance = utils.getSubContract("netId",netId,providerURL,escrowpath,btkpath);
+var btkinstance = utils.getSubContract("addr",escrowAddr,provider,escrowpath,btkpath);
 
 router.post('/approve',
     validator.check("spender").exists().withMessage("Input should contain field 'spender'."),

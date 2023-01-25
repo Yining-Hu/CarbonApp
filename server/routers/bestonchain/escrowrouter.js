@@ -17,8 +17,8 @@ var providerURL = "http://127.0.0.1:8545"
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var escrowpath = '/home/yih/Documents/dev/beston-dapps/build/contracts/Escrow.json';
-var escrowAddr = "0xA8265FE34356E78b40686fe0377d1a5628A916B9";
-var escrowinstance = utils.getContractByAddr(escrowAddr,provider,escrowpath); // get the escrow contract instance
+var escrowAddr = "0xFc11f68165E5361650B8D65C07bB82BeDF963848";
+var escrowinstance = utils.getContract("addr", escrowAddr,provider,escrowpath); // get the escrow contract instance
 
 router.post('/seller/offer',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),

@@ -8,28 +8,23 @@ const getWeb3 = (provider) => {
 
     return web3;
 }
-  
-const getContract = async (netId, provider, path) => {
+
+const getContract = async (type, param, provider, path) => {
     var Contract = require('web3-eth-contract');
     Contract.setProvider(provider);
 
     var rawContract = fs.readFileSync(path);
     var contractData = JSON.parse(rawContract);
     var abi = contractData.abi;
-    var address = contractData.networks[netId].address;
+    var address;
 
-    var instance = await new Contract(abi, address);
-
-    return instance;
-};
-
-const getContractByAddr = async (address, provider, path) => {
-    var Contract = require('web3-eth-contract');
-    Contract.setProvider(provider);
-
-    var rawContract = fs.readFileSync(path);
-    var contractData = JSON.parse(rawContract);
-    var abi = contractData.abi;
+    if (type == "netId") {
+        address = contractData.networks[param].address;
+    } else if (type == "addr") {
+        address = param;
+    } else {
+        console.log("Input should be either netId or addr!");
+    }
 
     var instance = await new Contract(abi, address);
 
@@ -37,20 +32,26 @@ const getContractByAddr = async (address, provider, path) => {
 };
 
 // Todo: currently only specific to the btk() method, to generalise
-const getSubContract = async (netId, provider, cpath, scpath) => {
+// Note: type and param are for the initial contract
+const getSubContract = async (type, param, provider, cpath, scpath) => {
     var Contract = require('web3-eth-contract');
     Contract.setProvider(provider);
 
     var rawContract = fs.readFileSync(cpath);
     var contractData = JSON.parse(rawContract);
     var abi = contractData.abi;
-    var address = contractData.networks[netId].address;
+
+    if (type == "netId") {
+        address = contractData.networks[param].address;
+    } else if (type == "addr") {
+        address = param;
+    } else {
+        console.log("Input should be either netId or addr!");
+    }
 
     var instance = await new Contract(abi, address);
-
     var scaddr = await instance.methods.btk().call();
-    console.log(scaddr);
-    var subinstance = await getContractByAddr(scaddr, provider, scpath);
+    var subinstance = await getContract("addr", scaddr, provider, scpath);
 
     return subinstance;
 }
@@ -85,4 +86,4 @@ async function getData(datapath) {
     }
 }
 
-module.exports = {getWeb3, getContract, getContractByAddr, getSubContract, parseData, getData};
+module.exports = {getWeb3, getContract, getSubContract, parseData, getData};

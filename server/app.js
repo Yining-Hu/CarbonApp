@@ -20,6 +20,7 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
     escrowroute = require('./routers/bestonchain/escrowrouter.js');
     digitaltwinroute = require('./routers/bestonchain/digitaltwinrouter.js');
+    btkroute = require('./routers/bestonchain/btkrouter.js');
     generalroute = require('./routers/bestonchain/general.js');
     signup = require('./routers/bestonchain/signup.js');
     middlewares = require('./routers/bestonchain/middlewares.js');

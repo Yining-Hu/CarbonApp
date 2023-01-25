@@ -10,7 +10,7 @@ var providerURL = 'http://127.0.0.1:7545';
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/ganache/";
 
 var escrowpath = './build/contracts/Escrow.json';
-var escrowinstance = utils.getContract(netId,providerURL,escrowpath);
+var escrowinstance = utils.getContract("netId",netId,providerURL,escrowpath);
 
 router.post('/seller/offer',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
