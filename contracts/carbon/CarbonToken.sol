@@ -1,71 +1,83 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./HerdRegistry.sol";
+import "../../node_modules/@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "./FarmRegistry.sol";
 import "./EmissionTracking.sol";
-import "./FeedTracking.sol";
-import "../../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract CarbonToken is ERC20 {
+contract CarbonToken is ERC1155 {
     address public admin;
+    FarmRegistry public farmregistry;
 
-    HerdRegistry public herdregistry;
-    FeedTracking public feedtracking;
-    EmissionTracking public emissiontracking;
+    // CBT's internal ids
+    // VERRA-0, ACCU-1, GOLDSTANDARD-2
 
-    uint private feedToCC = 10;
-    uint private emissionToCC = 20;
-
-    enum Source {
-        FEED,
-        EMISSION
+    struct CBToken {
+        uint256 InternalID; // the id used to mint a 1155 token
+        uint256 Amount;
+        uint256 StartDate;
+        uint256 EndDate;
     }
 
-    constructor(string memory _name, string memory _symbol, HerdRegistry _herdregistry, FeedTracking _feedtracking, EmissionTracking _emissiontracking) 
-        ERC20(_name, _symbol) 
+    struct Distribution {
+        string CBTokenID;
+        uint256 Amount;
+        address Farmer;
+        bool Paid;
+    }
+
+    mapping(string => CBToken) cbtokens;
+    mapping(string => bool) cbtokenExists;
+    mapping(string => Distribution) distributions;
+    mapping(string => bool) distributionExists;
+
+    constructor(string memory _uri, FarmRegistry _farmregistry)
+        ERC1155(_uri)
     {
-        admin = msg.sender; // assumes beston to be the aggregator and the contract admin
-
-        herdregistry = _herdregistry;
-        feedtracking = _feedtracking;
-        emissiontracking = _emissiontracking;
+        admin = msg.sender;
+        farmregistry = _farmregistry;
     }
 
-    /** 
-     * using the data from feedtracking and emission tracking
-     * Todo: for a particular day should only use either feedtracking or emissiontracking not both
-     * Todo: to understand better the conversion from the measurements to the CC as feedToCC could be too simple
-     */
-    function mintCCByFeed(uint256 _feedID) internal {
-        (uint256 herdID, string memory ingredient, uint256 quantity, bool ccminted, address farmer, uint time) = feedtracking.viewFeed(_feedID);
-
-        require(farmer == msg.sender, "Only farm owner can mint Carbon Tokens.");
-        require(ccminted == false, "Carbon Token already minted for this feed record.");
-
-        _mint(msg.sender, quantity/feedToCC);
+    // Todo: add a condition for issue, e.g., only if emissions are verified carbon tokens can be issued.
+    function issue(string memory _cbtokenid, uint256 _amount, uint256 _startdate, uint256 _enddate) public {
+        require(msg.sender == admin, "Only admin can issue Carbon Tokens.");
+        _mint(admin,0,_amount,"");
+        cbtokens[_cbtokenid] = CBToken(0,_amount,_startdate,_enddate);
+        cbtokenExists[_cbtokenid] = true;
     }
 
-    function mintCCByEmission(uint256 _emissionID) internal {
-        (uint256 herdID, uint256 amount, bool ccminted, address farmer, uint time) = emissiontracking.viewEmission(_emissionID);
-
-        require(farmer == msg.sender, "Only farm owner can mint Carbon Tokens.");
-        require(ccminted == false, "Carbon Token already minted for this emission record.");
-
-        _mint(msg.sender, amount/emissionToCC);
+    function distribute(string memory _cbtokenid, string memory _distributionid, string memory _farmid, uint256 _amount) public {
+        require(msg.sender == admin, "Only admin can distribute Carbon Tokens.");
+        require(cbtokenExists[_cbtokenid], "Carbon Token ID does not exist.");
+        safeTransferFrom(admin,farmregistry.farms(_farmid),cbtokens[_cbtokenid].InternalID,_amount, "");
+        distributions[_distributionid] = Distribution(_cbtokenid,_amount,farmregistry.farms(_farmid),false);
     }
 
-    function transferToAggregator(address _from, address _to, uint256 _amount) public 
+    function update(string memory _distributionid) public {
+        require(msg.sender == admin, "Only admin can update Carbon Token status.");
+        require(distributionExists[_distributionid], "Distribution ID does not exist.");
+        distributions[_distributionid].Paid = true;
+    }
+
+    function queryCarbonToken(string memory _cbtokenid) public view returns(uint256,uint256,uint256,uint256)
     {
-        require(msg.sender == _from);
-        require(admin == _to);
-
-        _transfer(_from, _to, _amount);
+        require(cbtokenExists[_cbtokenid], "Carbon Token ID does not exist.");
+        return(
+            cbtokens[_cbtokenid].InternalID,
+            cbtokens[_cbtokenid].Amount,
+            cbtokens[_cbtokenid].StartDate,
+            cbtokens[_cbtokenid].EndDate
+        );
     }
 
-    /**
-     * Todo: to understand the terms of binding and non-binding trading
-     */
-    function tradeBinding() public {}
-
-    function tradeNonBinding() public {}
+    function queryDistribution(string memory _distributionid) public view returns(string memory,uint256,address,bool)
+    {
+        require(distributionExists[_distributionid], "Distribution ID does not exist.");
+        return(
+            distributions[_distributionid].CBTokenID,
+            distributions[_distributionid].Amount,
+            distributions[_distributionid].Farmer,
+            distributions[_distributionid].Paid
+        );
+    }
 }

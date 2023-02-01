@@ -1,5 +1,4 @@
 const digitaltwin = artifacts.require('DigitalTwin');
-const btoken = artifacts.require('BToken');
 const escrow = artifacts.require('Escrow');
 
 // deploy as a dependency

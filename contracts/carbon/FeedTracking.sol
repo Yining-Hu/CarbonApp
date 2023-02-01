@@ -1,11 +1,10 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./HerdRegistry.sol";
-
+import "./AnimalRegistry.sol";
 
 contract FeedTracking {
-    HerdRegistry public herdregistry;
+    AnimalRegistry public animalregistry;
 
     enum Ingredient {
         REGULAR,
@@ -14,65 +13,52 @@ contract FeedTracking {
     }
 
     struct FeedRecord {
-        uint256 herdID;
-        Ingredient ingredient;
-        uint256 quantity;
-        bool ccminted;
-        address farmer; // assume farmer is the one to log the feed record
-        uint time;
-        uint blocktime;
+        Ingredient FeedType;
+        string AnimalID;
+        uint16 DMI;
+        uint256 DateTime;
+        uint256 BlockTime;
     }
 
-    mapping(uint256 => FeedRecord) public feeds;
+    mapping(string => FeedRecord) public feeds;
+    mapping(string => bool) public feedExists;
     uint256 public feedCount;
 
-    constructor(HerdRegistry _herdregistry)
+    constructor(AnimalRegistry _animalregistry)
     {
-        herdregistry = _herdregistry;
+        animalregistry = _animalregistry;
     }
 
     /**
-     * when looking up for a particular feed record
-     * we should allow flexible searching in the frontend or api
-     * and convert the search result to herdID for the use on smart contract
-     * 
-     * time should be in date format in front end, and gets converted to unix timestamp for the sc
+     * ingredient Regular-0, Asparagopsis-1, Polygain-2
      */
-    function logFeed(uint256 _herdID, uint8 _type, uint256 _quantity, uint _time) public 
+    function logFeed(string memory _feedid, uint8 _feedtype, string memory _animalID, uint16 _dmi, uint256 _datetime) public 
     {
-        require(herdregistry.herdExists(_herdID), "Herd is not registed.");
-
+        require(!feedExists[_feedid], "Feed ID already exist.");
+        require(animalregistry.animalExists(_animalID), "Animal is not registed.");
         feedCount++;
-        feeds[feedCount].herdID = _herdID;
-        feeds[feedCount].ingredient = Ingredient(_type);
-        feeds[feedCount].quantity = _quantity;
-        feeds[feedCount].ccminted = false;
-        feeds[feedCount].farmer = msg.sender; // assume farmer calls the function himself; or we manage the accounts on the api
-        feeds[feedCount].time = _time;
-        feeds[feedCount].blocktime = block.timestamp;
+        feeds[_feedid] = FeedRecord(Ingredient(_feedtype), _animalID, _dmi, _datetime, block.timestamp);
+        feedExists[_feedid] = true;
     }
 
-    /**
-     * Todo: too many return values, had to remove blocktime
-     */
-    function viewFeed(uint256 _feedID) 
+    function queryFeed(string memory _feedid) 
         public
         view
         returns(
-            uint256,
             string memory,
+            string memory,
+            uint16,
             uint256,
-            bool,
-            address,
-            uint)
+            uint256)
     {
+        require(feedExists[_feedid], "Feed ID does not exist.");
         string memory ingredient;
 
-        if (feeds[_feedID].ingredient == Ingredient.REGULAR) {
+        if (feeds[_feedid].FeedType == Ingredient.REGULAR) {
             ingredient = "Regular";
-        } else if (feeds[_feedID].ingredient == Ingredient.ASPARAGOPSIS) {
+        } else if (feeds[_feedid].FeedType == Ingredient.ASPARAGOPSIS) {
             ingredient = "Asparagopsis";
-        } else if (feeds[_feedID].ingredient == Ingredient.POLYGAIN) {
+        } else if (feeds[_feedid].FeedType == Ingredient.POLYGAIN) {
             ingredient = "Polygain";
         } else {
             ingredient = "Unknown";
@@ -80,18 +66,18 @@ contract FeedTracking {
 
         return
         (
-            feeds[_feedID].herdID,
             ingredient,
-            feeds[_feedID].quantity,
-            feeds[_feedID].ccminted,
-            feeds[_feedID].farmer,
-            feeds[_feedID].time
+            feeds[_feedid].AnimalID,
+            feeds[_feedid].DMI,
+            feeds[_feedid].DateTime,
+            feeds[_feedid].BlockTime
         );
     }
 
-    function verifyFeed(uint256 _feedID) public view returns (bool)
+    function verifyFeedTime(string memory _feedid) public view returns (bool)
     {
-        if (feeds[_feedID].time < feeds[_feedID].blocktime) {
+        require(feedExists[_feedid], "Feed ID does not exist.");
+        if (feeds[_feedid].DateTime < feeds[_feedid].BlockTime) {
             return(true);
         } else {
             return(false);
