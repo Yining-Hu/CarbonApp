@@ -217,8 +217,4 @@ contract Escrow {
 
         return (allproducts, prices, states, sellers, buyers);
     }
-
-    function GetBalance(address addr) public view returns(uint256) {
-        return addr.balance;
-    }
 }

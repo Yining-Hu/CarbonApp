@@ -1,0 +1,57 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+5_deploy_escrow.js
+==================
+
+   Replacing 'DigitalTwin'
+   -----------------------
+   > transaction hash:    0x658f8d2728bdb3c47af3bab1e541317801b301b09d1d81bdcbafb6a993e442b8
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xBcDE5993Ae5228B6fe9cf8087DC3e1a8726C108A
+   > block number:        5155
+   > block timestamp:     1675312932
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             102.8621379260000252
+   > gas used:            4604445 (0x46421d)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0920889 ETH
+
+
+   Replacing 'Escrow'
+   ------------------
+   > transaction hash:    0x56d878b87d64e6d1a87f5e62bda8e14deb462af9dcaa2c52e10b1052d3a2bc21
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x2C2E0A5fb6701C3fCc504a26106514Da2699d05c
+   > block number:        5156
+   > block timestamp:     1675312933
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             102.7603149860000252
+   > gas used:            5091147 (0x4daf4b)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.10182294 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.19391184 ETH
+
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.19391184 ETH
+
+
