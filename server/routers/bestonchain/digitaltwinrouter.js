@@ -8,17 +8,20 @@ const router = express.Router()
 router.use(express.json());
 
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
+const directory = fs.opendirSync(privkeyPath)
+let file;
+let accPrivKeys = [];
+while ((file = directory.readSync()) !== null) {
+    let key = JSON.parse(fs.readFileSync(privkeyPath+file.name)).privkey;
+    accPrivKeys.push(key);
+}
+directory.closeSync()
 
-var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
-
-var accPrivKeys = [agentkey, buyerkey, sellerkey];
 var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var digitaltwinpath = '/home/yih/Documents/dev/beston-dapps/build/contracts/DigitalTwin.json';
-var digitaltwinAddr = "0x431379c85a19c9f8Aa7C2d42e01001FfbbE60569";
+var digitaltwinAddr = "0x181D1da7129F23e1ce5af870242955fd874338D4";
 var digitaltwininstance = utils.getContract("addr",digitaltwinAddr,provider,digitaltwinpath); // get the digitaltwin contract instance
 
 router.post('/seller/mint',
