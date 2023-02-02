@@ -7,12 +7,15 @@ const router = express.Router()
 router.use(express.json());
 
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
+const directory = fs.opendirSync(privkeyPath)
+let file;
+let accPrivKeys = [];
+while ((file = directory.readSync()) !== null) {
+    let key = JSON.parse(fs.readFileSync(privkeyPath+file.name)).privkey;
+    accPrivKeys.push(key);
+}
+directory.closeSync()
 
-var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
-
-var accPrivKeys = [agentkey, buyerkey, sellerkey];
 var providerURL = "http://127.0.0.1:8545"
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 var web3 = utils.getWeb3(provider);
@@ -51,5 +54,23 @@ router.post('/transfer',
             response.end();
         })
     })
+
+router.get('/balance', (request, response) => {
+    var username = request.get('user-name');
+    var user = JSON.parse(fs.readFileSync(privkeyPath+username+'.json'));
+    var bcacc = user.bcacc;
+
+    web3.eth.getBalance(bcacc)
+    .then((result) => {
+        console.log(result);
+        response.json({'balance':result});
+    })
+    .catch((error) => {
+        console.log("Failed to query account balance");
+        console.log(error);
+
+        response.json({"server_response":"Please input a valid user account."});
+    })
+})
 
 module.exports=router
