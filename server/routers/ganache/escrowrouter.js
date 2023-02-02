@@ -7,7 +7,6 @@ router.use(express.json());
 
 var netId = '5777';
 var providerURL = 'http://127.0.0.1:7545';
-var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/ganache/";
 
 var escrowpath = './build/contracts/Escrow.json';
 var escrowinstance = utils.getContract("netId",netId,providerURL,escrowpath);
@@ -246,9 +245,9 @@ router.get('/view/products',
         })
     });
 
-// test routes for buying/selling btk and getting btk addr
 router.post('/buy/btk',
     validator.check("amountTobuy").exists().withMessage("Input should contain field 'amountTobuy'."),
+    validator.check("to").exists().withMessage("Input should contain field 'to'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
 
     (request, response) => {
@@ -257,10 +256,11 @@ router.post('/buy/btk',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var amountTobuy = request.body.amountTobuy;
+            var to = request.body.to;
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.buyBTK().send({from: request.body.bcacc, value:amountTobuy, gas: gas})
+                value.methods.buyBTK(to).send({from: request.body.bcacc, value:amountTobuy, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Buying ${amountTobuy} BTK, Txn hash: ${result.transactionHash}`);
@@ -335,27 +335,6 @@ router.get('/addr/btk', (request, response) => {
             console.log(error);
 
             response.json({"server_response":"Failed to retrieve the BToken address."});
-        })
-    })
-})
-
-// route for getting Ether balance
-router.get('/balance/matic', (request, response) => {
-    var username = request.get('user-name');
-    var user = JSON.parse(fs.readFileSync(privkeyPath+username+'.json'));
-    var bcacc = user.bcacc;
-
-    escrowinstance.then(value => {
-        value.methods.GetBalance(bcacc).call({from: request.body.bcacc})
-        .then((result) => {
-            console.log(result);
-            response.json({'balance':result});
-        })
-        .catch((error) => {
-            console.log("Failed to query account balance");
-            console.log(error);
-
-            response.json({"server_response":"Please input a valid user account."});
         })
     })
 })

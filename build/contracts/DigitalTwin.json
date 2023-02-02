@@ -44930,12 +44930,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xBcDE5993Ae5228B6fe9cf8087DC3e1a8726C108A",
-      "transactionHash": "0x658f8d2728bdb3c47af3bab1e541317801b301b09d1d81bdcbafb6a993e442b8"
+      "address": "0x2d3Ffef07608b2c106972cC512E4dACeaF694563",
+      "transactionHash": "0x4c0890403fab15f1f635112a788a9c961b5abbe0886fbb250c9487bf3c975810"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2023-02-02T04:42:13.551Z",
+  "updatedAt": "2023-02-02T21:02:38.095Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

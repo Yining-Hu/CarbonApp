@@ -87,12 +87,12 @@ contract Escrow {
      * buyBTK allows a caller to buy BTK from Escrow
      * sellBTK allows a caller to sell BTK to Escrow
      */
-    function buyBTK() payable public {
+    function buyBTK(address _to) payable public {
         uint256 amountTobuy = msg.value;
         uint256 dexBalance = btk.balanceOf(address(this));
         require(amountTobuy > 0, "You need to send some ether");
         require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
-        btk.transfer(msg.sender, amountTobuy);
+        btk.transfer(_to, amountTobuy);
     }
 
     function sellBTK(uint256 amount) public {
