@@ -1,0 +1,139 @@
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/carbon/CarbonToken.sol
+> Compilation warnings encountered:
+
+    Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:92:14:
+   |
+92 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_control[i]);
+   |              ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:92:50:
+   |
+92 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_control[i]);
+   |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:92:75:
+   |
+92 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_control[i]);
+   |                                                                           ^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:92:92:
+   |
+92 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_control[i]);
+   |                                                                                            ^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:98:14:
+   |
+98 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_test[i]);
+   |              ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:98:50:
+   |
+98 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_test[i]);
+   |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:98:75:
+   |
+98 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_test[i]);
+   |                                                                           ^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/EmissionTracking.sol:98:92:
+   |
+98 |             (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_test[i]);
+   |                                                                                            ^^^^^^^^^^^^^^^^^
+
+,Warning: Function state mutability can be restricted to view
+  --> project:/contracts/carbon/EmissionTracking.sol:85:5:
+   |
+85 |     function verifyEmissionValue(string[] memory _control, string[] memory _test) public returns(bool) {
+   |     ^ (Relevant source part starts here and spans across multiple lines).
+
+
+> Artifacts written to /home/yih/Documents/dev/beston-dapps/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.7+commit.e28d00a7.Emscripten.clang
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+6_deploy_carbonregistries.js
+============================
+
+   Replacing 'AnimalRegistry'
+   --------------------------
+   > transaction hash:    0x8e6c9eddfe4ed28973c39041ad39912d7df2288cc985c1369c729622ca1c6ba5
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x2Ac41017BE96b3efa8854FB97d4654867e524784
+   > block number:        5150
+   > block timestamp:     1675221361
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             103.0823675860000252
+   > gas used:            1006226 (0xf5a92)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.02012452 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.02012452 ETH
+
+
+7_deploy_cbt.js
+===============
+
+   Replacing 'FarmRegistry'
+   ------------------------
+   > transaction hash:    0x934b64416c81d1b351e4682e7461a8a09aa6effb03b3bee50d4088f71731fb8e
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x96ea6aC8C7Ba90302b3aed5f556bECDa1a530f90
+   > block number:        5151
+   > block timestamp:     1675221362
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             103.0490349460000252
+   > gas used:            516628 (0x7e214)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.01033256 ETH
+
+
+   Deploying 'CarbonToken'
+   -----------------------
+   > transaction hash:    0xcb12ca7d0a7eb9373f25d75dec47ea10af724399bc848529b53e336fb1c78bd3
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x3FC23F7D51e6F4B09972e91d1A0EefE488E86F97
+   > block number:        5154
+   > block timestamp:     1675221362
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             102.9542268260000252
+   > gas used:            3291059 (0x3237b3)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.06582118 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.07615374 ETH
+
+
+Summary
+=======
+> Total deployments:   3
+> Final cost:          0.09627826 ETH
+
+
