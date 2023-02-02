@@ -41,23 +41,5 @@ router.post('/transfer',
             response.end();
         })
     })
-
-router.get('/balance', (request, response) => {
-        var username = request.get('user-name');
-        var user = JSON.parse(fs.readFileSync(privkeyPath+username+'.json'));
-        var bcacc = user.bcacc;
-    
-        web3.eth.getBalance(bcacc)
-        .then((result) => {
-            console.log(result);
-            response.json({'balance':result});
-        })
-        .catch((error) => {
-            console.log("Failed to query account balance");
-            console.log(error);
-    
-            response.json({"server_response":"Please input a valid user account."});
-        })
-    })
     
 module.exports=router
