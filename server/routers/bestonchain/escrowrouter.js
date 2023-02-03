@@ -7,18 +7,21 @@ const router = express.Router()
 router.use(express.json());
 
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
+const directory = fs.opendirSync(privkeyPath)
+let file;
+let accPrivKeys = [];
+while ((file = directory.readSync()) !== null) {
+    let key = JSON.parse(fs.readFileSync(privkeyPath+file.name)).privkey;
+    accPrivKeys.push(key);
+}
+directory.closeSync()
 
-var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
-
-var accPrivKeys = [agentkey, buyerkey, sellerkey];
 var providerURL = "http://127.0.0.1:8545"
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var escrowpath = '/home/yih/Documents/dev/beston-dapps/build/contracts/Escrow.json';
-var escrowAddr = "0xFc11f68165E5361650B8D65C07bB82BeDF963848";
-var escrowinstance = utils.getContract("addr", escrowAddr,provider,escrowpath); // get the escrow contract instance
+var escrowAddr = "0xe42Afa755A516D0A10BEF19F912E8255f5198280";
+var escrowinstance = utils.getContract("addr",escrowAddr,provider,escrowpath); // get the escrow contract instance
 
 router.post('/seller/offer',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
@@ -66,8 +69,7 @@ router.post('/seller/offer',
 
 router.post('/buyer/deposit',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
-    validator.check("paymentvalue").isInt(),
-    validator.check("paymentvalue").exists().withMessage("Input should contain field 'paymentvalue'."),
+    validator.check("deposit").exists().withMessage("Input should contain field 'deposit'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
@@ -77,11 +79,11 @@ router.post('/buyer/deposit',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var productid = request.body.productid;
-            var paymentvalue = request.body.paymentvalue;
+            var deposit = request.body.deposit;
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.BuyerDeposit(productid).send({from: request.body.bcacc, value: paymentvalue, gas: gas})
+                value.methods.BuyerDepositWithBTK(productid,deposit).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Buyer sending deposit for product: ${productid}, Txn hash: ${result.transactionHash}`);
@@ -122,7 +124,7 @@ router.post('/agent/approve',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.AgentApprove(productid).send({from: request.body.bcacc, gas:gas})
+                value.methods.AgentApproveWithBTK(productid).send({from: request.body.bcacc, gas:gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Transferring remaining payment of product: ${productid} to seller, Txn hash: ${result.transactionHash}`);
@@ -163,7 +165,7 @@ router.post('/agent/deny',
             var gas = request.body.gas;
 
             escrowinstance.then(value => {
-                value.methods.AgentDeny(productid).send({from: request.body.bcacc, gas:gas})
+                value.methods.AgentDenyWithBTK(productid).send({from: request.body.bcacc, gas:gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Transferring refund of product: ${productid} to buyer, Txn hash: ${result.transactionHash}`);
@@ -248,22 +250,100 @@ router.get('/view/products',
         })
     });
 
-router.get('/balance', (request, response) => {
-    var username = request.get('user-name');
-    var user = JSON.parse(fs.readFileSync(privkeyPath+username+'.json'));
-    var bcacc = user.bcacc;
+router.post('/buy/btk',
+    validator.check("amountTobuy").exists().withMessage("Input should contain field 'amountTobuy'."),
+    validator.check("to").exists().withMessage("Input should contain field 'to'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
 
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var amountTobuy = request.body.amountTobuy;
+            var to = request.body.to;
+            var gas = request.body.gas;
+
+            escrowinstance.then(value => {
+                value.methods.buyBTK(to).send({from: request.body.bcacc, value:amountTobuy, gas: gas})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Buying ${amountTobuy} BTK, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    if (error.receipt == null) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else {
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to buy ${amountTobuy} BTK, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please ensure the amountTobuy is greater than 0 and less than the reserve."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
+                        response.end();
+                    }
+                })
+            })
+        }
+    });
+
+router.post('/sell/btk',
+    validator.check("amountTosell").exists().withMessage("Input should contain field 'amountTosell'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var amountTosell = request.body.amountTosell;
+            var gas = request.body.gas;
+
+            escrowinstance.then(value => {
+                value.methods.sellBTK(amountTosell).send({from: request.body.bcacc, gas: gas})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Selling ${amountTosell} BTK to Escrow, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    if (error.receipt == null) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else {
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to sell ${amountTosell} BTK to Escrow, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please the amount is greater than 0 and less than the allowance."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
+                        response.end();
+                    }
+                })
+            })
+        }
+    });
+
+router.get('/addr/btk', (request, response) => {
     escrowinstance.then(value => {
-        value.methods.GetBalance(bcacc).call({from: request.body.bcacc})
+        value.methods.btk().call()
         .then((result) => {
             console.log(result);
-            response.json({'balance':result});
+            response.json({'BToken adddress':result});
         })
         .catch((error) => {
-            console.log("Failed to query account balance");
+            console.log("Failed to retrieve the BToken address.");
             console.log(error);
 
-            response.json({"server_response":"Please input a valid user account."});
+            response.json({"server_response":"Failed to retrieve the BToken address."});
         })
     })
 })

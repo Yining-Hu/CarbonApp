@@ -21,7 +21,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var digitaltwinpath = '/home/yih/Documents/dev/beston-dapps/build/contracts/DigitalTwin.json';
-var digitaltwinAddr = "0x181D1da7129F23e1ce5af870242955fd874338D4";
+var digitaltwinAddr = "0xd0b683C445d697e221cC6CA8904d536bfc64213b";
 var digitaltwininstance = utils.getContract("addr",digitaltwinAddr,provider,digitaltwinpath); // get the digitaltwin contract instance
 
 router.post('/seller/mint',
