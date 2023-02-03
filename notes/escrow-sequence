@@ -1,0 +1,10 @@
+New users can get Ether from bank accounts.
+
+(before purchasing a product)
+Buyer/Seller/Agent buys BTK from Escrow.
+Buyer/Seller/Agent approves Escrow to spend a certain amount of BTK.
+
+(when purchasing a product)
+Same as the old escrow sequence.
+
+example: https://ethereum.org/en/developers/tutorials/transfers-and-approval-of-erc-20-tokens-from-a-solidity-smart-contract/
