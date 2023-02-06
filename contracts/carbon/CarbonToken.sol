@@ -3,11 +3,13 @@ pragma solidity ^0.8.0;
 
 import "../../node_modules/@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "./FarmRegistry.sol";
+import "./FeedTracking.sol";
 import "./EmissionTracking.sol";
 
 contract CarbonToken is ERC1155 {
     address public admin;
     FarmRegistry public farmregistry;
+    FeedTracking public feedtracking;
 
     // CBT's internal ids
     // VERRA-0, ACCU-1, GOLDSTANDARD-2
@@ -17,6 +19,7 @@ contract CarbonToken is ERC1155 {
         uint256 Amount;
         uint256 StartDate;
         uint256 EndDate;
+        // string[] FeedIDs; // the Carbon Token has to be linked to feed records
     }
 
     struct Distribution {
@@ -39,9 +42,18 @@ contract CarbonToken is ERC1155 {
     }
 
     // Todo: add a condition for issue, e.g., only if emissions are verified carbon tokens can be issued.
-    function issue(string memory _cbtokenid, uint256 _amount, uint256 _startdate, uint256 _enddate) public {
+    function issue(string memory _cbtokenid, uint256 _amount, string[] memory _feedids, uint256 _startdate, uint256 _enddate) public {
         require(msg.sender == admin, "Only admin can issue Carbon Tokens.");
         _mint(admin,0,_amount,"");
+
+        for(uint256 i=0; i<_feedids.length; i++){
+            (string memory ingredient, string memory claimstatus, string memory animalid, uint16 dmi, uint256 datetime, uint256 blocktime)=feedtracking.queryFeed(_feedids[i]);
+            require((datetime>=_startdate && datetime<=_enddate ), "The specified feed record is not in the claim period.");
+            require(keccak256(abi.encodePacked(claimstatus))=="Unclaimed", "The specified feed record is already used to claim carbon credits.");
+            
+            feedtracking.updateFeed(_feedids[i]);
+        }
+
         cbtokens[_cbtokenid] = CBToken(0,_amount,_startdate,_enddate);
         cbtokenExists[_cbtokenid] = true;
     }

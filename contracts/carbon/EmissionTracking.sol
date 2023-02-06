@@ -18,7 +18,6 @@ contract EmissionTracking {
     
     mapping(string => EmissionRecord) public emissions;
     mapping(string => bool) public emissionExists;
-    uint256 emissionCount;
 
     constructor(AnimalRegistry _animalregistry, FeedTracking _feedtracking)
     {
@@ -32,7 +31,6 @@ contract EmissionTracking {
         require(!emissionExists[_emissionid], "Emission ID exists.");
         require(animalregistry.animalExists(_animalid), "Animal is not registed.");
         
-        emissionCount++;
         emissions[_emissionid] = EmissionRecord(_value, FeedTracking.Ingredient(_feedtype), _animalid, _datetime, block.timestamp);
     }
 
@@ -68,37 +66,60 @@ contract EmissionTracking {
             );
         }
 
-    function verifyEmissionTime(string memory _emissionid) public view returns (bool)
-    {
-        require(emissionExists[_emissionid], "Emission ID does not exist.");
-        if (emissions[_emissionid].DateTime < emissions[_emissionid].BlockTime) {
-            return(true);
-        } else {
-            return(false);
+    // Note: on the front end, for a record of issued Carbon Tokens, we first take the start and end date, then for each date we find the emission record
+    // total emission is expected to be lower for the treatment group and higher for the controlled group
+    // arg _control is an array of emission ids in the control group
+    // arg _treatment is an array of emission ids in the treatment group
+    function verifyEmissionValue(string[] memory _control, string[] memory _treatment, uint8 _treatmenttype) public view returns(bool) {
+        require(_control.length == _treatment.length, "Please supply same number of emission records for the control group and the test group.");
+        uint16 controltotal = 0;
+        uint16 treatmenttotal = 0;
+        string[] memory animalids_control;
+        string[] memory animalids_treatment;
+
+        for(uint256 i=0; i<_control.length; i++){
+            require(emissionExists[_control[i]], "Emission ID does not exist.");
+            require(emissions[_control[i]].FeedType==FeedTracking.Ingredient.REGULAR, "Please only enter emission records with regular feed.");
+            controltotal = controltotal + emissions[_control[i]].Value;
+            animalids_control[i]=(emissions[_control[i]].AnimalID);
+
+            require(emissionExists[_treatment[i]], "Emission ID does not exist.");
+            require(emissions[_control[i]].FeedType==FeedTracking.Ingredient(_treatmenttype), "Please only enter emission records with the specified treatment type.");
+            treatmenttotal = treatmenttotal + emissions[_treatment[i]].Value;
+            animalids_treatment[i]=(emissions[_control[i]].AnimalID);
         }
+
+        // same animal id shouldn't appear in both groups
+        for(uint256 i=0; i<_control.length; i++){
+            for(uint256 j=0; j<_control.length; i++){
+                require(keccak256(abi.encodePacked(emissions[_treatment[j]].AnimalID))!=keccak256(abi.encodePacked(emissions[_control[i]].AnimalID)), "Control Group shouldn't have the same animals as Treatmnet Group.");
+            }
+        }
+
+        return(controltotal > treatmenttotal);
     }
 
-    // Note: on the front end, for a record of issued Carbon Tokens, we first take the start and end date, then for each date we find the emission record
-    // total emission has to be lower for the test group and higher for the controlled group
-    // arg _control is an array of emission ids in the control group
-    // arg _test is an array of emission ids in the test group
-    function verifyEmissionValue(string[] memory _control, string[] memory _test) public returns(bool) {
-        require(_control.length == _test.length, "Please supply same number of emission records for the control group and the test group.");
-        uint16 controltotal = 0;
-        uint16 testtotal = 0;
+    // the function takes an Emission ID as an argument, returns the animalid and datetime, and find the corresponding feed record
+    // it returns '' if the emission cannot be linked to a feed record
+    // the frontend should propafate this
+    function linkEmissionToFeed(string memory _emissionid) public returns(string memory) {
+        string memory ingredient;
+        string memory feedid;
+        string memory feedsearchid;
 
-        for(uint256 i = 0; i <_control.length; i++){
-            require(emissionExists[_control[i]], "Emission ID does not exist.");
-            (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_control[i]);
-            controltotal = controltotal + value;
+        if (emissions[_emissionid].FeedType == FeedTracking.Ingredient.REGULAR) {
+            ingredient = "Regular";
+        } else if (emissions[_emissionid].FeedType == FeedTracking.Ingredient.ASPARAGOPSIS) {
+            ingredient = "Asparagopsis";
+        } else if (emissions[_emissionid].FeedType == FeedTracking.Ingredient.POLYGAIN) {
+            ingredient = "Polygain";
+        } else {
+            ingredient = "Unknown";
         }
 
-        for(uint256 i = 0; i <_test.length; i++){
-            require(emissionExists[_test[i]], "Emission ID does not exist.");
-            (string memory animalid,uint16 value,string memory ingredient,uint256 datetime,uint256 blocktime)=queryEmission(_test[i]);
-            testtotal = testtotal + value;
-        }
+        feedsearchid = string(abi.encodePacked(ingredient,emissions[_emissionid].AnimalID,emissions[_emissionid].DateTime));
+        feedid = feedtracking.feedSearch(feedsearchid);
 
-        return(controltotal > testtotal);
+        return(feedid);
     }
 }

@@ -12,8 +12,14 @@ contract FeedTracking {
         POLYGAIN
     }
 
+    enum ClaimStatus {
+        CLAIMED,
+        UNCLAIMED
+    }
+
     struct FeedRecord {
         Ingredient FeedType;
+        ClaimStatus Status;
         string AnimalID;
         uint16 DMI;
         uint256 DateTime;
@@ -22,7 +28,8 @@ contract FeedTracking {
 
     mapping(string => FeedRecord) public feeds;
     mapping(string => bool) public feedExists;
-    uint256 public feedCount;
+    mapping(string => string) public feedSearch;
+    mapping(string => bool) public feedClaimed; // value changes to true if a feed record has been used to claim carbon tokens.
 
     constructor(AnimalRegistry _animalregistry)
     {
@@ -32,13 +39,35 @@ contract FeedTracking {
     /**
      * ingredient Regular-0, Asparagopsis-1, Polygain-2
      */
-    function logFeed(string memory _feedid, uint8 _feedtype, string memory _animalID, uint16 _dmi, uint256 _datetime) public 
+    function logFeed(string memory _feedid, uint8 _feedtype, string memory _animalid, uint16 _dmi, uint256 _datetime) public 
     {
         require(!feedExists[_feedid], "Feed ID already exist.");
-        require(animalregistry.animalExists(_animalID), "Animal is not registed.");
-        feedCount++;
-        feeds[_feedid] = FeedRecord(Ingredient(_feedtype), _animalID, _dmi, _datetime, block.timestamp);
+        require(animalregistry.animalExists(_animalid), "Animal is not registed.");
+        
+        string memory searchid;
+        string memory ingredient;
+
+        feeds[_feedid] = FeedRecord(Ingredient(_feedtype), ClaimStatus.UNCLAIMED, _animalid, _dmi, _datetime, block.timestamp);
         feedExists[_feedid] = true;
+
+        if (Ingredient(_feedtype) == Ingredient.REGULAR) {
+            ingredient = "Regular";
+        } else if (Ingredient(_feedtype) == Ingredient.ASPARAGOPSIS) {
+            ingredient = "Asparagopsis";
+        } else if (Ingredient(_feedtype) == Ingredient.POLYGAIN) {
+            ingredient = "Polygain";
+        } else {
+            ingredient = "Unknown";
+        }
+
+        searchid = string(abi.encodePacked(ingredient,_animalid,_datetime)); // searchid = [animalid|feedtype|datetime]
+        feedSearch[searchid] = _feedid;
+    }
+
+    function updateFeed(string memory _feedid) public {
+        require(feedExists[_feedid]);
+        require(feeds[_feedid].Status==ClaimStatus.UNCLAIMED);
+        feeds[_feedid].Status = ClaimStatus.CLAIMED;
     }
 
     function queryFeed(string memory _feedid) 
@@ -47,12 +76,14 @@ contract FeedTracking {
         returns(
             string memory,
             string memory,
+            string memory,
             uint16,
             uint256,
             uint256)
     {
         require(feedExists[_feedid], "Feed ID does not exist.");
         string memory ingredient;
+        string memory claimstatus;
 
         if (feeds[_feedid].FeedType == Ingredient.REGULAR) {
             ingredient = "Regular";
@@ -64,23 +95,21 @@ contract FeedTracking {
             ingredient = "Unknown";
         }
 
-        return
-        (
+        if (feeds[_feedid].Status == ClaimStatus.UNCLAIMED) {
+            claimstatus = "Unclaimed";
+        } else if (feeds[_feedid].Status == ClaimStatus.UNCLAIMED) {
+            ingredient = "Claimed";
+        } else {
+            ingredient = "Unknown";
+        }
+
+        return(
             ingredient,
+            claimstatus,
             feeds[_feedid].AnimalID,
             feeds[_feedid].DMI,
             feeds[_feedid].DateTime,
             feeds[_feedid].BlockTime
         );
-    }
-
-    function verifyFeedTime(string memory _feedid) public view returns (bool)
-    {
-        require(feedExists[_feedid], "Feed ID does not exist.");
-        if (feeds[_feedid].DateTime < feeds[_feedid].BlockTime) {
-            return(true);
-        } else {
-            return(false);
-        }
     }
 }

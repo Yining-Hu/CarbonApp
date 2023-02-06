@@ -86,40 +86,10 @@ router.get('/query',
         }
     });
 
-router.get('/verify/time', 
-    validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
-
-    (request, response) => {
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var emissionid = request.query.emissionid;
-
-            etrackinginstance.then(value => {
-                value.methods.verifyEmissionTime(emissionid).call({from: request.body.bcacc})
-                .then((result) => {
-                    console.log(result);
-                    response.json({"emissionid":emissionid,"verification_result":result[0]});
-                })
-                .catch((error) => {
-                    console.log(`Failed to verify time of Emission ${emissionid}.`);
-                    console.log(error);
-
-                    if (error.message.includes("Emission ID does not exist.")) {
-                        response.write(JSON.stringify({"server_response":"Emission ID does not exist."}));
-                    } else {
-                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
-                    }
-                    response.end();
-                })
-            })
-        }
-    });
-
 router.get('/verify/value', 
     validator.check("control").exists().withMessage("Input should contain field 'control'."),
-    validator.check("test").exists().withMessage("Input should contain field 'test'."),
+    validator.check("treatment").exists().withMessage("Input should contain field 'treatment'."),
+    validator.check("treatmenttype").exists().withMessage("Input should contain field 'treatmenttype'"),
 
     (request, response) => {
         var paramerrors = validator.validationResult(request);
@@ -127,22 +97,27 @@ router.get('/verify/value',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var control = request.query.control;
-            var test = request.query.test;
+            var treatment = request.query.treatment;
+            var treatmenttype = request.query.treatmenttype;
 
             etrackinginstance.then(value => {
-                value.methods.verifyEmissionValue(control,test).call({from: request.body.bcacc})
+                value.methods.verifyEmissionValue(control,treatment,treatmenttype).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
                     response.json({"verification_result":result});
                 })
                 .catch((error) => {
-                    console.log(`Failed to verify value of specified emissions.`);
+                    console.log(`Failed to verify value of specified emission records.`);
                     console.log(error);
 
                     if (error.message.includes("same number of emission records")) {
                         response.write(JSON.stringify({"server_response":"Please supply same number of emission records for the control group and the test group."}));
                     } else if (error.message.includes("Emission ID does not exist.")) {
                         response.write(JSON.stringify({"server_response":"Emission ID does not exist."}));
+                    } else if (error.message.includes("emission records with regular")) {
+                        response.write(JSON.stringify({"server_response":"Please only enter emission records with regular feed."}));
+                    } else if (error.message.includes("the specified treatment")) {
+                        response.write(JSON.stringify({"server_response":"Please only enter emission records with the specified treatment type."}));
                     } else {
                         response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
                     }

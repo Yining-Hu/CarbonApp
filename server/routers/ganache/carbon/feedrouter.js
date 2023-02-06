@@ -24,7 +24,7 @@ router.post('/log',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var feedid = request.body.feedid;
-            var feedtype = request.body.feedtype;
+            var feedtype = request.body.feedtype;erify
             var dmi = request.body.dmi;
             var datetime = request.body.datetime;
             var gas = request.body.gas;
@@ -75,37 +75,6 @@ router.get('/query',
                 })
                 .catch((error) => {
                     console.log(`Failed to query Feed ${feedid}.`);
-                    console.log(error);
-
-                    if (error.message.includes("Feed ID does not exist.")) {
-                        response.write(JSON.stringify({"server_response":"Feed ID does not exist."}));
-                    } else {
-                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
-                    }
-                    response.end();
-                })
-            })
-        }
-    });
-
-router.get('/verify', 
-    validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
-
-    (request, response) => {
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var feedid = request.query.feedid;
-
-            ftrackinginstance.then(value => {
-                value.methods.verifyFeedTime(feedid).call({from: request.body.bcacc})
-                .then((result) => {
-                    console.log(result);
-                    response.json({"feedid":feedid,"verification_result":result[0]});
-                })
-                .catch((error) => {
-                    console.log(`Failed to verify time of Feed ${feedid}.`);
                     console.log(error);
 
                     if (error.message.includes("Feed ID does not exist.")) {
