@@ -5,11 +5,13 @@ const keccak256 = require('keccak256')
 const router = express.Router()
 router.use(express.json());
 
-var netId = '5777';
-var providerURL = 'http://127.0.0.1:7545';
+// var netId = '5777';
+var provider = 'http://127.0.0.1:7545';
 
 var digitaltwinpath = './build/contracts/DigitalTwin.json';
-var digitaltwininstance = utils.getContract("netId",netId,providerURL,digitaltwinpath);
+var digitaltwinaddr = "0x8786A8Bb75Db9bc15B833eD2791cDcC219d94F2c";
+var digitaltwininstance = utils.getContract("addr",digitaltwinaddr,provider,digitaltwinpath);
+// var digitaltwininstance = utils.getContract("netId",netId,providerURL,digitaltwinpath);
 
 router.post('/seller/mint', 
     validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),

@@ -4,11 +4,13 @@ const validator = require('express-validator');
 const router = express.Router()
 router.use(express.json());
 
-var netId = '5777';
-var providerURL = 'http://127.0.0.1:7545';
+// var netId = '5777';
+var provider = 'http://127.0.0.1:7545';
 
 var animalregpath = './build/contracts/AnimalRegistry.json';
-var animalreginstance = utils.getContract("netId",netId,providerURL,animalregpath);
+var animalregaddr = "0x8fA8f3073d3017DbC78fA82A686589AbDa9641f6";
+var animalreginstance = utils.getContract("addr",animalregaddr,provider,animalregpath);
+// var animalreginstance = utils.getContract("netId",netId,providerURL,animalregpath);
 
 router.post('/register', 
     validator.check("animalid").exists().withMessage("Input should contain field 'animalid'."),
@@ -79,3 +81,5 @@ router.get('/view',
             })
         }
     });
+
+module.exports = router;

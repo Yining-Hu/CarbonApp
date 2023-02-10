@@ -4,11 +4,13 @@ const validator = require('express-validator');
 const router = express.Router()
 router.use(express.json());
 
-var netId = '5777';
-var providerURL = 'http://127.0.0.1:7545';
+// var netId = '5777';
+var provider = 'http://127.0.0.1:7545';
 
 var ftrackingpath = './build/contracts/FeedTracking.json';
-var ftrackinginstance = utils.getContract("netId",netId,providerURL,ftrackingpath);
+var ftrackingaddr = "";
+var ftrackinginstance = utils.getContract("addr",ftrackingaddr,provider,ftrackingpath);
+// var ftrackinginstance = utils.getContract("netId",netId,providerURL,ftrackingpath);
 
 router.post('/log',
     validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
@@ -87,3 +89,5 @@ router.get('/query',
             })
         }
     });
+
+module.exports=router;

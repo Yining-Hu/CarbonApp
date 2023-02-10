@@ -5,11 +5,13 @@ const validator = require('express-validator');
 const router = express.Router()
 router.use(express.json());
 
-var netId = '5777';
-var providerURL = 'http://127.0.0.1:7545';
+// var netId = '5777';
+var provider = 'http://127.0.0.1:7545';
 
 var escrowpath = './build/contracts/Escrow.json';
-var escrowinstance = utils.getContract("netId",netId,providerURL,escrowpath);
+var escrowaddr = "0x26d45B12f5BC3806132A457d05275B185b3b831E";
+var escrowinstance = utils.getContract("addr",escrowaddr,provider,escrowpath);
+// var escrowinstance = utils.getContract("netId",netId,providerURL,escrowpath);
 
 router.post('/seller/offer',
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),

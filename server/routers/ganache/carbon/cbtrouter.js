@@ -4,11 +4,13 @@ const validator = require('express-validator');
 const router = express.Router()
 router.use(express.json());
 
-var netId = '5777';
-var providerURL = 'http://127.0.0.1:7545';
+// var netId = '5777';
+var provider = 'http://127.0.0.1:7545';
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtinstance = utils.getContract("netId",netId,providerURL,cbtpath);
+var cbtaddr = "0xcEdf3A40F0132e679Ca5938613cb495C3902d71e";
+var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath);
+// var cbtinstance = utils.getContract("netId",netId,providerURL,cbtpath);
 
 router.post('/issue', 
     validator.check("id").exists().withMessage("Input should contain field 'id'."),
@@ -204,3 +206,5 @@ router.get('/view/distribution',
             })
         }
     });
+
+module.exports = router;

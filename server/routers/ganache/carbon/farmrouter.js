@@ -4,11 +4,13 @@ const validator = require('express-validator');
 const router = express.Router()
 router.use(express.json());
 
-var netId = '5777';
-var providerURL = 'http://127.0.0.1:7545';
+// var netId = '5777';
+var provider = 'http://127.0.0.1:7545';
 
 var farmregpath = './build/contracts/FarmRegistry.json';
-var farmreginstance = utils.getContract("netId",netId,providerURL,farmregpath);
+var farmregaddr = "0x02efbd6a0b2C3F92c6fA150bf825471d3ad0Ce64";
+var farmreginstance = utils.getContract("addr",farmregaddr,provider,farmregpath);
+// var farmreginstance = utils.getContract("netId",netId,providerURL,farmregpath);
 
 router.post('/register', 
     validator.check("farmid").exists().withMessage("Input should contain field 'farmid'."),
@@ -79,3 +81,5 @@ router.get('/view',
             })
         }
     });
+
+module.exports = router;
