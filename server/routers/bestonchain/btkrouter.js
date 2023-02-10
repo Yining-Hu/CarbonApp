@@ -20,9 +20,9 @@ var providerURL = "http://127.0.0.1:8545"
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var escrowpath = './build/contracts/Escrow.json';
-var escrowAddr = "0xe42Afa755A516D0A10BEF19F912E8255f5198280";
+var escrowaddr = "0xe42Afa755A516D0A10BEF19F912E8255f5198280";
 var btkpath = './build/contracts/BToken.json';
-var btkinstance = utils.getSubContract("addr",escrowAddr,provider,escrowpath,btkpath);
+var btkinstance = utils.getSubContract("addr",escrowaddr,provider,escrowpath,btkpath);
 
 router.post('/approve',
     validator.check("spender").exists().withMessage("Input should contain field 'spender'."),
