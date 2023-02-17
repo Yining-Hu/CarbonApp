@@ -8,13 +8,14 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var ftrackingpath = './build/contracts/FeedTracking.json';
-var ftrackingaddr = "";
+var ftrackingaddr = "0xEa0c5FAb8C774C0205bED4DA1Ca73458Dcc679eb";
 var ftrackinginstance = utils.getContract("addr",ftrackingaddr,provider,ftrackingpath);
-// var ftrackinginstance = utils.getContract("netId",netId,providerURL,ftrackingpath);
 
 router.post('/log',
     validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'."),
+    validator.check("feedtype").isInt().withMessage("Input should be an interger in the range [0,2]."),
+    validator.check("animalid").exists().withMessage("Input should contain field 'animalid'."),
     validator.check("dmi").exists().withMessage("Input should contain field 'dmi'."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
@@ -26,13 +27,14 @@ router.post('/log',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var feedid = request.body.feedid;
-            var feedtype = request.body.feedtype;erify
+            var feedtype = request.body.feedtype;
+            var animalid = request.body.animalid;
             var dmi = request.body.dmi;
             var datetime = request.body.datetime;
             var gas = request.body.gas;
 
             ftrackinginstance.then(value => {
-                value.methods.logFeed(feedid,feedtype,dmi,datetime).send({from: request.body.bcacc, gas: gas})
+                value.methods.logFeed(feedid,feedtype,animalid,dmi,datetime).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging feed ${feedid}, Txn hash: ${result.transactionHash}`);
@@ -59,7 +61,7 @@ router.post('/log',
         }
     })
 
-router.get('/query', 
+router.get('/view', 
     validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
 
     (request, response) => {
@@ -73,7 +75,7 @@ router.get('/query',
                 value.methods.queryFeed(feedid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"feedid":feedid,"ingredient":result[0],"animalid":result[1],"dmi":result[2],"datetime":result[3],"blocktime":result[4]});
+                    response.json({"feedid":feedid,"feedtype":result[0],"animalid":result[1],"dmi":result[2],"datetime":result[3],"blocktime":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Feed ${feedid}.`);

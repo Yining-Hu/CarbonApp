@@ -8,14 +8,15 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var etrackingpath = './build/contracts/EmissionTracking.json';
-var etrackingaddr = "";
+var etrackingaddr = "0x75127569EA28a54E392Ee64B16BA9153C3Fd7C38";
 var etrackinginstance = utils.getContract("addr",etrackingaddr,provider,etrackingpath);
 // var etrackinginstance = utils.getContract("netId",netId,providerURL,etrackingpath);
 
 router.post('/log', 
-    validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
+    validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
+    validator.check("amount").exists().withMessage("Input should contain field 'amount'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'."),
-    validator.check("dmi").exists().withMessage("Input should contain field 'dmi'."),
+    validator.check("animalid").exists().withMessage("Input should contain field 'animalid'."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -25,23 +26,24 @@ router.post('/log',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var feedid = request.body.feedid;
+            var emissionid = request.body.emissionid;
+            var amount = request.body.amount;
             var feedtype = request.body.feedtype;
-            var dmi = request.body.dmi;
+            var animalid = request.body.animalid;
             var datetime = request.body.datetime;
             var gas = request.body.gas;
 
             etrackinginstance.then(value => {
-                value.methods.logFeed(feedid,feedtype,dmi,datetime).send({from: request.body.bcacc, gas: gas})
+                value.methods.logEmission(emissionid,amount,feedtype,animalid,datetime).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
-                    console.log(`Logging feed ${feedid}, Txn hash: ${result.transactionHash}`);
+                    console.log(`Logging feed ${emissionid}, Txn hash: ${result.transactionHash}`);
                     response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
                     response.end('\n');
                 })
                 .catch((error) => {
                     var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to log feed ${feedid}, Txn hash: ${txnhash}`);
+                    console.log(`Failed to log feed ${emissionid}, Txn hash: ${txnhash}`);
                     console.log(error);
 
                     if (error.message.includes("gas")) {
@@ -57,7 +59,7 @@ router.post('/log',
         }
     })
 
-router.get('/query', 
+router.get('/view', 
     validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
 
     (request, response) => {
@@ -65,13 +67,13 @@ router.get('/query',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var feedid = request.query.feedid;
+            var emissionid = request.query.emissionid;
 
             etrackinginstance.then(value => {
-                value.methods.queryEmission(feedid).call({from: request.body.bcacc})
+                value.methods.queryEmission(emissionid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"emissionid":emissionid,"animalid":result[0],"value":result[1],"ingredient":result[2],"datetime":result[3],"blocktime":result[4]});
+                    response.json({"emissionid":emissionid,"animalid":result[0],"amount":result[1],"feedtype":result[2],"datetime":result[3],"blocktime":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Emission ${emissionid}.`);
@@ -91,7 +93,8 @@ router.get('/query',
 router.get('/verify/value', 
     validator.check("control").exists().withMessage("Input should contain field 'control'."),
     validator.check("treatment").exists().withMessage("Input should contain field 'treatment'."),
-    validator.check("treatmenttype").exists().withMessage("Input should contain field 'treatmenttype'"),
+    validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'"),
+    validator.check("feedtype").isInt().withMessage("Input should be an interger in the range [0,2]."),
 
     (request, response) => {
         var paramerrors = validator.validationResult(request);
@@ -100,10 +103,10 @@ router.get('/verify/value',
         } else {
             var control = request.query.control;
             var treatment = request.query.treatment;
-            var treatmenttype = request.query.treatmenttype;
+            var feedtype = request.query.feedtype;
 
             etrackinginstance.then(value => {
-                value.methods.verifyEmissionValue(control,treatment,treatmenttype).call({from: request.body.bcacc})
+                value.methods.verifyEmissionValue(control,treatment,feedtype).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
                     response.json({"verification_result":result});

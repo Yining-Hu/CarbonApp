@@ -16,16 +16,16 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
     feedroute = require('./routers/ganache/carbon/feedrouter.js');
     emissionroute = require('./routers/ganache/carbon/emissionrouter.js');
     cbtroute = require('./routers/ganache/carbon/cbtrouter.js');
-    middlewares = require('./routers/ganache/middlewares.js');
     generalroute = require('./routers/ganache/general.js');
+    middlewares = require('./routers/ganache/middlewares.js');
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
     // animalroute = require('./routers/bestonchain/carbon/animalrouter.js');
     // farmroute = require('./routers/bestonchain/carbon/farmrouter.js');
     // feedroute = require('./routers/bestonchain/carbon/feedrouter.js');
     // emissionroute = require('./routers/bestonchain/carbon/emissionrouter.js');
     // cbtroute = require('./routers/bestonchain/carbon/cbtrouter.js');
-    middlewares = require('./routers/bestonchain/middlewares.js');
     generalroute = require('./routers/bestonchain/general.js');
+    middlewares = require('./routers/bestonchain/middlewares.js');
 } else {
     console.log('Please select a blockchain network.');
     process.exit(1);

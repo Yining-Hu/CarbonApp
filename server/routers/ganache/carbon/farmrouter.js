@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var farmregpath = './build/contracts/FarmRegistry.json';
-var farmregaddr = "0x02efbd6a0b2C3F92c6fA150bf825471d3ad0Ce64";
+var farmregaddr = "0x46F6E4d52A62E73FAB38AEe599a48a669Bcb6048";
 var farmreginstance = utils.getContract("addr",farmregaddr,provider,farmregpath);
 // var farmreginstance = utils.getContract("netId",netId,providerURL,farmregpath);
 
@@ -65,7 +65,7 @@ router.get('/view',
                 value.methods.queryFarm(farmid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"farmid": farmid, "farmer_address": result[0]});
+                    response.json({"farmid": farmid, "farm_address": result[0]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query farm: ${farmid}`);

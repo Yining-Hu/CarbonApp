@@ -1,19 +1,22 @@
 const utils = require('../../../utils.js');
 const express = require('express');
 const validator = require('express-validator');
-const router = express.Router()
+const router = express.Router();
 router.use(express.json());
 
 // var netId = '5777';
 var provider = 'http://127.0.0.1:7545';
 
 var animalregpath = './build/contracts/AnimalRegistry.json';
-var animalregaddr = "0x8fA8f3073d3017DbC78fA82A686589AbDa9641f6";
+var animalregaddr = "0xe09B09059c017f18Acce8a84F1a65bBB81a1156a";
 var animalreginstance = utils.getContract("addr",animalregaddr,provider,animalregpath);
 // var animalreginstance = utils.getContract("netId",netId,providerURL,animalregpath);
 
 router.post('/register', 
     validator.check("animalid").exists().withMessage("Input should contain field 'animalid'."),
+    validator.check("farmid").exists().withMessage("Input should contain field 'farmid'."),
+    validator.check("animalgroup").exists().withMessage("Input should contain field 'animalgroup'."),
+    validator.check("animalgroup").isInt().withMessage("Input should be an interger in the range [0,2]."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
@@ -23,10 +26,12 @@ router.post('/register',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var animalid = request.body.animalid;
+            var farmid = request.body.farmid;
+            var animalgroup = request.body.animalgroup;
             var gas = request.body.gas;
 
             animalreginstance.then(value => {
-                value.methods.registerAnimal(animalid).send({from: request.body.bcacc, gas: gas})
+                value.methods.registerAnimal(animalid,farmid,animalgroup).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Registering an animal: ${animalid}, Txn hash: ${result.transactionHash}`);
