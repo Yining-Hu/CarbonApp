@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./FarmRegistry.sol";
+
 contract AnimalRegistry {
+    FarmRegistry public farmregistry;
+
     enum AnimalGroup {
         INMILKING,
         DRY,
@@ -18,12 +22,18 @@ contract AnimalRegistry {
     mapping(string => bool) public animalExists;
     uint16 public animalCount;
 
+    constructor(FarmRegistry _farmregistry)
+    {
+        farmregistry = _farmregistry;
+    }
+
     function registerAnimal(
         string memory _animalid, 
         string memory _farmid,
         uint8 _animalgroup) public 
         {
             require(animalExists[_animalid] == false, "Animal already exists.");
+            require(farmregistry.farmExists(_farmid), "Farm does not exist.");
             animalCount++;
             animals[_animalid] = Animal(_farmid,AnimalGroup(_animalgroup),new string[](0));
             animalExists[_animalid] = true;

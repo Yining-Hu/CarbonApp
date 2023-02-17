@@ -70,7 +70,7 @@ contract EmissionTracking {
     // total emission is expected to be lower for the treatment group and higher for the controlled group
     // arg _control is an array of emission ids in the control group
     // arg _treatment is an array of emission ids in the treatment group
-    function verifyEmissionValue(string[] memory _control, string[] memory _treatment, uint8 _treatmenttype) public view returns(bool) {
+    function verifyEmissionValue(string[] memory _control, string[] memory _treatment, uint8 _feedtype) public view returns(bool) {
         require(_control.length == _treatment.length, "Please supply same number of emission records for the control group and the test group.");
         uint16 controltotal = 0;
         uint16 treatmenttotal = 0;
@@ -84,7 +84,7 @@ contract EmissionTracking {
             animalids_control[i]=(emissions[_control[i]].AnimalID);
 
             require(emissionExists[_treatment[i]], "Emission ID does not exist.");
-            require(emissions[_control[i]].FeedType==FeedTracking.Ingredient(_treatmenttype), "Please only enter emission records with the specified treatment type.");
+            require(emissions[_control[i]].FeedType==FeedTracking.Ingredient(_feedtype), "Please only enter emission records with the specified treatment type.");
             treatmenttotal = treatmenttotal + emissions[_treatment[i]].Value;
             animalids_treatment[i]=(emissions[_control[i]].AnimalID);
         }
