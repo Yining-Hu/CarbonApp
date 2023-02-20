@@ -2,14 +2,13 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 const fs = require('fs');
 
 const privkeyPath = "server/credentials/bestonchain/";
-const agentpath = privkeyPath + "agent.json";
-const buyerpath = privkeyPath + "buyer.json";
-const sellerpath = privkeyPath + "seller.json";
 
-const agentkey = JSON.parse(fs.readFileSync(agentpath)).privkey;
-const buyerkey = JSON.parse(fs.readFileSync(buyerpath)).privkey;
-const sellerkey = JSON.parse(fs.readFileSync(sellerpath)).privkey;
-const privKeys = [agentkey, buyerkey, sellerkey];
+const agentkey = JSON.parse(fs.readFileSync(privkeyPath + "agent.json")).privkey;
+const buyerkey = JSON.parse(fs.readFileSync(privkeyPath + "buyer.json")).privkey;
+const sellerkey = JSON.parse(fs.readFileSync(privkeyPath + "seller.json")).privkey;
+const bestonkey = JSON.parse(fs.readFileSync(privkeyPath + "beston.json")).privkey;
+const farmerkey = JSON.parse(fs.readFileSync(privkeyPath + "farmer.json")).privkey;
+const privKeys = [agentkey, buyerkey, sellerkey, bestonkey, farmerkey];
 
 module.exports = {
   networks: {

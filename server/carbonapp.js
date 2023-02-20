@@ -19,11 +19,11 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
     generalroute = require('./routers/ganache/general.js');
     middlewares = require('./routers/ganache/middlewares.js');
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
-    // animalroute = require('./routers/bestonchain/carbon/animalrouter.js');
-    // farmroute = require('./routers/bestonchain/carbon/farmrouter.js');
-    // feedroute = require('./routers/bestonchain/carbon/feedrouter.js');
-    // emissionroute = require('./routers/bestonchain/carbon/emissionrouter.js');
-    // cbtroute = require('./routers/bestonchain/carbon/cbtrouter.js');
+    animalroute = require('./routers/bestonchain/carbon/animalrouter.js');
+    farmroute = require('./routers/bestonchain/carbon/farmrouter.js');
+    feedroute = require('./routers/bestonchain/carbon/feedrouter.js');
+    emissionroute = require('./routers/bestonchain/carbon/emissionrouter.js');
+    cbtroute = require('./routers/bestonchain/carbon/cbtrouter.js');
     generalroute = require('./routers/bestonchain/general.js');
     middlewares = require('./routers/bestonchain/middlewares.js');
 } else {
