@@ -1,6 +1,4 @@
-// Todo: still need to update the contract address and error messages
-
-const utils = require('../../utils.js');
+const utils = require('../../../utils.js');
 const fs = require('fs'); 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
@@ -10,21 +8,24 @@ router.use(express.json());
 
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
 
-var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
+const agentkey = JSON.parse(fs.readFileSync(privkeyPath + "agent.json")).privkey;
+const buyerkey = JSON.parse(fs.readFileSync(privkeyPath + "buyer.json")).privkey;
+const sellerkey = JSON.parse(fs.readFileSync(privkeyPath + "seller.json")).privkey;
+const bestonkey = JSON.parse(fs.readFileSync(privkeyPath + "beston.json")).privkey;
+const farmerkey = JSON.parse(fs.readFileSync(privkeyPath + "farmer.json")).privkey;
+const accPrivKeys = [agentkey, buyerkey, sellerkey, bestonkey, farmerkey];
 
-var accPrivKeys = [agentkey, buyerkey, sellerkey];
 var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtaddr = "";
+var cbtaddr = "0xA8557fB5535FAD27422a3c2b1BCf325Bf3f511B2";
 var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath); // get the digitaltwin contract instance
 
 router.post('/issue', 
-    validator.check("id").exists().withMessage("Input should contain field 'id'."),
+    validator.check("cbtokenid").exists().withMessage("Input should contain field 'cbtokenid'."),
     validator.check("amount").exists().withMessage("Input should contain field 'amount'."),
+    validator.check("feedids").exists().withMessage("Input should contain field 'feedids'."),
     validator.check("start").exists().withMessage("Input should contain field 'start'."),
     validator.check("end").exists().withMessage("Input should contain field 'end'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
@@ -35,31 +36,35 @@ router.post('/issue',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var id = request.body.id;
+            var cbtokenid = request.body.cbtokenid;
             var amount = request.body.amount;
+            var feedids = request.body.feedids;
             var start = request.body.start;
             var end = request.body.end;
             var gas = request.body.gas;
 
             cbtinstance.then(value => {
-                value.methods.issue(id,amount,start,end).send({from: request.body.bcacc, gas: gas})
+                value.methods.issue(cbtokenid,amount,feedids,start,end).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
-                    console.log(`Issuing ${amount} amount of ${id} Carbon Tokens for the period ${start}-${end}, Txn hash: ${result.transactionHash}`);
+                    console.log(`Issuing ${amount} amount of ${cbtokenid} Carbon Tokens for the period ${start}-${end}, Txn hash: ${result.transactionHash}`);
                     response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
                     response.end('\n');
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to issue ${id} Carbon Tokens, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
+                    if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Only admin")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only the Admin can issue carbon tokens."}));
                     } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to issue carbon token: ${cbtokenid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only admin can issue a carbon token for feed ids within the specified range."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
                     }
                     response.end();
                 })
@@ -216,3 +221,5 @@ router.get('/view/distribution',
             })
         }
     });
+
+module.exports = router;

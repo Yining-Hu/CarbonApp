@@ -1,6 +1,4 @@
-// Todo: still need to update the contract address and error messages
-
-const utils = require('../../utils.js');
+const utils = require('../../../utils.js');
 const fs = require('fs'); 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
@@ -10,16 +8,18 @@ router.use(express.json());
 
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
 
-var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
+const agentkey = JSON.parse(fs.readFileSync(privkeyPath + "agent.json")).privkey;
+const buyerkey = JSON.parse(fs.readFileSync(privkeyPath + "buyer.json")).privkey;
+const sellerkey = JSON.parse(fs.readFileSync(privkeyPath + "seller.json")).privkey;
+const bestonkey = JSON.parse(fs.readFileSync(privkeyPath + "beston.json")).privkey;
+const farmerkey = JSON.parse(fs.readFileSync(privkeyPath + "farmer.json")).privkey;
+const accPrivKeys = [agentkey, buyerkey, sellerkey, bestonkey, farmerkey];
 
-var accPrivKeys = [agentkey, buyerkey, sellerkey];
 var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var farmregpath = './build/contracts/FarmRegistry.json';
-var farmregaddr = "";
+var farmregaddr = "0xd320ae64461AFDF006070cA5D33Ab2BEc799d09C";
 var farmreginstance = utils.getContract("addr",farmregaddr,provider,farmregpath); // get the digitaltwin contract instance
 
 router.post('/register', 
@@ -44,16 +44,19 @@ router.post('/register',
                     response.end('\n');
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to register farm: ${farmid}, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
+                    if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Farm already exists.")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new Farm ID."}));
                     } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to register farm: ${farmid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new farm name."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
                     }
                     response.end();
                 })
@@ -91,3 +94,5 @@ router.get('/view',
             })
         }
     });
+
+module.exports = router;

@@ -1,6 +1,4 @@
-// Todo: still need to update the contract address and error messages
-
-const utils = require('../../utils.js');
+const utils = require('../../../utils.js');
 const fs = require('fs'); 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
@@ -10,21 +8,24 @@ router.use(express.json());
 
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
 
-var agentkey = JSON.parse(fs.readFileSync(privkeyPath+"agent.json")).privkey;
-var buyerkey = JSON.parse(fs.readFileSync(privkeyPath+"buyer.json")).privkey;
-var sellerkey = JSON.parse(fs.readFileSync(privkeyPath+"seller.json")).privkey;
+const agentkey = JSON.parse(fs.readFileSync(privkeyPath + "agent.json")).privkey;
+const buyerkey = JSON.parse(fs.readFileSync(privkeyPath + "buyer.json")).privkey;
+const sellerkey = JSON.parse(fs.readFileSync(privkeyPath + "seller.json")).privkey;
+const bestonkey = JSON.parse(fs.readFileSync(privkeyPath + "beston.json")).privkey;
+const farmerkey = JSON.parse(fs.readFileSync(privkeyPath + "farmer.json")).privkey;
+const accPrivKeys = [agentkey, buyerkey, sellerkey, bestonkey, farmerkey];
 
-var accPrivKeys = [agentkey, buyerkey, sellerkey];
 var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var ftrackingpath = './build/contracts/FeedTracking.json';
-var ftrackingaddr = "";
+var ftrackingaddr = "0x52E44F1fD16e62b020b5CabF91A19b9203B381Aa";
 var ftrackinginstance = utils.getContract("addr",ftrackingaddr,provider,ftrackingpath); // get the digitaltwin contract instance
 
 router.post('/log',
     validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'."),
+    validator.check("animalid").exists().withMessage("Input should contain field 'animalid'."),
     validator.check("dmi").exists().withMessage("Input should contain field 'dmi'."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
@@ -37,12 +38,13 @@ router.post('/log',
         } else {
             var feedid = request.body.feedid;
             var feedtype = request.body.feedtype;
+            var animalid = request.body.animalid;
             var dmi = request.body.dmi;
             var datetime = request.body.datetime;
             var gas = request.body.gas;
 
             ftrackinginstance.then(value => {
-                value.methods.logFeed(feedid,feedtype,dmi,datetime).send({from: request.body.bcacc, gas: gas})
+                value.methods.logFeed(feedid,feedtype,animalid,dmi,datetime).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging feed ${feedid}, Txn hash: ${result.transactionHash}`);
@@ -50,18 +52,19 @@ router.post('/log',
                     response.end('\n');
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to log feed ${feedid}, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
+                    if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Feed ID already exists.")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new Feed ID."}));
-                    } else if (error.message.includes("Animal is not registered.")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. You can only log feed for a registered animal."}));
                     } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to log feed ${feedid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new feed id, and an existing animal id."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
                     }
                     response.end();
                 })
@@ -130,3 +133,5 @@ router.get('/verify',
             })
         }
     });
+
+module.exports = router;
