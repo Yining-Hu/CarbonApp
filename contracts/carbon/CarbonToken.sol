@@ -10,6 +10,7 @@ contract CarbonToken is ERC1155 {
     address public admin;
     FarmRegistry public farmregistry;
     FeedTracking public feedtracking;
+    EmissionTracking public emissiontracking;
 
     // CBT's internal ids
     // VERRA-0, ACCU-1, GOLDSTANDARD-2
@@ -34,11 +35,13 @@ contract CarbonToken is ERC1155 {
     mapping(string => Distribution) distributions;
     mapping(string => bool) distributionExists;
 
-    constructor(string memory _uri, FarmRegistry _farmregistry)
+    constructor(string memory _uri, FarmRegistry _farmregistry, FeedTracking _feedtracking, EmissionTracking _emissiontracking)
         ERC1155(_uri)
     {
         admin = msg.sender;
         farmregistry = _farmregistry;
+        feedtracking = _feedtracking;
+        emissiontracking = _emissiontracking;
     }
 
     // Todo: add a condition for issue, e.g., only if emissions are verified carbon tokens can be issued.
@@ -49,7 +52,6 @@ contract CarbonToken is ERC1155 {
         for(uint256 i=0; i<_feedids.length; i++){
             (string memory ingredient, string memory claimstatus, string memory animalid, uint16 dmi, uint256 datetime, uint256 blocktime)=feedtracking.queryFeed(_feedids[i]);
             require((datetime>=_startdate && datetime<=_enddate ), "The specified feed record is not in the claim period.");
-            require(keccak256(abi.encodePacked(claimstatus))=="Unclaimed", "The specified feed record is already used to claim carbon credits.");
             
             feedtracking.updateFeed(_feedids[i]);
         }

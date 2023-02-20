@@ -65,8 +65,8 @@ contract FeedTracking {
     }
 
     function updateFeed(string memory _feedid) public {
-        require(feedExists[_feedid]);
-        require(feeds[_feedid].Status==ClaimStatus.UNCLAIMED);
+        require(feedExists[_feedid], "Feed ID does not exist.");
+        require(feeds[_feedid].Status==ClaimStatus.UNCLAIMED, "Feed record already claimed.");
         feeds[_feedid].Status = ClaimStatus.CLAIMED;
     }
 

@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtaddr = "0x8643672915217433Fa09bd4eb092c27f317A384C";
+var cbtaddr = "0x6473f2e4350be400F3742462223A10432a8dFb5C";
 var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath);
 // var cbtinstance = utils.getContract("netId",netId,providerURL,cbtpath);
 
@@ -43,13 +43,19 @@ router.post('/issue',
                 })
                 .catch((error) => {
                     var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to issue ${id} Carbon Tokens, Txn hash: ${txnhash}`);
+                    console.log(`Failed to issue ${cbtokenid} Carbon Tokens, Txn hash: ${txnhash}`);
                     console.log(error);
 
                     if (error.message.includes("gas")) {
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
                     } else if (error.message.includes("Only admin")) {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only the Admin can issue carbon tokens."}));
+                    } else if (error.message.includes("ERC1155")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please specify a valid address for minting to."}));
+                    } else if (error.message.includes("does not exist")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please using existing feed ids."}));
+                    } else if (error.message.includes("already claimed")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please only use unclaimed feed records."}));
                     } else {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                     }
@@ -146,6 +152,37 @@ router.post('/update',
             })
         }
     })
+
+router.get('/balance',
+    validator.check("internalid").exists().withMessage("Input should contain field 'internalid'."),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var internalid = request.query.internalid;
+
+            cbtinstance.then(value => {
+                value.methods.balanceOf(request.body.bcacc, internalid).call()
+                .then((result) => {
+                    console.log(result);
+                    response.json({"balance":result});
+                })
+                .catch((error) => {
+                    console.log(`Failed to get balance of account ${request.body.bcacc}.`);
+                    console.log(error);
+
+                    if (error.message.includes("ERC1155")) {
+                        response.write(JSON.stringify({"server_response":"Please specify a valid user."}));
+                    } else {
+                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
 
 router.get('/view/cbtoken',
     validator.check("cbtokenid").exists().withMessage("Input should contain field 'cbtokenid'."),

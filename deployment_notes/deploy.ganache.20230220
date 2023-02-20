@@ -1,0 +1,42 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+10_deploy_cbt.js
+================
+
+   Replacing 'CarbonToken'
+   -----------------------
+   > transaction hash:    0xd3d78c2f6fb063116ebb5de7874fda1533b2c29f019e93b4e52f9307bc158f07
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x6473f2e4350be400F3742462223A10432a8dFb5C
+   > block number:        5247
+   > block timestamp:     1676850194
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             99.46050992
+   > gas used:            3689840 (0x384d70)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0737968 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:           0.0737968 ETH
+
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.0737968 ETH
+
+
