@@ -193,6 +193,35 @@ router.get('/view/cbtoken',
         }
     });
 
+router.get('/view/cbtokens',
+    (request, response) => {
+        cbtinstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var cbt = {};
+                var cbtarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    cbt.cbtokenid = result[0][i];
+                    cbt.internalid = result[1][i];
+                    cbt.amount = result[2][i];
+                    cbt.start = result[3][i];
+                    cbt.end = result[4][i];
+                    cbtarray.push({...cbt});
+                }
+                console.log(cbtarray);
+                response.json(cbtarray);
+            })
+            .catch((error) => {
+                console.log("Failed to query all cbtokens.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
+    });
+
 router.get('/view/distribution', 
     validator.check("distributionid").exists().withMessage("Input should contain field 'distributionid'."),
 
@@ -222,6 +251,35 @@ router.get('/view/distribution',
                 })
             })
         }
+    });
+
+router.get('/view/distributions',
+    (request, response) => {
+        cbtinstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var distribution = {};
+                var distributionarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    distribution.distributionid = result[0][i];
+                    distribution.cbtokenid = result[1][i];
+                    distribution.amount = result[2][i];
+                    distribution.farmer = result[3][i];
+                    distribution.paid = result[4][i];
+                    distributionarray.push({...distribution});
+                }
+                console.log(distributionarray);
+                response.json(distributionarray);
+            })
+            .catch((error) => {
+                console.log("Failed to query all distributions.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
     });
 
 module.exports = router;
