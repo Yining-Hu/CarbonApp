@@ -30,10 +30,12 @@ contract CarbonToken is ERC1155 {
         bool Paid;
     }
 
-    mapping(string => CBToken) cbtokens;
-    mapping(string => bool) cbtokenExists;
-    mapping(string => Distribution) distributions;
-    mapping(string => bool) distributionExists;
+    mapping(string => CBToken) public cbtokens;
+    mapping(string => bool) public cbtokenExists;
+    mapping(string => Distribution) public distributions;
+    mapping(string => bool) public distributionExists;
+    string[] public allcbtokens;
+    string[] public alldistributions;
 
     constructor(string memory _uri, FarmRegistry _farmregistry, FeedTracking _feedtracking, EmissionTracking _emissiontracking)
         ERC1155(_uri)
@@ -85,6 +87,30 @@ contract CarbonToken is ERC1155 {
         );
     }
 
+    function queryAllCarbonToken() public view 
+    returns(
+        string[] memory,
+        uint256[] memory,
+        uint256[] memory,
+        uint256[] memory,
+        uint256[] memory
+    )
+    {
+        uint256[] memory internalids;
+        uint256[] memory amounts;
+        uint256[] memory starts;
+        uint256[] memory ends;
+
+        for(uint256 i=0; i<allcbtokens.length; i++) {
+            internalids[i] = cbtokens[allcbtokens[i]].InternalID;
+            amounts[i] = cbtokens[allcbtokens[i]].Amount;
+            starts[i] = cbtokens[allcbtokens[i]].StartDate;
+            ends[i] = cbtokens[allcbtokens[i]].EndDate;
+        }
+
+        return(allcbtokens,internalids,amounts,starts,ends);
+    }
+
     function queryDistribution(string memory _distributionid) public view returns(string memory,uint256,address,bool)
     {
         require(distributionExists[_distributionid], "Distribution ID does not exist.");
@@ -94,5 +120,29 @@ contract CarbonToken is ERC1155 {
             distributions[_distributionid].Farmer,
             distributions[_distributionid].Paid
         );
+    }
+
+    function queryAllDistribution() public view 
+    returns(
+        string[] memory,
+        string[] memory,
+        uint256[] memory,
+        address[] memory,
+        bool[] memory
+    )
+    {
+        string[] memory cbtokenids;
+        uint256[] memory amounts;
+        address[] memory farmers;
+        bool[] memory paid;
+
+        for(uint256 i=0; i<alldistributions.length; i++){
+            cbtokenids[i] = distributions[alldistributions[i]].CBTokenID;
+            amounts[i] = distributions[alldistributions[i]].Amount;
+            farmers[i] = distributions[alldistributions[i]].Farmer;
+            paid[i] = distributions[alldistributions[i]].Paid;
+        }
+
+        return(alldistributions,cbtokenids,amounts,farmers,paid);
     }
 }
