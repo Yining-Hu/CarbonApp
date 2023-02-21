@@ -72,7 +72,7 @@ router.post('/log',
         }
     })
 
-router.get('/query', 
+router.get('/view', 
     validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
 
     (request, response) => {
@@ -86,7 +86,7 @@ router.get('/query',
                 value.methods.queryFeed(feedid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"feedid":feedid,"ingredient":result[0],"animalid":result[1],"dmi":result[2],"datetime":result[3],"blocktime":result[4]});
+                    response.json({"feedid":feedid,"feedtype":result[0],"animalid":result[1],"dmi":result[2],"datetime":result[3],"blocktime":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Feed ${feedid}.`);
@@ -103,35 +103,34 @@ router.get('/query',
         }
     });
 
-router.get('/verify', 
-    validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
-
+router.get('/view/feeds',
     (request, response) => {
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var feedid = request.query.feedid;
-
-            ftrackinginstance.then(value => {
-                value.methods.verifyFeedTime(feedid).call({from: request.body.bcacc})
-                .then((result) => {
-                    console.log(result);
-                    response.json({"feedid":feedid,"verification_result":result[0]});
-                })
-                .catch((error) => {
-                    console.log(`Failed to verify time of Feed ${feedid}.`);
-                    console.log(error);
-
-                    if (error.message.includes("Feed ID does not exist.")) {
-                        response.write(JSON.stringify({"server_response":"Feed ID does not exist."}));
-                    } else {
-                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
-                    }
-                    response.end();
-                })
+        ftrackinginstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var feed = {};
+                var feedarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    feed.feedid = result[0][i];
+                    feed.feedtype = result[1][i];
+                    feed.animalid = result[2][i];
+                    feed.dmi = result[3][i];
+                    feed.datetime = result[4][i];
+                    feed.blocktime = result[5][i];
+                    feedarray.push({...feed});
+                }
+                console.log(feedarray);
+                response.json(feedarray);
             })
-        }
+            .catch((error) => {
+                console.log("Failed to query all feeds.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
     });
 
 module.exports = router;

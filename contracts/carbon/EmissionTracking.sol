@@ -18,6 +18,7 @@ contract EmissionTracking {
     
     mapping(string => EmissionRecord) public emissions;
     mapping(string => bool) public emissionExists;
+    string[] public allemissions;
 
     constructor(AnimalRegistry _animalregistry, FeedTracking _feedtracking)
     {
@@ -32,6 +33,7 @@ contract EmissionTracking {
         require(animalregistry.animalExists(_animalid), "Animal is not registed.");
         
         emissions[_emissionid] = EmissionRecord(_value, FeedTracking.Ingredient(_feedtype), _animalid, _datetime, block.timestamp);
+        allemissions.push(_emissionid);
     }
 
     function queryEmission(string memory _emissionid)
@@ -42,7 +44,7 @@ contract EmissionTracking {
             uint16,
             string memory,
             uint256,
-            uint256) 
+            uint256)
         {
             require(emissionExists[_emissionid], "Emission ID does not exist.");
             string memory ingredient;
@@ -65,6 +67,43 @@ contract EmissionTracking {
                 emissions[_emissionid].BlockTime
             );
         }
+
+    function queryAll() public view 
+    returns(
+        string[] memory,
+        string[] memory,
+        uint16[] memory,
+        string[] memory,
+        uint256[] memory,
+        uint256[] memory
+    )
+    {
+        string[] memory animalids = new string[](allemissions.length);
+        uint16[] memory values = new uint16[](allemissions.length);
+        string[] memory ingredients = new string[](allemissions.length);
+        uint256[] memory datetimes = new uint256[](allemissions.length);
+        uint256[] memory blocktimes = new uint256[](allemissions.length);
+
+        for(uint256 i=0; i<allemissions.length; i++){
+            animalids[i] = emissions[allemissions[i]].AnimalID;
+            values[i] = emissions[allemissions[i]].Value;
+
+            if (emissions[allemissions[i]].FeedType == FeedTracking.Ingredient.REGULAR) {
+                ingredients[i] = "Regular";
+            } else if (emissions[allemissions[i]].FeedType == FeedTracking.Ingredient.ASPARAGOPSIS) {
+                ingredients[i] = "Asparagopsis";
+            } else if (emissions[allemissions[i]].FeedType == FeedTracking.Ingredient.POLYGAIN) {
+                ingredients[i] = "Polygain";
+            } else {
+                ingredients[i] = "Unknown";
+            }
+
+            datetimes[i] = emissions[allemissions[i]].DateTime;
+            blocktimes[i] = emissions[allemissions[i]].BlockTime;
+        }
+
+        return(allemissions,animalids,values,ingredients,datetimes,blocktimes);
+    }
 
     // Note: on the front end, for a record of issued Carbon Tokens, we first take the start and end date, then for each date we find the emission record
     // total emission is expected to be lower for the treatment group and higher for the controlled group

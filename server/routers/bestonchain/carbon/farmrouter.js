@@ -78,7 +78,7 @@ router.get('/view',
                 value.methods.queryFarm(farmid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"farmid": farmid, "farmer_address": result[0]});
+                    response.json({"farmid": farmid, "farmer": result[0]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query farm: ${farmid}`);
@@ -93,6 +93,32 @@ router.get('/view',
                 })
             })
         }
+    });
+
+router.get('/view/farms',
+    (request, response) => {
+        farmreginstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var farm = {};
+                var farmarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    farm.farmid = result[0][i];
+                    farm.farmer = result[1][i];
+                    farmarray.push({...farm});
+                }
+                console.log(farmarray);
+                response.json(farmarray);
+            })
+            .catch((error) => {
+                console.log("Failed to query all farms.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
     });
 
 module.exports = router;

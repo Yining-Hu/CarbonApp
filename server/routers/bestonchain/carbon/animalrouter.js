@@ -100,4 +100,32 @@ router.get('/view',
         }
     });
 
+router.get('/view/animals',
+    (request, response) => {
+        animalreginstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var animal = {};
+                var animalarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    animal.animalid = result[0][i];
+                    animal.farmid = result[1][i];
+                    animal.group = result[2][i];
+                    animal.dates = result[3][i];
+                    animalarray.push({...animal});
+                }
+                console.log(animalarray);
+                response.json(animalarray);
+            })
+            .catch((error) => {
+                console.log("Failed to query all animals.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
+    });
+
 module.exports = router;

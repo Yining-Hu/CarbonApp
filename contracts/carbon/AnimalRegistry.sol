@@ -20,7 +20,7 @@ contract AnimalRegistry {
 
     mapping(string => Animal) public animals;
     mapping(string => bool) public animalExists;
-    uint16 public animalCount;
+    string[] public allanimals; // to record all animal ids
 
     constructor(FarmRegistry _farmregistry)
     {
@@ -34,12 +34,17 @@ contract AnimalRegistry {
         {
             require(animalExists[_animalid] == false, "Animal already exists.");
             require(farmregistry.farmExists(_farmid), "Farm does not exist.");
-            animalCount++;
             animals[_animalid] = Animal(_farmid,AnimalGroup(_animalgroup),new string[](0));
             animalExists[_animalid] = true;
+            allanimals.push(_animalid);
         }
 
-    function viewAnimal(string memory _animalid)
+    function updateDates(string memory _animalid, string[] memory _dates) public {
+        require(animalExists[_animalid], "Animal does not exist.");
+        animals[_animalid].DatesOnFarm = _dates;
+    }
+
+    function queryAnimal(string memory _animalid)
         public 
         view 
         returns(
@@ -65,4 +70,37 @@ contract AnimalRegistry {
             group,
             animals[_animalid].DatesOnFarm);
         }
+
+    function queryAll() public view 
+    returns(
+        string[] memory,
+        string[] memory, 
+        string[] memory, 
+        string[][] memory
+    )
+    {
+        string[] memory farmids = new string[](allanimals.length);
+        string[] memory groups = new string[](allanimals.length);
+        string[][] memory date_arrays = new string[][](allanimals.length);
+
+        for(uint256 i=0; i<allanimals.length; i++){
+            farmids[i] = animals[allanimals[i]].FarmID;
+
+            if (animals[allanimals[i]].Group == AnimalGroup.INMILKING) {
+                groups[i] = "In Milking";
+            } else if (animals[allanimals[i]].Group == AnimalGroup.DRY) {
+                groups[i] = "Dry";
+            } else if (animals[allanimals[i]].Group == AnimalGroup.PREGNANT) {
+                groups[i] = "Pregnant";
+            } else {
+                groups[i] = "Unknown";
+            }
+
+            for(uint256 j=0; j<animals[allanimals[i]].DatesOnFarm.length; j++){
+                date_arrays[j][i] = animals[allanimals[i]].DatesOnFarm[j];
+            }
+        }
+
+        return(allanimals,farmids,groups,date_arrays);
+    }
 }

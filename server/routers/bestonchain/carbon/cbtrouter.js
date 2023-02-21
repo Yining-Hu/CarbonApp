@@ -61,7 +61,7 @@ router.post('/issue',
                         console.log(error);
 
                         if (error.message.includes("Transaction has been reverted")) {
-                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only admin can issue a carbon token for feed ids within the specified range."}));
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only admin can issue a new carbon token for feed ids within the specified range."}));
                         } else {
                             response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                         }
@@ -100,18 +100,19 @@ router.post('/distribute',
                     response.end('\n');
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to issue ${id} Carbon Tokens, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
+                    if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Only admin")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only the Admin can issue Carbon Tokens."}));
-                    } else if (error.message.includes("does not exist")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please specify an already issued Carbon Token ID."}));
                     } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to distribute carbon token: ${cbtokenid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only the admin can distribute carbon tokens with a valid id."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
                     }
                     response.end();
                 })
@@ -141,18 +142,19 @@ router.post('/update',
                     response.end('\n');
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to udpate payment status of Distribution ${distributionid}, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
+                    if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Only admin")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only the Admin can update payment status."}));
-                    } else if (error.message.includes("does not exist")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please specify an already issued Carbon Token ID."}));
                     } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to register animal: ${animalid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only the admin can update payment status of already issued carbon token."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
                     }
                     response.end();
                 })
@@ -174,7 +176,7 @@ router.get('/view/cbtoken',
                 value.methods.queryDistribution(cbtokenid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"cbtokenid":cbtokenid,"internalid":result[0],"amount":result[1],"start_date":result[2],"end_date":result[3]});
+                    response.json({"cbtokenid":cbtokenid,"internalid":result[0],"amount":result[1],"start":result[2],"end":result[3]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Carbon Token ${cbtokenid}.`);

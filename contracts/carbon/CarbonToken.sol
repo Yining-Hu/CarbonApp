@@ -47,6 +47,7 @@ contract CarbonToken is ERC1155 {
     // Todo: add a condition for issue, e.g., only if emissions are verified carbon tokens can be issued.
     function issue(string memory _cbtokenid, uint256 _amount, string[] memory _feedids, uint256 _startdate, uint256 _enddate) public {
         require(msg.sender == admin, "Only admin can issue Carbon Tokens.");
+        require(cbtokenExists[_cbtokenid] == false, "Carbon token id already exists.");
         _mint(admin,0,_amount,"");
 
         for(uint256 i=0; i<_feedids.length; i++){

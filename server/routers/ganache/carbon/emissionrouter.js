@@ -90,6 +90,36 @@ router.get('/view',
         }
     });
 
+router.get('/view/emissions',
+    (request, response) => {
+        etrackinginstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var emission = {};
+                var emissionarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    emission.emissionid = result[0][i];
+                    emission.animalid = result[1][i];
+                    emission.value = result[2][i];
+                    emission.feedtype = result[3][i];
+                    emission.datetime = result[4][i];
+                    emission.blocktime = result[5][i];
+                    emissionarray.push({...emission});
+                }
+                console.log(emissionarray);
+                response.json(emissionarray);
+            })
+            .catch((error) => {
+                console.log("Failed to query all animals.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
+    });
+
 router.get('/verify/value', 
     validator.check("control").exists().withMessage("Input should contain field 'control'."),
     validator.check("treatment").exists().withMessage("Input should contain field 'treatment'."),

@@ -92,4 +92,34 @@ router.get('/view',
         }
     });
 
+router.get('/view/feeds',
+    (request, response) => {
+        ftrackinginstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var feed = {};
+                var feedarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    feed.feedid = result[0][i];
+                    feed.feedtype = result[1][i];
+                    feed.animalid = result[2][i];
+                    feed.dmi = result[3][i];
+                    feed.datetime = result[4][i];
+                    feed.blocktime = result[5][i];
+                    feedarray.push({...feed});
+                }
+                console.log(feedarray);
+                response.json(feedarray);
+            })
+            .catch((error) => {
+                console.log("Failed to query all feeds.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
+    });
+
 module.exports=router;

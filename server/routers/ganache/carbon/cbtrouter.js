@@ -50,6 +50,8 @@ router.post('/issue',
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
                     } else if (error.message.includes("Only admin")) {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Only the Admin can issue carbon tokens."}));
+                    } else if (error.message.includes("already exists")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new carbon token id."}));
                     } else if (error.message.includes("ERC1155")) {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please specify a valid address for minting to."}));
                     } else if (error.message.includes("does not exist")) {

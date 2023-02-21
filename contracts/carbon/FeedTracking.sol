@@ -30,6 +30,7 @@ contract FeedTracking {
     mapping(string => bool) public feedExists;
     mapping(string => string) public feedSearch;
     mapping(string => bool) public feedClaimed; // value changes to true if a feed record has been used to claim carbon tokens.
+    string[] allfeeds;
 
     constructor(AnimalRegistry _animalregistry)
     {
@@ -62,6 +63,7 @@ contract FeedTracking {
 
         searchid = string(abi.encodePacked(ingredient,_animalid,_datetime)); // searchid = [animalid|feedtype|datetime]
         feedSearch[searchid] = _feedid;
+        allfeeds.push(_feedid);
     }
 
     function updateFeed(string memory _feedid) public {
@@ -98,9 +100,9 @@ contract FeedTracking {
         if (feeds[_feedid].Status == ClaimStatus.UNCLAIMED) {
             claimstatus = "Unclaimed";
         } else if (feeds[_feedid].Status == ClaimStatus.UNCLAIMED) {
-            ingredient = "Claimed";
+            claimstatus = "Claimed";
         } else {
-            ingredient = "Unknown";
+            claimstatus = "Unknown";
         }
 
         return(
@@ -111,5 +113,50 @@ contract FeedTracking {
             feeds[_feedid].DateTime,
             feeds[_feedid].BlockTime
         );
+    }
+
+    function queryAll() public view
+        returns(
+            string[] memory,
+            string[] memory,
+            string[] memory,
+            string[] memory,
+            uint16[] memory,
+            uint256[] memory,
+            uint256[] memory)
+    {
+        string[] memory ingredients = new string[](allfeeds.length);
+        string[] memory claimstatus = new string[](allfeeds.length);
+        string[] memory animalids = new string[](allfeeds.length);
+        uint16[] memory dmis = new uint16[](allfeeds.length);
+        uint256[] memory datetimes = new uint256[](allfeeds.length);
+        uint256[] memory blocktimes = new uint256[](allfeeds.length);
+
+        for(uint256 i=0; i<allfeeds.length; i++) {
+            if (feeds[allfeeds[i]].FeedType == Ingredient.REGULAR) {
+                ingredients[i] = "Regular";
+            } else if (feeds[allfeeds[i]].FeedType == Ingredient.ASPARAGOPSIS) {
+                ingredients[i] = "Asparagopsis";
+            } else if (feeds[allfeeds[i]].FeedType == Ingredient.POLYGAIN) {
+                ingredients[i] = "Polygain";
+            } else {
+                ingredients[i] = "Unknown";
+            }
+
+            if (feeds[allfeeds[i]].Status == ClaimStatus.UNCLAIMED) {
+                claimstatus[i] = "Unclaimed";
+            } else if (feeds[allfeeds[i]].Status == ClaimStatus.UNCLAIMED) {
+                claimstatus[i] = "Claimed";
+            } else {
+                claimstatus[i] = "Unknown";
+            }
+
+            animalids[i] = feeds[allfeeds[i]].AnimalID;
+            dmis[i] = feeds[allfeeds[i]].DMI;
+            datetimes[i] = feeds[allfeeds[i]].DateTime;
+            blocktimes[i] = feeds[allfeeds[i]].BlockTime;
+        }
+
+        return(allfeeds,ingredients,claimstatus,animalids,dmis,datetimes,blocktimes);
     }
 }

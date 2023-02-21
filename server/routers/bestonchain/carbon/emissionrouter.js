@@ -24,8 +24,9 @@ var etrackinginstance = utils.getContract("addr",etrackingaddr,provider,etrackin
 
 router.post('/log', 
     validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
-    validator.check("value").exists().withMessage("Input should contain field 'value'."),
+    validator.check("amount").exists().withMessage("Input should contain field 'amount'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'."),
+    validator.check("feedtype").isInt().withMessage("Input should be an interger in the range [0,2]."),
     validator.check("animalid").exists().withMessage("Input should contain field 'animalid'."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
@@ -37,14 +38,14 @@ router.post('/log',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var emissionid = request.body.emissionid;
-            var value = request.body.value;
+            var amount = request.body.amount;
             var feedtype = request.body.feedtype;
             var animalid = request.body.animalid;
             var datetime = request.body.datetime;
             var gas = request.body.gas;
 
             etrackinginstance.then(value => {
-                value.methods.logFeed(emissionid,value,feedtype,animalid,datetime).send({from: request.body.bcacc, gas: gas})
+                value.methods.logFeed(emissionid,amount,feedtype,animalid,datetime).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging feed ${emissionid}, Txn hash: ${result.transactionHash}`);
@@ -71,7 +72,7 @@ router.post('/log',
         }
     })
 
-router.get('/query', 
+router.get('/view', 
     validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
 
     (request, response) => {
@@ -85,7 +86,7 @@ router.get('/query',
                 value.methods.queryEmission(emissionid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"emissionid":emissionid,"animalid":result[0],"value":result[1],"ingredient":result[2],"datetime":result[3],"blocktime":result[4]});
+                    response.json({"emissionid":emissionid,"animalid":result[0],"amount":result[1],"feedtype":result[2],"datetime":result[3],"blocktime":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Emission ${emissionid}.`);
@@ -102,40 +103,41 @@ router.get('/query',
         }
     });
 
-router.get('/verify/time', 
-    validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
-
+router.get('/view/emissions',
     (request, response) => {
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var emissionid = request.query.emissionid;
-
-            etrackinginstance.then(value => {
-                value.methods.verifyEmissionTime(emissionid).call({from: request.body.bcacc})
-                .then((result) => {
-                    console.log(result);
-                    response.json({"emissionid":emissionid,"verification_result":result[0]});
-                })
-                .catch((error) => {
-                    console.log(`Failed to verify time of Emission ${emissionid}.`);
-                    console.log(error);
-
-                    if (error.message.includes("Emission ID does not exist.")) {
-                        response.write(JSON.stringify({"server_response":"Emission ID does not exist."}));
-                    } else {
-                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
-                    }
-                    response.end();
-                })
+        etrackinginstance.then(value => {
+            value.methods.queryAll().call({from: request.body.bcacc})
+            .then((result) => {
+                var emission = {};
+                var emissionarray = [];
+        
+                for (i=0;i<result[0].length;i++) {
+                    emission.emissionid = result[0][i];
+                    emission.animalid = result[1][i];
+                    emission.value = result[2][i];
+                    emission.feedtype = result[3][i];
+                    emission.datetime = result[4][i];
+                    emission.blocktime = result[5][i];
+                    emissionarray.push({...emission});
+                }
+                console.log(emissionarray);
+                response.json(emissionarray);
             })
-        }
+            .catch((error) => {
+                console.log("Failed to query all animals.");
+                console.log(error);
+
+                response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                response.end();
+            })
+        })
     });
 
 router.get('/verify/value', 
     validator.check("control").exists().withMessage("Input should contain field 'control'."),
-    validator.check("test").exists().withMessage("Input should contain field 'test'."),
+    validator.check("treatment").exists().withMessage("Input should contain field 'treatment'."),
+    validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'"),
+    validator.check("feedtype").isInt().withMessage("Input should be an interger in the range [0,2]."),
 
     (request, response) => {
         var paramerrors = validator.validationResult(request);
@@ -143,21 +145,20 @@ router.get('/verify/value',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var control = request.query.control;
-            var test = request.query.test;
+            var treatment = request.query.treatment;
+            var feedtype = request.query.feedtype;
 
             etrackinginstance.then(value => {
-                value.methods.verifyEmissionValue(control,test).call({from: request.body.bcacc})
+                value.methods.verifyEmissionValue(control,treatment,feedtype).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
                     response.json({"verification_result":result});
                 })
                 .catch((error) => {
-                    console.log(`Failed to verify value of specified emissions.`);
+                    console.log(`Failed to verify value of specified emission records.`);
                     console.log(error);
 
-                    if (error.message.includes("same number of emission records")) {
-                        response.write(JSON.stringify({"server_response":"Please supply same number of emission records for the control group and the test group."}));
-                    } else if (error.message.includes("Emission ID does not exist.")) {
+                    if (error.message.includes("Emission ID does not exist.")) {
                         response.write(JSON.stringify({"server_response":"Emission ID does not exist."}));
                     } else {
                         response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
