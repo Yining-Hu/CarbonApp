@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtaddr = "0x6473f2e4350be400F3742462223A10432a8dFb5C";
+var cbtaddr = "0x7f2A285bC9D05a2298e348d40D6DF8472f6139e2";
 var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath);
 // var cbtinstance = utils.getContract("netId",netId,providerURL,cbtpath);
 
@@ -96,7 +96,7 @@ router.post('/distribute',
                 })
                 .catch((error) => {
                     var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to issue ${id} Carbon Tokens, Txn hash: ${txnhash}`);
+                    console.log(`Failed to distribute Carbon Token ${cbtokenid}, Txn hash: ${txnhash}`);
                     console.log(error);
 
                     if (error.message.includes("gas")) {
@@ -197,7 +197,7 @@ router.get('/view/cbtoken',
             var cbtokenid = request.query.cbtokenid;
 
             cbtinstance.then(value => {
-                value.methods.queryDistribution(cbtokenid).call({from: request.body.bcacc})
+                value.methods.queryCarbonToken(cbtokenid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
                     response.json({"cbtokenid":cbtokenid,"internalid":result[0],"amount":result[1],"start":result[2],"end":result[3]});
@@ -220,7 +220,7 @@ router.get('/view/cbtoken',
 router.get('/view/cbtokens',
     (request, response) => {
         cbtinstance.then(value => {
-            value.methods.queryAll().call({from: request.body.bcacc})
+            value.methods.queryAllCarbonToken().call({from: request.body.bcacc})
             .then((result) => {
                 var cbt = {};
                 var cbtarray = [];
@@ -280,7 +280,7 @@ router.get('/view/distribution',
 router.get('/view/distributions',
     (request, response) => {
         cbtinstance.then(value => {
-            value.methods.queryAll().call({from: request.body.bcacc})
+            value.methods.queryAllDistribution().call({from: request.body.bcacc})
             .then((result) => {
                 var distribution = {};
                 var distributionarray = [];

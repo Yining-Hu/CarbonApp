@@ -1,0 +1,130 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+6_deploy_farmreg.js
+===================
+
+   Replacing 'FarmRegistry'
+   ------------------------
+   > transaction hash:    0x1a5e3c8c8f314a938755927085b4c9304d42eba559afe35f5f952737901d53cb
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x39b13Ac271F3D32d5fBfC472952ff953b6A808EB
+   > block number:        5322
+   > block timestamp:     1677462618
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.42441542
+   > gas used:            922580 (0xe13d4)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0184516 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:           0.0184516 ETH
+
+
+7_deploy_animalreg.js
+=====================
+
+   Replacing 'AnimalRegistry'
+   --------------------------
+   > transaction hash:    0x71da6785bae3d958e3f85374f03bd2b1a5d66026a3bbfe6ffd470566eb669e19
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x5B3414A133b2DCcB3b9CA9D56A153948950F2e0f
+   > block number:        5323
+   > block timestamp:     1677462618
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.3864019
+   > gas used:            1900676 (0x1d0084)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.03801352 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.03801352 ETH
+
+
+8_deploy_feedreg.js
+===================
+
+   Replacing 'FeedTracking'
+   ------------------------
+   > transaction hash:    0xed2963e5b8027f608e7318a9eec35bebdfdcbbbbbecc11281792f62bba9b727a
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x8BC56accd264cfFE5f7F6f5055470c0Fc170cc93
+   > block number:        5324
+   > block timestamp:     1677462618
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.34040874
+   > gas used:            2299658 (0x23170a)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.04599316 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.04599316 ETH
+
+
+9_deploy_emissionreg.js
+=======================
+
+   Replacing 'EmissionTracking'
+   ----------------------------
+   > transaction hash:    0x268cd4cce3038411667e92ed3fa06364f022426607a07661565fbd97429cea71
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x405Fa825cB7BAF47f3E4b2e5F876b158FE27d4CE
+   > block number:        5325
+   > block timestamp:     1677462619
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.28803056
+   > gas used:            2618909 (0x27f61d)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.05237818 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.05237818 ETH
+
+
+10_deploy_cbt.js
+================
+
+   Replacing 'CarbonToken'
+   -----------------------
+   > transaction hash:    0x2f48f04bf243f2eedd10b0de1bdca0722d527a567e9807be5d93499533725082
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x7f2A285bC9D05a2298e348d40D6DF8472f6139e2
+   > block number:        5326
+   > block timestamp:     1677462620
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.1930764
+   > gas used:            4747708 (0x4871bc)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.09495416 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.09495416 ETH
+
+
+Summary
+=======
+> Total deployments:   5
+> Final cost:          0.24979062 ETH
+
+

@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var animalregpath = './build/contracts/AnimalRegistry.json';
-var animalregaddr = "0x1ad2549f389BE0791EDCBdCAFd7d525aFffcBcF6";
+var animalregaddr = "0x5B3414A133b2DCcB3b9CA9D56A153948950F2e0f";
 var animalreginstance = utils.getContract("addr",animalregaddr,provider,animalregpath);
 // var animalreginstance = utils.getContract("netId",netId,providerURL,animalregpath);
 

@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var farmregpath = './build/contracts/FarmRegistry.json';
-var farmregaddr = "0xc7b33aBe76A561c01089918FDA88568251611dB0";
+var farmregaddr = "0x39b13Ac271F3D32d5fBfC472952ff953b6A808EB";
 var farmreginstance = utils.getContract("addr",farmregaddr,provider,farmregpath);
 // var farmreginstance = utils.getContract("netId",netId,providerURL,farmregpath);
 

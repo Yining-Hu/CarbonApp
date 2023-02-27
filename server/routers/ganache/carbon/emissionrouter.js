@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var etrackingpath = './build/contracts/EmissionTracking.json';
-var etrackingaddr = "0x16E887F76F41b7faDeB03500ae39af7C0E824e0F";
+var etrackingaddr = "0x405Fa825cB7BAF47f3E4b2e5F876b158FE27d4CE";
 var etrackinginstance = utils.getContract("addr",etrackingaddr,provider,etrackingpath);
 // var etrackinginstance = utils.getContract("netId",netId,providerURL,etrackingpath);
 
@@ -111,7 +111,7 @@ router.get('/view/emissions',
                 response.json(emissionarray);
             })
             .catch((error) => {
-                console.log("Failed to query all animals.");
+                console.log("Failed to query all emissions.");
                 console.log(error);
 
                 response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
@@ -120,7 +120,7 @@ router.get('/view/emissions',
         })
     });
 
-router.get('/verify/value', 
+router.post('/verify/value', 
     validator.check("control").exists().withMessage("Input should contain field 'control'."),
     validator.check("treatment").exists().withMessage("Input should contain field 'treatment'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'"),
@@ -131,18 +131,21 @@ router.get('/verify/value',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var control = request.query.control;
-            var treatment = request.query.treatment;
-            var feedtype = request.query.feedtype;
+            var control = request.body.control;
+            var treatment = request.body.treatment;
+            var feedtype = request.body.feedtype;
 
             etrackinginstance.then(value => {
                 value.methods.verifyEmissionValue(control,treatment,feedtype).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"verification_result":result});
+                    console.log(`Verifying emission value, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"verification_result":result, "Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
                 })
                 .catch((error) => {
-                    console.log(`Failed to verify value of specified emission records.`);
+                    var txnhash = Object.keys(error.data)[0];
+                    console.log(`Failed to verify the specified emission records, Txn hash: ${txnhash}`);
                     console.log(error);
 
                     if (error.message.includes("same number of emission records")) {

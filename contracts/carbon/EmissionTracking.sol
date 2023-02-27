@@ -33,6 +33,7 @@ contract EmissionTracking {
         require(animalregistry.animalExists(_animalid), "Animal is not registed.");
         
         emissions[_emissionid] = EmissionRecord(_value, FeedTracking.Ingredient(_feedtype), _animalid, _datetime, block.timestamp);
+        emissionExists[_emissionid] = true;
         allemissions.push(_emissionid);
     }
 
@@ -113,25 +114,21 @@ contract EmissionTracking {
         require(_control.length == _treatment.length, "Please supply same number of emission records for the control group and the test group.");
         uint16 controltotal = 0;
         uint16 treatmenttotal = 0;
-        string[] memory animalids_control;
-        string[] memory animalids_treatment;
 
         for(uint256 i=0; i<_control.length; i++){
             require(emissionExists[_control[i]], "Emission ID does not exist.");
             require(emissions[_control[i]].FeedType==FeedTracking.Ingredient.REGULAR, "Please only enter emission records with regular feed.");
             controltotal = controltotal + emissions[_control[i]].Value;
-            animalids_control[i]=(emissions[_control[i]].AnimalID);
 
             require(emissionExists[_treatment[i]], "Emission ID does not exist.");
-            require(emissions[_control[i]].FeedType==FeedTracking.Ingredient(_feedtype), "Please only enter emission records with the specified treatment type.");
+            require(emissions[_treatment[i]].FeedType==FeedTracking.Ingredient(_feedtype), "Please only enter emission records with the specified treatment type.");
             treatmenttotal = treatmenttotal + emissions[_treatment[i]].Value;
-            animalids_treatment[i]=(emissions[_control[i]].AnimalID);
         }
 
         // same animal id shouldn't appear in both groups
         for(uint256 i=0; i<_control.length; i++){
-            for(uint256 j=0; j<_control.length; i++){
-                require(keccak256(abi.encodePacked(emissions[_treatment[j]].AnimalID))!=keccak256(abi.encodePacked(emissions[_control[i]].AnimalID)), "Control Group shouldn't have the same animals as Treatmnet Group.");
+            for(uint256 j=0; j<_treatment.length; j++){
+                require(keccak256(abi.encodePacked(emissions[_treatment[j]].AnimalID))!=keccak256(abi.encodePacked(emissions[_control[i]].AnimalID)), "Control Group shouldn't have the same animals as Treatment Group.");
             }
         }
 

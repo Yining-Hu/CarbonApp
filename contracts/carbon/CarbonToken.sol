@@ -60,6 +60,7 @@ contract CarbonToken is ERC1155 {
         }
 
         cbtokens[_cbtokenid] = CBToken(0,_amount,_startdate,_enddate);
+        allcbtokens.push(_cbtokenid);
         cbtokenExists[_cbtokenid] = true;
     }
 
@@ -68,6 +69,8 @@ contract CarbonToken is ERC1155 {
         require(cbtokenExists[_cbtokenid], "Carbon Token ID does not exist.");
         safeTransferFrom(admin,farmregistry.farms(_farmid),cbtokens[_cbtokenid].InternalID,_amount, "");
         distributions[_distributionid] = Distribution(_cbtokenid,_amount,farmregistry.farms(_farmid),false);
+        distributionExists[_distributionid] = true;
+        alldistributions.push(_distributionid);
     }
 
     function update(string memory _distributionid) public {
@@ -96,10 +99,10 @@ contract CarbonToken is ERC1155 {
         uint256[] memory
     )
     {
-        uint256[] memory internalids;
-        uint256[] memory amounts;
-        uint256[] memory starts;
-        uint256[] memory ends;
+        uint256[] memory internalids = new uint256[](allcbtokens.length);
+        uint256[] memory amounts = new uint256[](allcbtokens.length);
+        uint256[] memory starts = new uint256[](allcbtokens.length);
+        uint256[] memory ends = new uint256[](allcbtokens.length);
 
         for(uint256 i=0; i<allcbtokens.length; i++) {
             internalids[i] = cbtokens[allcbtokens[i]].InternalID;
@@ -131,10 +134,10 @@ contract CarbonToken is ERC1155 {
         bool[] memory
     )
     {
-        string[] memory cbtokenids;
-        uint256[] memory amounts;
-        address[] memory farmers;
-        bool[] memory paid;
+        string[] memory cbtokenids = new string[](alldistributions.length);
+        uint256[] memory amounts = new uint256[](alldistributions.length);
+        address[] memory farmers = new address[](alldistributions.length);
+        bool[] memory paid = new bool[](alldistributions.length);
 
         for(uint256 i=0; i<alldistributions.length; i++){
             cbtokenids[i] = distributions[alldistributions[i]].CBTokenID;
