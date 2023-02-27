@@ -19,7 +19,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtaddr = "0xA8557fB5535FAD27422a3c2b1BCf325Bf3f511B2";
+var cbtaddr = "0x5F1eBB06F0918c77B3cF7E5c8d0eD5e4c0124863";
 var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath); // get the digitaltwin contract instance
 
 router.post('/issue', 
@@ -173,7 +173,7 @@ router.get('/view/cbtoken',
             var cbtokenid = request.query.cbtokenid;
 
             cbtinstance.then(value => {
-                value.methods.queryDistribution(cbtokenid).call({from: request.body.bcacc})
+                value.methods.queryCarbonToken(cbtokenid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
                     response.json({"cbtokenid":cbtokenid,"internalid":result[0],"amount":result[1],"start":result[2],"end":result[3]});
@@ -196,7 +196,7 @@ router.get('/view/cbtoken',
 router.get('/view/cbtokens',
     (request, response) => {
         cbtinstance.then(value => {
-            value.methods.queryAll().call({from: request.body.bcacc})
+            value.methods.queryAllCarbonToken().call({from: request.body.bcacc})
             .then((result) => {
                 var cbt = {};
                 var cbtarray = [];
@@ -256,7 +256,7 @@ router.get('/view/distribution',
 router.get('/view/distributions',
     (request, response) => {
         cbtinstance.then(value => {
-            value.methods.queryAll().call({from: request.body.bcacc})
+            value.methods.queryAllDistribution().call({from: request.body.bcacc})
             .then((result) => {
                 var distribution = {};
                 var distributionarray = [];

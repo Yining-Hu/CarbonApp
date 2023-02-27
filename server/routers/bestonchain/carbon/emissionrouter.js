@@ -19,7 +19,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var etrackingpath = './build/contracts/EmissionTracking.json';
-var etrackingaddr = "0xb17CcB0c31cc578b873B7f5Bacf289c636F1b127";
+var etrackingaddr = "0x437b3556e20770602Fa5402109F24fF5FCc35EF6";
 var etrackinginstance = utils.getContract("addr",etrackingaddr,provider,etrackingpath); // get the digitaltwin contract instance
 
 router.post('/log', 
@@ -45,7 +45,7 @@ router.post('/log',
             var gas = request.body.gas;
 
             etrackinginstance.then(value => {
-                value.methods.logFeed(emissionid,amount,feedtype,animalid,datetime).send({from: request.body.bcacc, gas: gas})
+                value.methods.logEmission(emissionid,amount,feedtype,animalid,datetime).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging feed ${emissionid}, Txn hash: ${result.transactionHash}`);
@@ -133,7 +133,7 @@ router.get('/view/emissions',
         })
     });
 
-router.get('/verify/value', 
+router.post('/verify/value', 
     validator.check("control").exists().withMessage("Input should contain field 'control'."),
     validator.check("treatment").exists().withMessage("Input should contain field 'treatment'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'"),
@@ -144,9 +144,9 @@ router.get('/verify/value',
         if (!paramerrors.isEmpty()) {
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
-            var control = request.query.control;
-            var treatment = request.query.treatment;
-            var feedtype = request.query.feedtype;
+            var control = request.body.control;
+            var treatment = request.body.treatment;
+            var feedtype = request.body.feedtype;
 
             etrackinginstance.then(value => {
                 value.methods.verifyEmissionValue(control,treatment,feedtype).call({from: request.body.bcacc})

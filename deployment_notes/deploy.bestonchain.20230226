@@ -1,0 +1,146 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'bestonchain'
+> Network id:      100
+> Block gas limit: 5242880 (0x500000)
+
+
+6_deploy_farmreg.js
+===================
+
+   Replacing 'FarmRegistry'
+   ------------------------
+   > transaction hash:    0x49879ae5fd578ad85620c73bdb60be13be9482c586bd71f393edfef8d72a298a
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xCF91ae6afA7F9094b0981E1b0D400165aDF9836E
+   > block number:        15959
+   > block timestamp:     1677465722
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0.0000000000001
+   > gas used:            922580 (0xe13d4)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 15961)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+7_deploy_animalreg.js
+=====================
+
+   Replacing 'AnimalRegistry'
+   --------------------------
+   > transaction hash:    0x083c1e77991076444fc4f6783da0c24ea95a988357b2910ac7da598a1fddd8dd
+   > Blocks: 2            Seconds: 4
+   > contract address:    0x381Da6482a876692950c40dcd0fCd9f594F4a628
+   > block number:        15963
+   > block timestamp:     1677465730
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0.0000000000001
+   > gas used:            1900676 (0x1d0084)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 1 (block: 15964)
+   > confirmation number: 3 (block: 15966)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+8_deploy_feedreg.js
+===================
+
+   Replacing 'FeedTracking'
+   ------------------------
+   > transaction hash:    0xa052de1a6c6a4ccbe0bfdf477ca1ba559a51c221f4ec66f1913e8269c6b98822
+   > Blocks: 1            Seconds: 4
+   > contract address:    0x1D5347cBcD180150a3727C4BE53EFb139CD9ac81
+   > block number:        15969
+   > block timestamp:     1677465743
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0.0000000000001
+   > gas used:            2299658 (0x23170a)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 15971)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+9_deploy_emissionreg.js
+=======================
+
+   Replacing 'EmissionTracking'
+   ----------------------------
+   > transaction hash:    0xa53fecbb7d63736825497e2b0a6d8dd68ab58a37fb3d69bb66e6fccc6e35e15d
+   > Blocks: 2            Seconds: 4
+   > contract address:    0x437b3556e20770602Fa5402109F24fF5FCc35EF6
+   > block number:        15973
+   > block timestamp:     1677465752
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0.0000000000001
+   > gas used:            2618921 (0x27f629)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 15975)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+10_deploy_cbt.js
+================
+
+   Replacing 'CarbonToken'
+   -----------------------
+   > transaction hash:    0x3d366ca824067466794b3eb448a9a96b945cc35e99b8d86581a1e0fbe5bde432
+   > Blocks: 2            Seconds: 4
+   > contract address:    0x5F1eBB06F0918c77B3cF7E5c8d0eD5e4c0124863
+   > block number:        15977
+   > block timestamp:     1677465760
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0.0000000000001
+   > gas used:            4747708 (0x4871bc)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 15979)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+Summary
+=======
+> Total deployments:   5
+> Final cost:          0 ETH
+
+

@@ -8,7 +8,7 @@ const buyerkey = JSON.parse(fs.readFileSync(privkeyPath + "buyer.json")).privkey
 const sellerkey = JSON.parse(fs.readFileSync(privkeyPath + "seller.json")).privkey;
 const bestonkey = JSON.parse(fs.readFileSync(privkeyPath + "beston.json")).privkey;
 const farmerkey = JSON.parse(fs.readFileSync(privkeyPath + "farmer.json")).privkey;
-const privKeys = [agentkey, buyerkey, sellerkey, bestonkey, farmerkey];
+const privKeys = [agentkey, buyerkey, sellerkey, farmerkey, bestonkey];
 
 module.exports = {
   networks: {
