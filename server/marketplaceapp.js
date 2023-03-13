@@ -1,6 +1,6 @@
 const express = require('express');
 
-var escrowroute, digitaltwinroute, btkroute, middlewares, generalroute;
+var mproute, digitaltwinroute, btkroute, middlewares, generalroute;
 
 /**
  * command-line argument handling
@@ -11,13 +11,13 @@ if (process.argv.length < 3) {
 }
 
 if (process.argv[2] && process.argv[2] === '-ganache') {
-    escrowroute = require('./routers/ganache/escrowrouter.js');
+    mproute = require('./routers/ganache/marketplacerouter.js');
     digitaltwinroute = require('./routers/ganache/digitaltwinrouter.js');
     btkroute = require('./routers/ganache/btkrouter.js');
     middlewares = require('./routers/ganache/middlewares.js');
     generalroute = require('./routers/ganache/general.js');
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
-    escrowroute = require('./routers/bestonchain/escrowrouter.js');
+    mproute = require('./routers/bestonchain/marketplacerouter.js');
     digitaltwinroute = require('./routers/bestonchain/digitaltwinrouter.js');
     btkroute = require('./routers/bestonchain/btkrouter.js');
     middlewares = require('./routers/bestonchain/middlewares.js');
@@ -34,7 +34,7 @@ app.use(middlewares.authorization);
 
 app.use('/digitaltwin', digitaltwinroute);
 app.use('/btk', btkroute);
-app.use('/escrow', escrowroute);
+app.use('/marketplace', mproute);
 app.use('/general', generalroute);
 
 app.listen(3000);

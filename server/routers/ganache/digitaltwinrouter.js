@@ -9,7 +9,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var digitaltwinpath = './build/contracts/DigitalTwin.json';
-var digitaltwinaddr = "0x8786A8Bb75Db9bc15B833eD2791cDcC219d94F2c";
+var digitaltwinaddr = "0x65a4121EC709759A19AaA7016B50A235bF417dd6";
 var digitaltwininstance = utils.getContract("addr",digitaltwinaddr,provider,digitaltwinpath);
 // var digitaltwininstance = utils.getContract("netId",netId,providerURL,digitaltwinpath);
 
@@ -94,6 +94,49 @@ router.post('/seller/update',
                 .catch((error) => {
                     var txnhash = Object.keys(error.data)[0];
                     console.log(`Failed to update token: ${tkid}, Txn hash: ${txnhash}`);
+                    console.log(error);
+    
+                    if (error.message.includes("gas")) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else if (error.message.includes("Token does not exist.")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please enter an existing token name."}));
+                    } else if (error.message.includes("token owner")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Only the token owner can update the token."}));
+                    } else {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
+router.post('/approve', 
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("spender").exists().withMessage("Input should contain field 'to'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
+    validator.check("gas").isInt(),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var tkid = request.body.tkid;
+            var spender = request.body.spender;
+            var gas = request.body.gas;
+
+            digitaltwininstance.then(value => {
+                value.methods.approveByName(tkid,spender).send({from: request.body.bcacc, gas: gas})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Approving the transfer of token: ${tkid}, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    var txnhash = Object.keys(error.data)[0];
+                    console.log(`Failed to approve the transfer of token: ${tkid}, Txn hash: ${txnhash}`);
                     console.log(error);
     
                     if (error.message.includes("gas")) {

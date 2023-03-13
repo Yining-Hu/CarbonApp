@@ -9,11 +9,11 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/ganache/";
 
-var escrowpath = './build/contracts/Escrow.json';
+var mppath = './build/contracts/MarketPlace.json';
 var btkpath = './build/contracts/BToken.json';
-var escrowaddr = "0x26d45B12f5BC3806132A457d05275B185b3b831E";
-var btkinstance = utils.getSubContract("addr",escrowaddr,provider,escrowpath,btkpath);
-// var btkinstance = utils.getSubContract("netId",netId,providerURL,escrowpath,btkpath);
+var mpaddr = "0x4EaB018E772AD686857fC064f4fb76929A5Fd3A3";
+var btkinstance = utils.getSubContract("addr",mpaddr,provider,mppath,btkpath);
+// var btkinstance = utils.getSubContract("netId",netId,providerURL,mppath,btkpath);
 
 router.post('/approve',
     validator.check("spender").exists().withMessage("Input should contain field 'spender'."),

@@ -9,7 +9,6 @@ contract DigitalTwin is ERC721 {
 
     /**
      * Recognition: Packaging
-     * 
      * Verification: Product
      */
     enum Recognitionstatus {
@@ -150,6 +149,13 @@ contract DigitalTwin is ERC721 {
         require(ownerOf(tks[_tkname].id) == tx.origin, "Only token owner can transfer the token.");
 
         _transfer(tx.origin,_to,tks[_tkname].id);
+    }
+
+    function approveByName(string memory _tkname, address _to) public {
+        require(tkExists[_tkname], "Token does not exist.");
+        require(ownerOf(tks[_tkname].id) == tx.origin, "Only token owner can transfer the token.");
+
+        _approve(_to, tks[_tkname].id);
     }
 
     /**
