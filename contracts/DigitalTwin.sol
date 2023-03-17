@@ -80,10 +80,7 @@ contract DigitalTwin is ERC721 {
     function recognize(string memory _tkname, bool _status) public {
 
         require(tkExists[_tkname], "Token does not exist.");
-        require(
-            ownerOf(tks[_tkname].id) == address(msg.sender),
-            "Only the token owner can update verification status of the token."
-        );
+        require(msg.sender == admin, "Only the token owner can update recognition status of the token.");
 
         if (_status == true) {
             tks[_tkname].rstatus = Recognitionstatus.VERIFIED;
@@ -101,10 +98,7 @@ contract DigitalTwin is ERC721 {
     function verify(string memory _tkname, bool _status) public {
 
         require(tkExists[_tkname], "Token does not exist.");
-        require(
-            ownerOf(tks[_tkname].id) == address(msg.sender),
-            "Only the token owner can update verification status of the token."
-        );
+        require(msg.sender == admin, "Only the token owner can update verification status of the token.");
 
         if (_status == true) {
             tks[_tkname].vstatus = Verificationstatus.VERIFIED;

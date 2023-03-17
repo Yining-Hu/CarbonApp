@@ -1,6 +1,7 @@
 
 Compiling your contracts...
 ===========================
+> Compiling ./contracts/DigitalTwin.sol
 > Compiling ./contracts/MarketPlace.sol
 > Compilation warnings encountered:
 
@@ -119,28 +120,28 @@ Starting migrations...
 
    Replacing 'DigitalTwin'
    -----------------------
-   > transaction hash:    0x507df1751729cf9203c659ff0e6c17fa7391d233817153bd54b916957fda5d7a
+   > transaction hash:    0x23722ae3d0b7136bfb06ac7e65b5abc2c0396642b9fff5165b51e7b43550edcc
    > Blocks: 0            Seconds: 0
-   > contract address:    0x927b64a6BB46C44d36bd2230bf46B4b5a50776ED
-   > block number:        5401
-   > block timestamp:     1679025418
+   > contract address:    0x83b0B1AC40e13D2909b47f318fA321aDE9A6c3dB
+   > block number:        5410
+   > block timestamp:     1679026342
    > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
-   > balance:             98.5752698260000252
-   > gas used:            4681603 (0x476f83)
+   > balance:             98.1717146860000252
+   > gas used:            4710062 (0x47deae)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.09363206 ETH
+   > total cost:          0.09420124 ETH
 
 
    Replacing 'MarketPlace'
    -----------------------
-   > transaction hash:    0xd1d5c782e68f927c194db325465dbfa5316e39bcafe4853347f23da6ad10eaeb
+   > transaction hash:    0x1a9a0a52618a2d5139cc7d1c2c5812b9ab70248a861b1af2e7e8662ad17060c8
    > Blocks: 0            Seconds: 0
-   > contract address:    0xF42d0FD38574fDf74d4D3A6D10FE09da010A3F38
-   > block number:        5402
-   > block timestamp:     1679025418
+   > contract address:    0x7Eb3897D38E00BD79E258e77a4D13d276eB54C40
+   > block number:        5411
+   > block timestamp:     1679026343
    > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
-   > balance:             98.4676780060000252
+   > balance:             98.0641228660000252
    > gas used:            5379591 (0x521607)
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -148,12 +149,12 @@ Starting migrations...
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.20122388 ETH
+   > Total cost:          0.20179306 ETH
 
 
 Summary
 =======
 > Total deployments:   2
-> Final cost:          0.20122388 ETH
+> Final cost:          0.20179306 ETH
 
 
