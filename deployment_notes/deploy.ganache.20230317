@@ -1,0 +1,159 @@
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/MarketPlace.sol
+> Compilation warnings encountered:
+
+    Warning: Unused local variable.
+  --> project:/contracts/MarketPlace.sol:68:10:
+   |
+68 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |          ^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/MarketPlace.sol:68:22:
+   |
+68 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |                      ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/MarketPlace.sol:68:46:
+   |
+68 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |                                              ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/MarketPlace.sol:68:69:
+   |
+68 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address addr) = digitaltwin.queryToken(_tkname);
+   |                                                                     ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:118:22:
+    |
+118 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                      ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:118:46:
+    |
+118 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                              ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:118:69:
+    |
+118 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                                                     ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:118:92:
+    |
+118 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                                                                            ^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:145:22:
+    |
+145 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                      ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:145:46:
+    |
+145 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                              ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:145:69:
+    |
+145 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                                                     ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:145:92:
+    |
+145 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                                                                            ^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:162:22:
+    |
+162 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                      ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:162:46:
+    |
+162 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                              ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:162:69:
+    |
+162 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                                                     ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+   --> project:/contracts/MarketPlace.sol:162:92:
+    |
+162 |         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
+    |                                                                                            ^^^^^^^^^^^^^
+
+
+> Artifacts written to /home/yih/Documents/dev/beston-dapps/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.7+commit.e28d00a7.Emscripten.clang
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+5_deploy_marketplace.js
+=======================
+
+   Replacing 'DigitalTwin'
+   -----------------------
+   > transaction hash:    0x507df1751729cf9203c659ff0e6c17fa7391d233817153bd54b916957fda5d7a
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x927b64a6BB46C44d36bd2230bf46B4b5a50776ED
+   > block number:        5401
+   > block timestamp:     1679025418
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             98.5752698260000252
+   > gas used:            4681603 (0x476f83)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.09363206 ETH
+
+
+   Replacing 'MarketPlace'
+   -----------------------
+   > transaction hash:    0xd1d5c782e68f927c194db325465dbfa5316e39bcafe4853347f23da6ad10eaeb
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xF42d0FD38574fDf74d4D3A6D10FE09da010A3F38
+   > block number:        5402
+   > block timestamp:     1679025418
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             98.4676780060000252
+   > gas used:            5379591 (0x521607)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.10759182 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.20122388 ETH
+
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.20122388 ETH
+
+

@@ -77,7 +77,8 @@ contract MarketPlace {
         allproducts.push(_tkname);
 
         // transfer the token ownership to the agent
-        digitaltwin.transferByName(_tkname,agent);
+        // todo: enable transfer the token ownership to the contract address
+        digitaltwin.transferByName(_tkname,address(this));
     }
 
     /**
@@ -111,11 +112,11 @@ contract MarketPlace {
         stock[_tkname].state = PurchaseState.PURCHASED;
 
         // transfer btk from buyer to seller
-        btk.transfer(stock[_tkname].seller, stock[_tkname].price);
+        btk.transferFrom(msg.sender, stock[_tkname].seller, stock[_tkname].price);
 
         // transfer token(product) from seller to buyer
         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
-        digitaltwin.transferFrom(agent, stock[_tkname].seller, id); // provided that seller approves MarketPlace to transfer beforehand
+        digitaltwin.transferFrom(address(this), stock[_tkname].buyer, id); // provided that agent approves MarketPlace to transfer beforehand
 
         emit PurchaseSuccessful(_tkname, stock[_tkname].price);
     }
@@ -142,8 +143,9 @@ contract MarketPlace {
         btk.transfer(stock[_tkname].seller, stock[_tkname].price); // MarketPlace transfers the product price to seller
         
         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
-        digitaltwin.transferFrom(agent, stock[_tkname].buyer, id); // provided that agent approves MarketPlace to transfer beforehand
-        
+        digitaltwin.transferFrom(address(this), stock[_tkname].buyer, id); // provided that agent approves MarketPlace to transfer beforehand
+        // digitaltwin.transferByName(_tkname,stock[_tkname].buyer);
+
         stock[_tkname].state = PurchaseState.PURCHASED;
     }
 
@@ -158,7 +160,8 @@ contract MarketPlace {
         btk.transfer(stock[_tkname].buyer, stock[_tkname].price);
         
         (uint256 id, string memory metadata, string memory rstatus, string memory vstatus, address owner) = digitaltwin.queryToken(_tkname);
-        digitaltwin.transferFrom(agent, stock[_tkname].seller, id); // provided that agent approves MarketPlace to transfer beforehand
+        digitaltwin.transferFrom(address(this), stock[_tkname].seller, id); // provided that agent approves MarketPlace to transfer beforehand
+        // digitaltwin.transferByName(_tkname,stock[_tkname].seller);
 
         stock[_tkname].state = PurchaseState.REFUNDED;
     }

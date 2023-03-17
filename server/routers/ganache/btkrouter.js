@@ -11,7 +11,7 @@ var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/ganac
 
 var mppath = './build/contracts/MarketPlace.json';
 var btkpath = './build/contracts/BToken.json';
-var mpaddr = "0x4EaB018E772AD686857fC064f4fb76929A5Fd3A3";
+var mpaddr = "0xF42d0FD38574fDf74d4D3A6D10FE09da010A3F38";
 var btkinstance = utils.getSubContract("addr",mpaddr,provider,mppath,btkpath);
 // var btkinstance = utils.getSubContract("netId",netId,providerURL,mppath,btkpath);
 
