@@ -29,7 +29,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -48,7 +49,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -72,7 +74,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -85,7 +88,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -155,7 +159,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -183,7 +188,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.7+commit.e28d00a7\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract FarmRegistry\",\"name\":\"_farmregistry\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"allanimals\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"animalExists\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"animals\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"FarmID\",\"type\":\"string\"},{\"internalType\":\"enum AnimalRegistry.AnimalGroup\",\"name\":\"Group\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"farmregistry\",\"outputs\":[{\"internalType\":\"contract FarmRegistry\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"queryAll\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"},{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"},{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"},{\"internalType\":\"string[][]\",\"name\":\"\",\"type\":\"string[][]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_animalid\",\"type\":\"string\"}],\"name\":\"queryAnimal\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_animalid\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_farmid\",\"type\":\"string\"},{\"internalType\":\"uint8\",\"name\":\"_animalgroup\",\"type\":\"uint8\"}],\"name\":\"registerAnimal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_animalid\",\"type\":\"string\"},{\"internalType\":\"string[]\",\"name\":\"_dates\",\"type\":\"string[]\"}],\"name\":\"updateDates\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/carbon/AnimalRegistry.sol\":\"AnimalRegistry\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/carbon/AnimalRegistry.sol\":{\"keccak256\":\"0xbd0db9b186edae7855aeb4ee9466fcbe151680632edb0575c4a64df7e672789b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://662e0a1a1a7302dd7d59434c2e8d51e475bece810492df5be0e32c8402ddc4a4\",\"dweb:/ipfs/QmPgeSxAg8DVe3qVLH4jaxJLb2NNtbwLhEFBTR4jkF2z3j\"]},\"project:/contracts/carbon/FarmRegistry.sol\":{\"keccak256\":\"0xfacaccf0fb789a773fedcd0c8ffdac9a007043618c9f2e0d4300b5ce8402b87d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1000590af6000d3005d1a5adc9344008a6ecd11899bfe0fe25e9219cad064f7a\",\"dweb:/ipfs/QmPJVGRhVSi6ZhfEni7aEsyJzrfCc73tEcBwTagN9jtBU9\"]}},\"version\":1}",
@@ -22228,18 +22234,19 @@
     "100": {
       "events": {},
       "links": {},
-      "address": "0x381Da6482a876692950c40dcd0fCd9f594F4a628",
-      "transactionHash": "0x083c1e77991076444fc4f6783da0c24ea95a988357b2910ac7da598a1fddd8dd"
+      "address": "0xd320ae64461AFDF006070cA5D33Ab2BEc799d09C",
+      "transactionHash": "0x5aca3f7a198a91b1261e8c5792d731bb37dbbf327edc28a9a343f2d843b57a2f"
     },
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x5B3414A133b2DCcB3b9CA9D56A153948950F2e0f",
-      "transactionHash": "0x71da6785bae3d958e3f85374f03bd2b1a5d66026a3bbfe6ffd470566eb669e19"
+      "address": "0x32d3e6715f6Ac8DF349e0C658c6ceDeec1b5f5D0",
+      "transactionHash": "0xfa62405c08eff439db213fc1118b9044a96b3eaf6eba67c304e5f3529dc14a2f"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2023-03-13T03:20:04.380Z",
+  "updatedAt": "2023-03-20T00:06:39.581Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

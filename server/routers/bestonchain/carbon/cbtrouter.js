@@ -19,7 +19,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtaddr = "0x5F1eBB06F0918c77B3cF7E5c8d0eD5e4c0124863";
+var cbtaddr = "0xb17CcB0c31cc578b873B7f5Bacf289c636F1b127";
 var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath); // get the digitaltwin contract instance
 
 router.post('/issue', 

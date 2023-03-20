@@ -144,7 +144,7 @@ router.post('/approve',
                     } else if (error.message.includes("Token does not exist.")) {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please enter an existing token name."}));
                     } else if (error.message.includes("token owner")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Only the token owner can update the token."}));
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Only the token owner can approve the spend of the token."}));
                     } else {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                     }
@@ -155,9 +155,8 @@ router.post('/approve',
     });
 
 /**
- * agent uses the below 2 routes to verify a product and its packaging, after a token is offered as a product (ownership transferred to agent)
+ * agent uses the below 2 routes to verify a product and its packaging, after a token is offered as a product (ownership transferred to MarketPlace)
  * status field of the request should be true or false
- * Todo: to test following the event sequence
  */
 router.post('/agent/recognize', 
     validator.check("productid").exists().withMessage("Input should contain field 'tkid'."),

@@ -20,7 +20,7 @@ var providerURL = "http://127.0.0.1:8545"
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var mppath = '/home/yih/Documents/dev/beston-dapps/build/contracts/MarketPlace.json';
-var mpaddr = "0xe42Afa755A516D0A10BEF19F912E8255f5198280";
+var mpaddr = "0xF096f46a9d288Dc453E69aC21937A8bE15B075Ce";
 var mpinstance = utils.getContract("addr",mpaddr,provider,mppath);
 
 router.post('/seller/list',
@@ -99,7 +99,47 @@ router.post('/buyer/deposit',
                         console.log(error);
 
                         if (error.message.includes("Transaction has been reverted")) {
-                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the product is listed (without a deposit), and deposit covers both the product price and agent fee."}));
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the product is listed (without a deposit), deposit covers both the product price and agent fee and does not exceed your balance."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
+router.post('/buyer/purchase',
+    validator.check("productid").exists().withMessage("Input should contain field 'productid'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var productid = request.body.productid;
+            var gas = request.body.gas;
+
+            mpinstance.then(value => {
+                value.methods.directPurchase(productid).send({from: request.body.bcacc, gas: gas})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Buyer purchasing product: ${productid}, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    if (error.receipt == null) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else {
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to send deposit for product: ${productid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the product is listed (without a deposit), and price does not exceed your balance."}));
                         } else {
                             response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                         }

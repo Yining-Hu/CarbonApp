@@ -47125,6 +47125,12 @@
     "version": "0.8.7+commit.e28d00a7.Emscripten.clang"
   },
   "networks": {
+    "100": {
+      "events": {},
+      "links": {},
+      "address": "0xF096f46a9d288Dc453E69aC21937A8bE15B075Ce",
+      "transactionHash": "0x169bfe4321e5e52e18c0549fd5bf33d4f5a7eacd7d52e282e2f4c761c6173323"
+    },
     "5777": {
       "events": {
         "0x6b4150c430f0b9b9df0f255d6761fd17eefed34257973ab988203c832edbcc23": {
@@ -47172,7 +47178,7 @@
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2023-03-17T04:12:23.346Z",
+  "updatedAt": "2023-03-20T00:06:01.052Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Yining Hu",

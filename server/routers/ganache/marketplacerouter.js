@@ -131,7 +131,7 @@ router.post('/buyer/purchase',
                     } else if (error.message.includes("not listed")) {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the product is listed and no deposit has been made."}));
                     } else if (error.message.includes("exceeds balance")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the deposit amount doesn't exceed your balance."}));
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the price doesn't exceed your balance."}));
                     } else {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                     }

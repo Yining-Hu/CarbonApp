@@ -21,7 +21,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var digitaltwinpath = '/home/yih/Documents/dev/beston-dapps/build/contracts/DigitalTwin.json';
-var digitaltwinaddr = "0xd0b683C445d697e221cC6CA8904d536bfc64213b";
+var digitaltwinaddr = "0x181D1da7129F23e1ce5af870242955fd874338D4";
 var digitaltwininstance = utils.getContract("addr",digitaltwinaddr,provider,digitaltwinpath); // get the digitaltwin contract instance
 
 router.post('/seller/mint',
@@ -125,10 +125,52 @@ router.post('/seller/update',
         }
     });
 
+router.post('/approve', 
+    validator.check("tkid").exists().withMessage("Input should contain field 'tkid'."),
+    validator.check("spender").exists().withMessage("Input should contain field 'to'."),
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
+    validator.check("gas").isInt(),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var tkid = request.body.tkid;
+            var spender = request.body.spender;
+            var gas = request.body.gas;
+
+            digitaltwininstance.then(value => {
+                value.methods.approveByName(tkid,spender).send({from: request.body.bcacc, gas: gas})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Approving the transfer of token: ${tkid}, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    if (error.receipt == null) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else {
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to update token: ${tkid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter an existing token name, and note only the token owner can approve the spend the token."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
 /**
- * agent uses the below 2 routes to verify a product and its packaging, after a token is offered as a product (ownership transferred to agent)
+ * agent uses the below 2 routes to verify a product and its packaging, after a token is offered as a product (ownership transferred to MarketPlace)
  * status field of the request should be true or false
- * Todo: to test following the event sequence
  */
 router.post('/agent/recognize', 
     validator.check("productid").exists().withMessage("Input should contain field 'productid'."),

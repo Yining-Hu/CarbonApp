@@ -1,0 +1,174 @@
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/carbon/CarbonToken.sol
+> Compiling ./contracts/carbon/EmissionTracking.sol
+> Compiling ./contracts/carbon/FeedTracking.sol
+> Compilation warnings encountered:
+
+    Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:14:
+   |
+55 |             (string memory ingredient, string memory claimstatus, string ...
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:40:
+   |
+55 |  ...         (string memory ingredient, string memory claimstatus, string memory animalid, uint16 dm ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:67:
+   |
+55 |  ... edient, string memory claimstatus, string memory animalid, uint16 dmi, uint256 datetime, uin ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:91:
+   |
+55 |  ... aimstatus, string memory animalid, uint16 dmi, uint256 datetime, uint256 blockti ...
+   |                                         ^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:121:
+   |
+55 |  ... lid, uint16 dmi, uint256 datetime, uint256 blocktime)=feedtracking.queryFeed(_feedids[i ...
+   |                                         ^^^^^^^^^^^^^^^^^
+
+,Warning: Function state mutability can be restricted to view
+   --> project:/contracts/carbon/EmissionTracking.sol:141:5:
+    |
+141 |     function linkEmissionToFeed(string memory _emissionid) public returns(string memory) {
+    |     ^ (Relevant source part starts here and spans across multiple lines).
+
+
+> Artifacts written to /home/yih/Documents/dev/beston-dapps/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.7+commit.e28d00a7.Emscripten.clang
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+6_deploy_farmreg.js
+===================
+
+   Replacing 'FarmRegistry'
+   ------------------------
+   > transaction hash:    0xd9be7a852a3d8e62c4f8c1a2da07029ad30099f35921be8c4c8690493696f6a0
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x0B839D2306fCC125573560c33A00EC18251A0ed6
+   > block number:        5428
+   > block timestamp:     1679267197
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.1746248
+   > gas used:            922580 (0xe13d4)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0184516 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:           0.0184516 ETH
+
+
+7_deploy_animalreg.js
+=====================
+
+   Replacing 'AnimalRegistry'
+   --------------------------
+   > transaction hash:    0xfa62405c08eff439db213fc1118b9044a96b3eaf6eba67c304e5f3529dc14a2f
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x32d3e6715f6Ac8DF349e0C658c6ceDeec1b5f5D0
+   > block number:        5429
+   > block timestamp:     1679267197
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.13661152
+   > gas used:            1900664 (0x1d0078)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.03801328 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.03801328 ETH
+
+
+8_deploy_feedreg.js
+===================
+
+   Replacing 'FeedTracking'
+   ------------------------
+   > transaction hash:    0x2fc4e46e7811b942b5a734dc80f471b921aee6c7926daced9be28529d00e4048
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xFB1e7B8E11aDE135F83E99A6bD359C2FD21Db784
+   > block number:        5430
+   > block timestamp:     1679267198
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.09061836
+   > gas used:            2299658 (0x23170a)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.04599316 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.04599316 ETH
+
+
+9_deploy_emissionreg.js
+=======================
+
+   Replacing 'EmissionTracking'
+   ----------------------------
+   > transaction hash:    0x1a7f96be0ca5264ebb992bb069f77297607e6e4233c7cd9ac5dd1d2345a85a2b
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x8be94EE5C2320F42599a3Ad873896291cc116685
+   > block number:        5431
+   > block timestamp:     1679267198
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             98.03824018
+   > gas used:            2618909 (0x27f61d)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.05237818 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.05237818 ETH
+
+
+10_deploy_cbt.js
+================
+
+   Replacing 'CarbonToken'
+   -----------------------
+   > transaction hash:    0x89753a8d16c62fceddba894a77b6a559dc0e5e1197d176d0fbc549ef254ff85f
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x84C0aE314D901D1837f925F8DC97d32136BaC4dC
+   > block number:        5432
+   > block timestamp:     1679267199
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             97.94328626
+   > gas used:            4747696 (0x4871b0)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.09495392 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.09495392 ETH
+
+
+Summary
+=======
+> Total deployments:   5
+> Final cost:          0.24979014 ETH
+
+

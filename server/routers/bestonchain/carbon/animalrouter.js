@@ -19,7 +19,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var animalregpath = './build/contracts/AnimalRegistry.json';
-var animalregaddr = "0x381Da6482a876692950c40dcd0fCd9f594F4a628";
+var animalregaddr = "0xd320ae64461AFDF006070cA5D33Ab2BEc799d09C";
 var animalreginstance = utils.getContract("addr",animalregaddr,provider,animalregpath); // get the digitaltwin contract instance
 
 router.post('/register', 

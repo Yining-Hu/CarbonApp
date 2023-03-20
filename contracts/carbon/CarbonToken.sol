@@ -46,7 +46,6 @@ contract CarbonToken is ERC1155 {
         emissiontracking = _emissiontracking;
     }
 
-    // Todo: add a condition for issue, e.g., only if emissions are verified carbon tokens can be issued.
     function issue(string memory _cbtokenid, uint256 _amount, string[] memory _feedids, uint256 _startdate, uint256 _enddate) public {
         require(msg.sender == admin, "Only admin can issue Carbon Tokens.");
         require(cbtokenExists[_cbtokenid] == false, "Carbon token id already exists.");
@@ -56,7 +55,7 @@ contract CarbonToken is ERC1155 {
             (string memory ingredient, string memory claimstatus, string memory animalid, uint16 dmi, uint256 datetime, uint256 blocktime)=feedtracking.queryFeed(_feedids[i]);
             require((datetime>=_startdate && datetime<=_enddate ), "The specified feed record is not in the claim period.");
             
-            feedtracking.updateFeed(_feedids[i]);
+            feedtracking.claimFeed(_feedids[i]);
         }
 
         cbtokens[_cbtokenid] = CBToken(0,_amount,_startdate,_enddate);

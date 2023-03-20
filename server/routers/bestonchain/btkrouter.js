@@ -20,7 +20,7 @@ var providerURL = "http://127.0.0.1:8545"
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var mppath = './build/contracts/MarketPlace.json';
-var mpaddr = "0xe42Afa755A516D0A10BEF19F912E8255f5198280";
+var mpaddr = "0xF096f46a9d288Dc453E69aC21937A8bE15B075Ce";
 var btkpath = './build/contracts/BToken.json';
 var btkinstance = utils.getSubContract("addr",mpaddr,provider,mppath,btkpath);
 

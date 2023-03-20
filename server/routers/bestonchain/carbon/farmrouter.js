@@ -19,7 +19,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var farmregpath = './build/contracts/FarmRegistry.json';
-var farmregaddr = "0xCF91ae6afA7F9094b0981E1b0D400165aDF9836E";
+var farmregaddr = "0x5030ccc29FCf1878165cE3f8da157aeF57c59899";
 var farmreginstance = utils.getContract("addr",farmregaddr,provider,farmregpath); // get the digitaltwin contract instance
 
 router.post('/register', 
