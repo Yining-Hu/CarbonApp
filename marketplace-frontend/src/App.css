@@ -1,0 +1,21 @@
+.App {
+  text-align: center;
+}
+
+.nav-list {
+  background-color: #dddddd;
+}
+
+.nav-list-item {
+  display: inline;
+}
+
+.token-mint-label {
+  display: inline-block;
+  width: 150px;
+  text-align: right;
+}
+
+.form-div {
+  margin-bottom: 5px;
+}
