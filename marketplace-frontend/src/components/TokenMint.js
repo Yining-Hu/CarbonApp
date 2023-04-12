@@ -9,31 +9,14 @@ export default class TokenMint extends React.Component {
     packaging_date:'',
     batch_num:'',
     serial_num:'',
-    gas:300000
+    gas:400000
   }
 
-  handleChange_tkid = event => {
-    this.setState({ tkid: event.target.value });
-  }
-
-  handleChange_gtin = event => {
-    this.setState({ GTIN: event.target.value });
-  }
-
-  handleChange_nw = event => {
-    this.setState({ net_weight: event.target.value });
-  }
-
-  handleChange_pd = event => {
-    this.setState({ packaging_date: event.target.value });
-  }
-
-  handleChange_batch = event => {
-    this.setState({ batch_num: event.target.value });
-  }
-
-  handleChange_serial = event => {
-    this.setState({ serial_num: event.target.value });
+  handleChange = event => {
+    this.setState({
+      ...this.state,
+      [event.target.name]: event.target.value,
+    })
   }
 
   handleSubmit = event => {
@@ -60,7 +43,6 @@ export default class TokenMint extends React.Component {
 
     axios.post(`http://localhost:3000/digitaltwin/seller/mint`, formdata, apiConfig)
       .then(res => {
-        console.log(res);
         console.log(res.data);
       })
   }
@@ -72,27 +54,27 @@ export default class TokenMint extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <div className='form-div'>
             <label className='token-mint-label'>Token ID:</label>
-            <input type="text" name="tkid" onChange={this.handleChange_tkid} />
+            <input type="text" name="tkid" onChange={this.handleChange} />
           </div>
           <div className='form-div'>
             <label className='token-mint-label'>GTIN:</label>
-            <input type="text" name="GTIN" onChange={this.handleChange_gtin} />
+            <input type="text" name="GTIN" onChange={this.handleChange} />
           </div>
           <div className='form-div'>
             <label className='token-mint-label'>Net Weight:</label>
-            <input type="text" name="net_weight" onChange={this.handleChange_nw} />
+            <input type="text" name="net_weight" onChange={this.handleChange} />
           </div>          
           <div className='form-div'>
             <label className='token-mint-label'>Packaging Date:</label>
-            <input type="text" name="packaging_date" onChange={this.handleChange_pd} />
+            <input type="text" name="packaging_date" onChange={this.handleChange} />
           </div>
           <div className='form-div'>
             <label className='token-mint-label'>Batch Number:</label>
-            <input type="text" name="batch_num" onChange={this.handleChange_batch} />
+            <input type="text" name="batch_num" onChange={this.handleChange} />
           </div>      
           <div className='form-div'>
             <label className='token-mint-label'>Serial Num:</label>
-            <input type="text" name="serial_num" onChange={this.handleChange_serial} />
+            <input type="text" name="serial_num" onChange={this.handleChange} />
           </div>
           <button type="submit">Add</button>
         </form>
