@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 var mproute, digitaltwinroute, btkroute, middlewares, generalroute;
 
@@ -29,6 +30,7 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
 
 var app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use(middlewares.authorization);
 

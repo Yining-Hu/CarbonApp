@@ -1,0 +1,57 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+5_deploy_marketplace.js
+=======================
+
+   Replacing 'DigitalTwin'
+   -----------------------
+   > transaction hash:    0xacaccccd6c421609c3e5dc04beec80267607b5e0937ebd8b00841ff85d7239d7
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xc3aB7Df05128aF9A00d30A51492C7f2E08d75260
+   > block number:        5453
+   > block timestamp:     1681261277
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             97.5494243660000252
+   > gas used:            4624916 (0x469214)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.09249832 ETH
+
+
+   Replacing 'MarketPlace'
+   -----------------------
+   > transaction hash:    0xff0f4b6f330af5bd923a8b2d6c43acd54dd5ea1e5b9eab78d8b2664b4398983b
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xD9a912f4a54B14D24832367790326d1C12955932
+   > block number:        5454
+   > block timestamp:     1681261278
+   > account:             0x12947B8d2568DFf6396a25c0E9A062D5c7122D9C
+   > balance:             97.4418327860000252
+   > gas used:            5379579 (0x5215fb)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.10759158 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:           0.2000899 ETH
+
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.2000899 ETH
+
+

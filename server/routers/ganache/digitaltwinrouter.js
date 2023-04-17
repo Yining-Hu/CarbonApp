@@ -9,7 +9,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var digitaltwinpath = './build/contracts/DigitalTwin.json';
-var digitaltwinaddr = "0x83b0B1AC40e13D2909b47f318fA321aDE9A6c3dB";
+var digitaltwinaddr = "0xa93E2C1d4c16E7252D72AD9A9E1ce256B06F5B2A";
 var digitaltwininstance = utils.getContract("addr",digitaltwinaddr,provider,digitaltwinpath);
 // var digitaltwininstance = utils.getContract("netId",netId,providerURL,digitaltwinpath);
 

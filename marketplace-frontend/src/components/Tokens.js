@@ -1,13 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 
-export default class TokenList extends React.Component {
+export default class Tokens extends React.Component {
   state = {
     tokens:[]
-  }
-
-  delete_state = {
-    tkid:''
   }
 
   componentDidMount() {
@@ -26,7 +22,7 @@ export default class TokenList extends React.Component {
       })
   }
 
-  handleClick = event => {
+  handleRemove = event => {
     event.preventDefault();
 
     const apiConfig = {
@@ -38,11 +34,15 @@ export default class TokenList extends React.Component {
       },
     }
 
-    axios.post(`http://localhost:3000/digitaltwin/seller/burn`, {tkid:this.state.tokens[0].tkid,gas:300000}, apiConfig)
-      .then(res => {
-        console.log(res.data);
-      })
-  }
+    axios.post(`http://localhost:3000/digitaltwin/seller/burn`, {tkid:event.target.value,gas:300000}, apiConfig)
+    .then(res => {
+      console.log(res.data);
+    })
+
+    this.setState({
+      tokens: this.state.tokens.slice(0, -1)
+    });
+  };
 
   render() {
     return (
@@ -68,11 +68,10 @@ export default class TokenList extends React.Component {
                 <td>{token.recognition_result}</td>
                 <td>{token.verification_result}</td>
                 <td>{token.owner}</td>
-                <td><button onClick={this.handleClick}>Delete</button></td>
+                <td><button value={token.tkid} onClick={this.handleRemove}>Delete</button></td>
               </tr>
             )
         }
-
         </table>
       </div>
     )

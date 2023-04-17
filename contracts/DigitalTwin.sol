@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract DigitalTwin is ERC721 {
-    string[] public alltks; // to record all all tks
+    string[] public alltks; // records all tks including burned
     address public admin;
+    uint256 public tkcount; // count unburned tks
 
     /**
      * Recognition: Packaging
@@ -49,6 +50,7 @@ contract DigitalTwin is ERC721 {
         alltks.push(_tkname);
         uint256 id = alltks.length;
         _mint(msg.sender, id);
+        tkcount = tkcount + 1;
         
         tks[_tkname].id = id;
         tks[_tkname].metadata = _metadata;
@@ -111,9 +113,6 @@ contract DigitalTwin is ERC721 {
     }
 
     function burn(string memory _tkname) public {
-        uint i = 0;
-        uint j;
-
         require(tkExists[_tkname], "Token does not exist.");
         require(
             ownerOf(tks[_tkname].id) == address(msg.sender),
@@ -122,19 +121,20 @@ contract DigitalTwin is ERC721 {
 
         _burn(tks[_tkname].id); // transfer the token to the 0x address
         tkExists[_tkname] = false; // change existence to false
-        delete tks[_tkname]; // delete token from the mapping
+        tkcount = tkcount-1;
 
-        /// @notice: 1. find the index of an element
-        /// @notice: 2. to remove an element - shift the elements after the index and remove the last
-        while (keccak256(abi.encodePacked(alltks[i])) != keccak256(abi.encodePacked(_tkname))) {
-            i++;
-        }
-        
-        for (j=i; j<alltks.length-1; j++) {
-            alltks[j] = alltks[j+1];
-        }
-        
-        alltks.pop(); // remove the token from the alltks list
+        /// @notice: To delete from alltks: 1. find the index of an element; 2. to remove an element - shift the elements after the index and remove the last
+        // uint i = 0;
+        // uint j;
+        // while (keccak256(abi.encodePacked(alltks[i])) != keccak256(abi.encodePacked(_tkname))) {
+        //     i++;
+        // }
+        // for (j=i; j<alltks.length-1; j++) {
+        //     alltks[j] = alltks[j+1];
+        // }
+        // alltks.pop(); // remove the token from the alltks list
+
+        // delete tks[_tkname]; // delete token from the mapping
     }
 
     /// @notice tx.origin is the user account that starts the call, msg.sender is the contract that calls this contract
@@ -210,35 +210,39 @@ contract DigitalTwin is ERC721 {
         address[] memory
     ) 
     {
-        uint256[] memory internal_id = new uint256[](alltks.length);
-        string[] memory metadata = new string[](alltks.length);
-        string[] memory rstatus = new string[](alltks.length);
-        string[] memory vstatus = new string[](alltks.length);
-        address[] memory owner = new address[](alltks.length);
+        string[] memory tkname = new string[](tkcount);
+        uint256[] memory internal_id = new uint256[](tkcount);
+        string[] memory metadata = new string[](tkcount);
+        string[] memory rstatus = new string[](tkcount);
+        string[] memory vstatus = new string[](tkcount);
+        address[] memory owner = new address[](tkcount);
 
-        for(uint i=0; i<alltks.length; i++){
-            internal_id[i] = tks[alltks[i]].id;
-            metadata[i] = tks[alltks[i]].metadata;
+        for(uint256 i=0; i<alltks.length; i++){
+            if (tkExists[alltks[i]] == true) {
+                tkname[i] = alltks[i];
+                internal_id[i] = tks[alltks[i]].id;
+                metadata[i] = tks[alltks[i]].metadata;
 
-            if (tks[alltks[i]].rstatus == Recognitionstatus.PENDING) {
-                rstatus[i] = "pending packaging verification";
-            } else if (tks[alltks[i]].rstatus == Recognitionstatus.VERIFIED) {
-                rstatus[i] = "packaging verified";
-            } else {
-                rstatus[i] = "packaging denied";
+                if (tks[alltks[i]].rstatus == Recognitionstatus.PENDING) {
+                    rstatus[i] = "pending packaging verification";
+                } else if (tks[alltks[i]].rstatus == Recognitionstatus.VERIFIED) {
+                    rstatus[i] = "packaging verified";
+                } else {
+                    rstatus[i] = "packaging denied";
+                }
+
+                if (tks[alltks[i]].vstatus == Verificationstatus.PENDING) {
+                    vstatus[i] = "pending product verification";
+                } else if (tks[alltks[i]].vstatus == Verificationstatus.VERIFIED) {
+                    vstatus[i] = "product verified";
+                } else {
+                    vstatus[i] = "product denied";
+                }
+
+                owner[i] = ownerOf(tks[alltks[i]].id);
             }
-
-            if (tks[alltks[i]].vstatus == Verificationstatus.PENDING) {
-                vstatus[i] = "pending product verification";
-            } else if (tks[alltks[i]].vstatus == Verificationstatus.VERIFIED) {
-                vstatus[i] = "product verified";
-            } else {
-                vstatus[i] = "product denied";
-            }
-
-            owner[i] = ownerOf(tks[alltks[i]].id);
         }
 
-        return (alltks, internal_id, metadata, rstatus, vstatus, owner);
+        return (tkname, internal_id, metadata, rstatus, vstatus, owner);
     }
 }
