@@ -13,7 +13,7 @@ function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/home" element={
+                <Route path="" element={
                     <MyMermaid chart={EscrowSequence} />
                 } />
                 <Route path="/mint" element={

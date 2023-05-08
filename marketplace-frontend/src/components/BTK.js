@@ -6,16 +6,26 @@ export default class BTK extends React.Component {
     balances:[]
   }
 
-  handleLoad = event => {
-    this.setState({
-        ...this.state,
-    })
+  componentDidMount() {
+    const apiConfig = {
+        headers:{
+            "api-key":"qdpJCrjbL14djS2cVPYoNSdCw6UzCT",
+            "user-name":"agent",
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+        },
+    }
+    axios.get(`http://localhost:3000/marketplace/btk/balances`,apiConfig)
+      .then(res => {
+        const balances = res.data;
+        this.setState({ balances });
+      })
   }
 
   render() {
     return (
       <div>
-        <h2>BTK Balance</h2>
+        <h2>User Balances</h2>
         <table>
         <tr>
           <th>User</th>
@@ -24,8 +34,8 @@ export default class BTK extends React.Component {
         {
           this.state.balances
             .map(balance =>
-              <tr key={balance.user}>
-                <td>{balance.user}</td>
+              <tr key={balance.username}>
+                <td>{balance.username}</td>
                 <td>{balance.balance}</td>
               </tr>
             )
