@@ -1,0 +1,16 @@
+New users can get Ethers from bank accounts.
+
+(before purchasing a product)
+Buyer/Seller/Agent buys BTK from MarketPlace.
+Buyer/Seller/Agent approves MarketPlace to spend a certain amount of BTK. (same for selling BTK back to contract)
+
+(when purchasing a product)
+Same as the old MarketPlace sequence.
+
+(before selling BTKs back to MarketPlace)
+Buyer/Seller/Agent approves MarketPlace to spend a certain amount of BTK.
+
+(to display all user balances on MarketPlace frontend)
+Manually register all users you want to show on the page.
+
+example: https://ethereum.org/en/developers/tutorials/transfers-and-approval-of-erc-20-tokens-from-a-solidity-smart-contract/

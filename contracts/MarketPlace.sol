@@ -82,23 +82,36 @@ contract MarketPlace {
     }
 
     /**
+     * BTK functions
      * buyBTK allows a caller to buy BTK from MarketPlace
      * sellBTK allows a caller to sell BTK to MarketPlace
      */
-    function buyBTK(address _to) payable public {
+    function resiterBTKAcc(string memory _name) public {
+        btk.registerUser(_name, tx.origin);
+    }
+
+    function buyBTK() payable public {
         uint256 amountTobuy = msg.value;
         uint256 dexBalance = btk.balanceOf(address(this));
-        require(amountTobuy > 0, "You need to send some ether");
-        require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
-        btk.transfer(_to, amountTobuy);
+        require(amountTobuy > 0, "You need to send some ethers.");
+        require(amountTobuy <= dexBalance, "Not enough btks in the reserve.");
+        btk.transfer(tx.origin, amountTobuy);
     }
 
     function sellBTK(uint256 amount) public {
         require(amount > 0, "You need to sell at least some tokens");
-        uint256 allowance = btk.allowance(msg.sender, address(this));
-        require(allowance >= amount, "Check the token allowance");
-        btk.transferFrom(msg.sender, address(this), amount); // msg.sender is the caller, address(this) is MarketPlace
-        payable(msg.sender).transfer(amount);
+        btk.transferFrom(tx.origin, address(this), amount); // msg.sender is the caller, address(this) is MarketPlace
+        payable(tx.origin).transfer(amount);
+    }
+
+    function queryBTKBalances() public view returns
+    (
+        string[] memory,
+        uint256[] memory
+    )
+    {
+        (string[] memory users, uint256[] memory balances) = btk.queryAllBalances();
+        return (users,balances);
     }
 
     /**

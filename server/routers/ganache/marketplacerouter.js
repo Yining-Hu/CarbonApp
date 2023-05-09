@@ -9,7 +9,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var mppath = './build/contracts/MarketPlace.json';
-var mpaddr = "0xAb22BF3909C176dF8B930CEe57c271d8D7B56b75";
+var mpaddr = "0x9A248be12207FbBc9326ac17B8C2a1B1f3770Ed9";
 var mpinstance = utils.getContract("addr",mpaddr,provider,mppath);
 // var mpinstance = utils.getContract("netId",netId,providerURL,mppath);
 
@@ -287,9 +287,8 @@ router.get('/view/products',
         })
     });
 
-router.post('/buy/btk',
+router.post('/btk/buy',
     validator.check("amountTobuy").exists().withMessage("Input should contain field 'amountTobuy'."),
-    validator.check("to").exists().withMessage("Input should contain field 'to'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
 
     (request, response) => {
@@ -298,11 +297,10 @@ router.post('/buy/btk',
             return response.status(400).json({"server_response": paramerrors.array()});
         } else {
             var amountTobuy = request.body.amountTobuy;
-            var to = request.body.to;
             var gas = request.body.gas;
 
             mpinstance.then(value => {
-                value.methods.buyBTK(to).send({from: request.body.bcacc, value:amountTobuy, gas: gas})
+                value.methods.buyBTK().send({from: request.body.bcacc, value:amountTobuy, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Buying ${amountTobuy} BTK, Txn hash: ${result.transactionHash}`);
@@ -316,6 +314,8 @@ router.post('/buy/btk',
 
                     if (error.message.includes("gas")) {
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else if (error.message.includes("some ethers")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the ether amount is not zero."}));
                     } else if (error.message.includes("reserve")) {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please make sure the amount to buy doesn't exceed what's in reserve."}));
                     } else {
@@ -327,7 +327,7 @@ router.post('/buy/btk',
         }
     });
 
-router.post('/sell/btk',
+router.post('/btk/sell',
     validator.check("amountTosell").exists().withMessage("Input should contain field 'amountTosell'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
 
@@ -364,6 +364,68 @@ router.post('/sell/btk',
             })
         }
     });
+
+router.post('/btk/register',
+    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var username = request.body.username;
+            var gas = request.body.gas;
+
+            mpinstance.then(value => {
+                value.methods.resiterBTKAcc(username).send({from: request.body.bcacc, gas: gas})
+                .then((result) => {
+                    console.log(result);
+                    console.log(`Registered ${username} to MarketPlace, Txn hash: ${result.transactionHash}`);
+                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
+                    response.end('\n');
+                })
+                .catch((error) => {
+                    var txnhash = Object.keys(error.data)[0];
+                    console.log(`Failed to register ${username} to MarketPlace, Txn hash: ${txnhash}`);
+                    console.log(error);
+
+                    if (error.message.includes("gas")) {
+                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
+                    } else if (error.message.includes("already exists")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new user."}));
+                    } else {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
+router.get('/btk/balances', (request, response) => {
+    mpinstance.then(value => {
+        value.methods.queryBTKBalances().call({from: request.body.bcacc})
+        .then((result) => {
+            var balance = {};
+            var balancearray = [];
+    
+            for (i=0;i<result[0].length;i++) {
+                balance.username = result[0][i];
+                balance.balance = result[1][i];
+                balancearray.push({...balance});
+            }
+            console.log(balancearray);
+            response.json(balancearray);
+        })
+        .catch((error) => {
+            console.log("Failed to query all balances");
+            console.log(error);
+
+            response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+            response.end();
+        })
+    })
+});
 
 router.get('/addr/btk', (request, response) => {
     mpinstance.then(value => {

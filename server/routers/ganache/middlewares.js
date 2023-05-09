@@ -33,6 +33,7 @@ module.exports = {
             } else if (!timingSafeEqual(Buffer.from(target, "utf8"), Buffer.from(apikey, "utf8"))) {
                 response.json({"server_response":"User not authorized!"});
             } else {
+                request.body.username = username;
                 request.body.bcacc = bcacc; // apend user's blockchain account to the request body
                 next();
             }
