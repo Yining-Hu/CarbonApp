@@ -8,6 +8,7 @@ import Tokens from './components/Tokens.js'
 import ProductList from './components/ProductList.js'
 import Products from './components/Products.js'
 import BTK from './components/BTK.js'
+import Users from './components/Users.js'
 
 function AppRouter() {
     return (
@@ -15,6 +16,9 @@ function AppRouter() {
             <Routes>
                 <Route path="" element={
                     <MyMermaid chart={EscrowSequence} />
+                } />
+                <Route path="/users" element={
+                    <Users />
                 } />
                 <Route path="/mint" element={
                     <TokenMint />
