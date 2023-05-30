@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./AnimalRegistry.sol";
+import "./SeafeedTracking.sol";
 
 contract FeedTracking {
     AnimalRegistry public animalregistry;
@@ -20,6 +21,7 @@ contract FeedTracking {
     struct FeedRecord {
         Ingredient FeedType;
         ClaimStatus Status;
+        string OrderID;
         string AnimalID;
         uint16 DMI;
         uint256 DateTime;
@@ -40,15 +42,16 @@ contract FeedTracking {
     /**
      * ingredient Regular-0, Asparagopsis-1, Polygain-2
      */
-    function logFeed(string memory _feedid, uint8 _feedtype, string memory _animalid, uint16 _dmi, uint256 _datetime) public 
+    function logFeed(string memory _feedid, uint8 _feedtype, string memory _orderid, string memory _animalid, uint16 _dmi, uint256 _datetime) public 
     {
         require(!feedExists[_feedid], "Feed ID already exist.");
         require(animalregistry.animalExists(_animalid), "Animal is not registed.");
+        require(SeafeedTracking.orderExists(_orderid), "Order does not exist.");
         
         string memory searchid;
         string memory ingredient;
 
-        feeds[_feedid] = FeedRecord(Ingredient(_feedtype), ClaimStatus.UNCLAIMED, _animalid, _dmi, _datetime, block.timestamp);
+        feeds[_feedid] = FeedRecord(Ingredient(_feedtype), ClaimStatus.UNCLAIMED, _orderid, _animalid, _dmi, _datetime, block.timestamp);
         feedExists[_feedid] = true;
 
         if (Ingredient(_feedtype) == Ingredient.REGULAR) {
