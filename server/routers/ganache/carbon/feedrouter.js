@@ -75,7 +75,7 @@ router.get('/view',
                 value.methods.queryFeed(feedid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"feedid":feedid,"feedtype":result[0],"animalid":result[1],"dmi":result[2],"datetime":result[3],"blocktime":result[4]});
+                    response.json({"feedid":feedid,"feedtype":result[0],"animalid":result[1],"orderid":result[2],"dmi":result[3],"datetime":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Feed ${feedid}.`);
@@ -104,9 +104,9 @@ router.get('/view/feeds',
                     feed.feedid = result[0][i];
                     feed.feedtype = result[1][i];
                     feed.animalid = result[2][i];
-                    feed.dmi = result[3][i];
-                    feed.datetime = result[4][i];
-                    feed.blocktime = result[5][i];
+                    feed.orderid = result[3][i];
+                    feed.dmi = result[4][i];
+                    feed.datetime = result[5][i];
                     feedarray.push({...feed});
                 }
                 console.log(feedarray);

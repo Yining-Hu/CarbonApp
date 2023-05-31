@@ -64,7 +64,7 @@ contract Seafeed {
     mapping(string => string) public OrderToSale;
 
 // the setters
-    function registerProduction(
+    function logProduction(
         string memory _productionid,
         string memory _batchid,
         string memory _farmid,
@@ -78,7 +78,7 @@ contract Seafeed {
         productions[_productionid] = Production(_batchid,_farmid,_volume,_datetime);
     }
 
-    function registerTesting(
+    function logTesting(
         string memory _testingid,
         uint16 _temperature,
         uint256 _datetime,
@@ -93,7 +93,7 @@ contract Seafeed {
         TestingToProduction[_testingid] = _productionid; // traceability
     }
 
-    function registerStorage(
+    function logStorage(
         string memory _storageid,
         string memory _manufacturer,
         string memory _location,
@@ -110,8 +110,8 @@ contract Seafeed {
         StorageToTesting[_storageid] = _testingid; // traceability
     }
 
-    // registerSale should be more like "orderSeafeed" or registerOrder
-    function registerSale(
+    // logSale should be more like "orderSeafeed" or logOrder
+    function logSale(
         string memory _saleid,
         uint16 _quantity,
         uint256 _datetime,
@@ -126,7 +126,7 @@ contract Seafeed {
         SaleToStorage[_saleid] = _storageid; // traceability
     }
 
-    function registerOrder(string memory _orderid, string memory _customer, uint16 _quantity, uint256 _datetime) 
+    function logOrder(string memory _orderid, string memory _customer, uint16 _quantity, uint256 _datetime) 
         public 
     {
         require(!orderExists[_orderid], "Order already exists.");

@@ -1,7 +1,52 @@
 
 Compiling your contracts...
 ===========================
-> Everything is up to date, there is nothing to compile.
+> Compiling ./contracts/carbon/CarbonToken.sol
+> Compiling ./contracts/carbon/EmissionTracking.sol
+> Compiling ./contracts/carbon/FeedTracking.sol
+> Compiling ./contracts/carbon/Seafeed.sol
+> Compilation warnings encountered:
+
+    Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:14:
+   |
+55 |             (string memory ingredient, string memory claimstatus, string ...
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:40:
+   |
+55 |  ...         (string memory ingredient, string memory claimstatus, string memory animalid, string me ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:67:
+   |
+55 |  ... edient, string memory claimstatus, string memory animalid, string memory orderid, uint16 dmi ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:91:
+   |
+55 |  ... aimstatus, string memory animalid, string memory orderid, uint16 dmi, uint256 datetime)=fee ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:114:
+   |
+55 |  ... y animalid, string memory orderid, uint16 dmi, uint256 datetime)=feedtracking.qu ...
+   |                                         ^^^^^^^^^^
+
+,Warning: Function state mutability can be restricted to view
+   --> project:/contracts/carbon/EmissionTracking.sol:141:5:
+    |
+141 |     function linkEmissionToFeed(string memory _emissionid) public returns(string memory) {
+    |     ^ (Relevant source part starts here and spans across multiple lines).
+
+
+> Artifacts written to /home/yih/Documents/dev/beston-dapps/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.7+commit.e28d00a7.Emscripten.clang
 
 
 
@@ -15,15 +60,15 @@ Starting migrations...
 8_deploy_seafeed.js
 ===================
 
-   Deploying 'Seafeed'
+   Replacing 'Seafeed'
    -------------------
-   > transaction hash:    0xcfef5954eac5026323888fd19d222ca67c93bbb994b756bbe868c08870b768ea
+   > transaction hash:    0xcda205b7bc12eeb306f740e767003516bf8474c8a4e1fa951097f53bffdfbfe6
    > Blocks: 0            Seconds: 0
-   > contract address:    0x19388e1e0073B23a7e7ceaA06141c5cfd27a87A2
-   > block number:        5526
-   > block timestamp:     1685514027
+   > contract address:    0x991163f971904f99E9537E1b2e0A2367aDCf189b
+   > block number:        5530
+   > block timestamp:     1685515294
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.87448836
+   > balance:             97.60637276
    > gas used:            3439895 (0x347d17)
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -39,21 +84,21 @@ Starting migrations...
 
    Replacing 'FeedTracking'
    ------------------------
-   > transaction hash:    0x13834ccc668e14beb91e96e21650de8d008f0684e5c53af208daa892421ead53
+   > transaction hash:    0x7c53604c45d9e37e4fafbc05c6a2107de25dcebdd8a7ce4d3896aca0c25022c1
    > Blocks: 0            Seconds: 0
-   > contract address:    0x570710804472c4e4F5B79aA607fAe753fd36484E
-   > block number:        5527
-   > block timestamp:     1685514028
+   > contract address:    0xa6ec30C5B894E7e23F76b05d92dAE954095cAbE0
+   > block number:        5531
+   > block timestamp:     1685515295
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.82262414
-   > gas used:            2593211 (0x2791bb)
+   > balance:             97.5545083
+   > gas used:            2593223 (0x2791c7)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.05186422 ETH
+   > total cost:          0.05186446 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.05186422 ETH
+   > Total cost:          0.05186446 ETH
 
 
 10_deploy_emissionreg.js
@@ -61,13 +106,13 @@ Starting migrations...
 
    Replacing 'EmissionTracking'
    ----------------------------
-   > transaction hash:    0x729bf0c513b1e201ac892d872bdeb4f10aa7d0a912e6754e19231cabc132f550
+   > transaction hash:    0x5bcf811a549af95eb22067c014fd2cfd08fdd4a7da2ff1ffc5aa87d445614f68
    > Blocks: 0            Seconds: 0
-   > contract address:    0x519b0eC61871F2d8494C4e5bB0EE49e96C7E798E
-   > block number:        5528
-   > block timestamp:     1685514029
+   > contract address:    0x4e0A915e3995bc5e81eEc76b1f06c31F54B8BeA6
+   > block number:        5532
+   > block timestamp:     1685515295
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.77024572
+   > balance:             97.50212988
    > gas used:            2618921 (0x27f629)
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -83,21 +128,21 @@ Starting migrations...
 
    Replacing 'CarbonToken'
    -----------------------
-   > transaction hash:    0x51d3989bdf614beab77baaf96a803e9aa3f22f9d99eeb39c2cc3709cb7cb44ca
+   > transaction hash:    0xa8584bb36d5f0d6ff6c6e2a99b9969ad9d78c0e24d1b7ad557ca05b25e032c1e
    > Blocks: 0            Seconds: 0
-   > contract address:    0xA05f5B5acF213eAB66490c91e62a7d280D04080c
-   > block number:        5529
-   > block timestamp:     1685514029
+   > contract address:    0xD65623Cd05cab19f3970bdadeCE21EA061588de0
+   > block number:        5533
+   > block timestamp:     1685515296
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.67517066
-   > gas used:            4753753 (0x488959)
+   > balance:             97.40705506
+   > gas used:            4753741 (0x48894d)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.09507506 ETH
+   > total cost:          0.09507482 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.09507506 ETH
+   > Total cost:          0.09507482 ETH
 
 
 Summary
