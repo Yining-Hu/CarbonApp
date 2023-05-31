@@ -52,7 +52,7 @@ contract CarbonToken is ERC1155 {
         _mint(admin,0,_amount,"");
 
         for(uint256 i=0; i<_feedids.length; i++){
-            (string memory ingredient, string memory claimstatus, string memory animalid, uint16 dmi, uint256 datetime, uint256 blocktime)=feedtracking.queryFeed(_feedids[i]);
+            (string memory ingredient, string memory claimstatus, string memory animalid, string memory orderid, uint16 dmi, uint256 datetime)=feedtracking.queryFeed(_feedids[i]);
             require((datetime>=_startdate && datetime<=_enddate ), "The specified feed record is not in the claim period.");
             
             feedtracking.claimFeed(_feedids[i]);

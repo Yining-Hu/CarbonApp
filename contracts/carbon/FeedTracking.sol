@@ -2,10 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "./AnimalRegistry.sol";
-import "./SeafeedTracking.sol";
+import "./Seafeed.sol";
 
 contract FeedTracking {
     AnimalRegistry public animalregistry;
+    Seafeed public seafeedtracking;
 
     enum Ingredient {
         REGULAR,
@@ -25,18 +26,18 @@ contract FeedTracking {
         string AnimalID;
         uint16 DMI;
         uint256 DateTime;
-        uint256 BlockTime;
     }
 
     mapping(string => FeedRecord) public feeds;
     mapping(string => bool) public feedExists;
     mapping(string => string) public feedSearch;
     mapping(string => bool) public feedClaimed; // value changes to true if a feed record has been used to claim carbon tokens.
-    string[] allfeeds;
+    string[] public allfeeds;
 
-    constructor(AnimalRegistry _animalregistry)
+    constructor(AnimalRegistry _animalregistry, Seafeed _seafeedtracking)
     {
         animalregistry = _animalregistry;
+        seafeedtracking = _seafeedtracking;
     }
 
     /**
@@ -46,12 +47,12 @@ contract FeedTracking {
     {
         require(!feedExists[_feedid], "Feed ID already exist.");
         require(animalregistry.animalExists(_animalid), "Animal is not registed.");
-        require(SeafeedTracking.orderExists(_orderid), "Order does not exist.");
+        require(seafeedtracking.orderExists(_orderid), "Order does not exist.");
         
         string memory searchid;
         string memory ingredient;
 
-        feeds[_feedid] = FeedRecord(Ingredient(_feedtype), ClaimStatus.UNCLAIMED, _orderid, _animalid, _dmi, _datetime, block.timestamp);
+        feeds[_feedid] = FeedRecord(Ingredient(_feedtype), ClaimStatus.UNCLAIMED, _orderid, _animalid, _dmi, _datetime); //, block.timestamp
         feedExists[_feedid] = true;
 
         if (Ingredient(_feedtype) == Ingredient.REGULAR) {
@@ -82,8 +83,8 @@ contract FeedTracking {
             string memory,
             string memory,
             string memory,
+            string memory,
             uint16,
-            uint256,
             uint256)
     {
         require(feedExists[_feedid], "Feed ID does not exist.");
@@ -112,9 +113,9 @@ contract FeedTracking {
             ingredient,
             claimstatus,
             feeds[_feedid].AnimalID,
+            feeds[_feedid].OrderID,
             feeds[_feedid].DMI,
-            feeds[_feedid].DateTime,
-            feeds[_feedid].BlockTime
+            feeds[_feedid].DateTime
         );
     }
 
@@ -124,16 +125,16 @@ contract FeedTracking {
             string[] memory,
             string[] memory,
             string[] memory,
+            string[] memory,
             uint16[] memory,
-            uint256[] memory,
             uint256[] memory)
     {
         string[] memory ingredients = new string[](allfeeds.length);
         string[] memory claimstatus = new string[](allfeeds.length);
         string[] memory animalids = new string[](allfeeds.length);
+        string[] memory orderids = new string[](allfeeds.length);
         uint16[] memory dmis = new uint16[](allfeeds.length);
         uint256[] memory datetimes = new uint256[](allfeeds.length);
-        uint256[] memory blocktimes = new uint256[](allfeeds.length);
 
         for(uint256 i=0; i<allfeeds.length; i++) {
             if (feeds[allfeeds[i]].FeedType == Ingredient.REGULAR) {
@@ -155,11 +156,11 @@ contract FeedTracking {
             }
 
             animalids[i] = feeds[allfeeds[i]].AnimalID;
+            orderids[i] = feeds[allfeeds[i]].OrderID;
             dmis[i] = feeds[allfeeds[i]].DMI;
             datetimes[i] = feeds[allfeeds[i]].DateTime;
-            blocktimes[i] = feeds[allfeeds[i]].BlockTime;
         }
 
-        return(allfeeds,ingredients,claimstatus,animalids,dmis,datetimes,blocktimes);
+        return(allfeeds,ingredients,claimstatus,animalids,orderids,dmis,datetimes);
     }
 }

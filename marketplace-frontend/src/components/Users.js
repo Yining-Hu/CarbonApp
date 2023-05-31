@@ -65,13 +65,13 @@ export default class Users extends React.Component {
     })
   };
 
-  handleSellerRegister = event => {
+  handleRegister = event => {
     event.preventDefault();
 
     const apiConfig = {
       headers:{
           "api-key":"rrJOuiTp22tVvaowz5Uw0DNUPDzwBF",
-          "user-name":"seller",
+          "user-name":event.target.value,
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
       },
@@ -83,13 +83,13 @@ export default class Users extends React.Component {
     })
   };
 
-  handleSellerApprove = event => {
+  handleApprove = event => {
     event.preventDefault();
 
     const apiConfig = {
       headers:{
           "api-key":"rrJOuiTp22tVvaowz5Uw0DNUPDzwBF",
-          "user-name":"seller",
+          "user-name":event.target.value,
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
       },
@@ -105,7 +105,7 @@ export default class Users extends React.Component {
     return (
       <div>
         <h2>User Registration</h2>
-        <form onSubmit={this.handleBuyerRegister}>
+        <form onSubmit={this.handleRegister}>
           <div className='form-div'>
             <label className='token-mint-label'>Username:</label>
             <input type="text" name="username" onChange={this.handleChange} />
@@ -124,7 +124,7 @@ export default class Users extends React.Component {
             .map(user =>
               <tr key={user.username}>
                 <td>{user.username}</td>
-                <td><button value={user.username} onClick={this.handleBuyerApprove}>Approve</button></td>
+                <td><button value={user.username} onClick={this.handleApprove}>Approve</button></td>
 
               </tr>
             )
