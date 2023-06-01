@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "./AnimalRegistry.sol";
-import "./Seafeed.sol";
+import "./SeafeedRegistry.sol";
 
 contract FeedTracking {
     AnimalRegistry public animalregistry;
-    Seafeed public seafeedtracking;
+    SeafeedRegistry public seafeedregistry;
 
     enum Ingredient {
         REGULAR,
@@ -34,10 +34,10 @@ contract FeedTracking {
     mapping(string => bool) public feedClaimed; // value changes to true if a feed record has been used to claim carbon tokens.
     string[] public allfeeds;
 
-    constructor(AnimalRegistry _animalregistry, Seafeed _seafeedtracking)
+    constructor(AnimalRegistry _animalregistry, SeafeedRegistry _seafeedregistry)
     {
         animalregistry = _animalregistry;
-        seafeedtracking = _seafeedtracking;
+        seafeedregistry = _seafeedregistry;
     }
 
     /**
@@ -47,7 +47,7 @@ contract FeedTracking {
     {
         require(!feedExists[_feedid], "Feed ID already exist.");
         require(animalregistry.animalExists(_animalid), "Animal is not registed.");
-        require(seafeedtracking.orderExists(_orderid), "Order does not exist.");
+        require(seafeedregistry.orderExists(_orderid), "Order does not exist.");
         
         string memory searchid;
         string memory ingredient;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract Seafeed {
+contract SeafeedRegistry {
     enum OrderStatus {
         ORDERED,
         PAYMENTRECEIVED,
@@ -126,17 +126,24 @@ contract Seafeed {
         SaleToStorage[_saleid] = _storageid; // traceability
     }
 
-    function logOrder(string memory _orderid, string memory _customer, uint16 _quantity, uint256 _datetime) 
+    function logOrder(
+        string memory _orderid, 
+        string memory _customer, 
+        uint16 _quantity, 
+        uint256 _datetime,
+        string memory _saleid) 
         public 
     {
         require(!orderExists[_orderid], "Order already exists.");
         
         orderExists[_orderid] = true;
         orders[_orderid] = Order(_customer,_quantity,OrderStatus.ORDERED,_datetime);
+        OrderToSale[_orderid] = _saleid;
         allorders.push(_orderid);
     }
 
     function updateOrder(string memory _orderid, uint8 _ordertatus) public {
+        require(orderExists[_orderid], "Order does not exist.");
         orders[_orderid].OS = OrderStatus(_ordertatus);
     }
 
@@ -279,6 +286,7 @@ contract Seafeed {
 
     // use an orderid to trace back to source
     function queryOrderSource(string memory _orderid) public view returns (string memory) {
+        require(orderExists[_orderid], "Order does not exist.");
         string memory saleid = OrderToSale[_orderid];
         string memory storageid = TestingToProduction[saleid];
         string memory testingid = StorageToTesting[storageid];

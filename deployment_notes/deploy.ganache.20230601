@@ -4,7 +4,7 @@ Compiling your contracts...
 > Compiling ./contracts/carbon/CarbonToken.sol
 > Compiling ./contracts/carbon/EmissionTracking.sol
 > Compiling ./contracts/carbon/FeedTracking.sol
-> Compiling ./contracts/carbon/Seafeed.sol
+> Compiling ./contracts/carbon/SeafeedRegistry.sol
 > Compilation warnings encountered:
 
     Warning: Unused local variable.
@@ -62,21 +62,21 @@ Starting migrations...
 
    Replacing 'Seafeed'
    -------------------
-   > transaction hash:    0xcda205b7bc12eeb306f740e767003516bf8474c8a4e1fa951097f53bffdfbfe6
+   > transaction hash:    0x121c96db8630164109a814f0d4389a1777edce1c0f8350eebfb8d37daa162b8d
    > Blocks: 0            Seconds: 0
-   > contract address:    0x991163f971904f99E9537E1b2e0A2367aDCf189b
-   > block number:        5530
-   > block timestamp:     1685515294
+   > contract address:    0x870B216DA91ECE65f6c3DaAFa2E4DEAd685933af
+   > block number:        5538
+   > block timestamp:     1685599610
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.60637276
-   > gas used:            3439895 (0x347d17)
+   > balance:             97.06745468
+   > gas used:            3507067 (0x35837b)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.0687979 ETH
+   > total cost:          0.07014134 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:           0.0687979 ETH
+   > Total cost:          0.07014134 ETH
 
 
 9_deploy_feedreg.js
@@ -84,21 +84,21 @@ Starting migrations...
 
    Replacing 'FeedTracking'
    ------------------------
-   > transaction hash:    0x7c53604c45d9e37e4fafbc05c6a2107de25dcebdd8a7ce4d3896aca0c25022c1
+   > transaction hash:    0xa40d3f9387de457c6cc48910cdc6b282f46870ff3d5122fb2a8c9f5c6cdffe40
    > Blocks: 0            Seconds: 0
-   > contract address:    0xa6ec30C5B894E7e23F76b05d92dAE954095cAbE0
-   > block number:        5531
-   > block timestamp:     1685515295
+   > contract address:    0x51420ec0E0676A213F95ea3cdf716D490c051b94
+   > block number:        5539
+   > block timestamp:     1685599611
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.5545083
-   > gas used:            2593223 (0x2791c7)
+   > balance:             97.01558974
+   > gas used:            2593247 (0x2791df)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.05186446 ETH
+   > total cost:          0.05186494 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.05186446 ETH
+   > Total cost:          0.05186494 ETH
 
 
 10_deploy_emissionreg.js
@@ -106,13 +106,13 @@ Starting migrations...
 
    Replacing 'EmissionTracking'
    ----------------------------
-   > transaction hash:    0x5bcf811a549af95eb22067c014fd2cfd08fdd4a7da2ff1ffc5aa87d445614f68
+   > transaction hash:    0xafb03c55c9567126b7b310275e82708f3c3bd5761ea862ba3b97d1ea5bd68a70
    > Blocks: 0            Seconds: 0
-   > contract address:    0x4e0A915e3995bc5e81eEc76b1f06c31F54B8BeA6
-   > block number:        5532
-   > block timestamp:     1685515295
+   > contract address:    0xB38Cf891a219baAD67AE05df0D84c65Bc53B4b7f
+   > block number:        5540
+   > block timestamp:     1685599611
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.50212988
+   > balance:             96.96321132
    > gas used:            2618921 (0x27f629)
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -128,26 +128,26 @@ Starting migrations...
 
    Replacing 'CarbonToken'
    -----------------------
-   > transaction hash:    0xa8584bb36d5f0d6ff6c6e2a99b9969ad9d78c0e24d1b7ad557ca05b25e032c1e
+   > transaction hash:    0xf97f4ced3a1db5cf4362d06ed0182bd94c92a42471fdb66b7e4924c7e903f70b
    > Blocks: 0            Seconds: 0
-   > contract address:    0xD65623Cd05cab19f3970bdadeCE21EA061588de0
-   > block number:        5533
-   > block timestamp:     1685515296
+   > contract address:    0x00d6ffD7028Dec73fF2A0f8Fe05dAD5A08831d8e
+   > block number:        5541
+   > block timestamp:     1685599612
    > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
-   > balance:             97.40705506
-   > gas used:            4753741 (0x48894d)
+   > balance:             96.86813674
+   > gas used:            4753729 (0x488941)
    > gas price:           20 gwei
    > value sent:          0 ETH
-   > total cost:          0.09507482 ETH
+   > total cost:          0.09507458 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:          0.09507482 ETH
+   > Total cost:          0.09507458 ETH
 
 
 Summary
 =======
 > Total deployments:   4
-> Final cost:          0.2681156 ETH
+> Final cost:          0.26945928 ETH
 
 
