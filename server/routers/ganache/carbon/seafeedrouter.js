@@ -6,8 +6,8 @@ router.use(express.json());
 
 var provider = 'http://127.0.0.1:7545';
 
-var sfpath = './build/contracts/Seafeed.json';
-var sfaddr = "0x870B216DA91ECE65f6c3DaAFa2E4DEAd685933af";
+var sfpath = './build/contracts/SeafeedRegistry.json';
+var sfaddr = "0xc12dE0e057ea1eBE3A2Beeb63f2Bc7a71d49D158";
 var sfinstance = utils.getContract("addr",sfaddr,provider,sfpath);
 
 router.post('/log/production',
@@ -202,6 +202,7 @@ router.post('/log/sale',
 router.post('/log/order',
     validator.check("orderid").exists().withMessage("Input should contain field 'orderid'."),
     validator.check("customer").exists().withMessage("Input should contain field 'customer'."),
+    validator.check("customeraddr").exists().withMessage("Input should contain field 'customeraddr'."),
     validator.check("quantity").exists().withMessage("Input should contain field 'quantity'."),
     validator.check("quantity").isInt().withMessage("Input quantity should be an integer."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
@@ -216,13 +217,14 @@ router.post('/log/order',
         } else {
             var orderid = request.body.orderid;
             var customer = request.body.customer;
+            var customeraddr = request.body.customeraddr;
             var quantity = request.body.quantity;
             var datetime = request.body.datetime;
             var saleid = request.body.saleid;
             var gas = request.body.gas;
 
             sfinstance.then(value => {
-                value.methods.logOrder(orderid,customer,quantity,datetime,saleid).send({from: request.body.bcacc, gas: gas})
+                value.methods.logOrder(orderid,customer,customeraddr,quantity,datetime,saleid).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging Order ${orderid}, Txn hash: ${result.transactionHash}`);
@@ -487,10 +489,41 @@ router.get('/view/source',
                 value.methods.queryOrderSource(orderid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"orderid":orderid,"source":result[0]});
+                    response.json({"orderid":orderid,"productionid":result[0],"testingid":result[1],"storageid":result[2],"saleid":result[3]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Order ${orderid}.`);
+                    console.log(error);
+
+                    if (error.message.includes("Order does not exist.")) {
+                        response.write(JSON.stringify({"server_response":"Order does not exist."}));
+                    } else {
+                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
+router.get('/view/salefromorder', 
+    validator.check("orderid").exists().withMessage("Input should contain field 'orderid'."),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var orderid = request.query.orderid;
+
+            sfinstance.then(value => {
+                value.methods.querySaleFromOrder(orderid).call({from: request.body.bcacc})
+                .then((result) => {
+                    console.log(result);
+                    response.json({"saleid":result});
+                })
+                .catch((error) => {
+                    console.log(`Failed to query sale from Order ${orderid}.`);
                     console.log(error);
 
                     if (error.message.includes("Order does not exist.")) {

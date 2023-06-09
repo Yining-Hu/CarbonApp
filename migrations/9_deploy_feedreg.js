@@ -1,5 +1,5 @@
 const animal = artifacts.require('AnimalRegistry');
-const seafeed = artifacts.require('Seafeed');
+const seafeed = artifacts.require('SeafeedRegistry');
 const feed = artifacts.require('FeedTracking');
 
 module.exports = function(deployer,network,accounts){

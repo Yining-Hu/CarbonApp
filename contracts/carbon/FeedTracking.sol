@@ -48,7 +48,9 @@ contract FeedTracking {
         require(!feedExists[_feedid], "Feed ID already exist.");
         require(animalregistry.animalExists(_animalid), "Animal is not registed.");
         require(seafeedregistry.orderExists(_orderid), "Order does not exist.");
-        
+        (string memory customer,address customeraddr,uint16 quantity,string memory orderstatus,uint256 orderdatetime) = seafeedregistry.queryOrder(_orderid);
+        require(customeraddr == msg.sender, "The farmer is not the original purchaser of the seafeed.");
+
         string memory searchid;
         string memory ingredient;
 

@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtaddr = "0x00d6ffD7028Dec73fF2A0f8Fe05dAD5A08831d8e";
+var cbtaddr = "0xC5d46B1934E3901Fe6aC5Caef4Ee13dd81ff7F5E";
 var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath);
 // var cbtinstance = utils.getContract("netId",netId,providerURL,cbtpath);
 

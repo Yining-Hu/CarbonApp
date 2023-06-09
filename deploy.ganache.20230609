@@ -1,0 +1,177 @@
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/carbon/CarbonToken.sol
+> Compiling ./contracts/carbon/EmissionTracking.sol
+> Compiling ./contracts/carbon/FeedTracking.sol
+> Compiling ./contracts/carbon/SeafeedRegistry.sol
+> Compilation warnings encountered:
+
+    Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:51:10:
+   |
+51 |         (string memory customer,address customeraddr,uint16 quanti ...
+   |          ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:51:54:
+   |
+51 |  ... mory customer,address customeraddr,uint16 quantity,string memory orderstatus,uint256  ...
+   |                                         ^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:51:70:
+   |
+51 |  ... dress customeraddr,uint16 quantity,string memory orderstatus,uint256 orderdatetime) = seafeedre ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:51:96:
+   |
+51 |  ... quantity,string memory orderstatus,uint256 orderdatetime) = seafeedregistry.queryOrder(_ord ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:14:
+   |
+55 |             (string memory ingredient, string memory claimstatus, string ...
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:40:
+   |
+55 |  ...         (string memory ingredient, string memory claimstatus, string memory animalid, string me ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:67:
+   |
+55 |  ... edient, string memory claimstatus, string memory animalid, string memory orderid, uint16 dmi ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:91:
+   |
+55 |  ... aimstatus, string memory animalid, string memory orderid, uint16 dmi, uint256 datetime)=fee ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:55:114:
+   |
+55 |  ... y animalid, string memory orderid, uint16 dmi, uint256 datetime)=feedtracking.qu ...
+   |                                         ^^^^^^^^^^
+
+,Warning: Function state mutability can be restricted to view
+   --> project:/contracts/carbon/EmissionTracking.sol:141:5:
+    |
+141 |     function linkEmissionToFeed(string memory _emissionid) public returns(string memory) {
+    |     ^ (Relevant source part starts here and spans across multiple lines).
+
+
+> Artifacts written to /home/yih/Documents/dev/beston-dapps/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.7+commit.e28d00a7.Emscripten.clang
+
+
+
+Starting migrations...
+======================
+> Network name:    'ganache'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+8_deploy_seafeed.js
+===================
+
+   Replacing 'SeafeedRegistry'
+   ---------------------------
+   > transaction hash:    0x1505eab8ee97cdace28c7b66bc096ce670cd3a6d548509f4f7b5113600dbf255
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xc12dE0e057ea1eBE3A2Beeb63f2Bc7a71d49D158
+   > block number:        5594
+   > block timestamp:     1686278846
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             95.6831011
+   > gas used:            3947108 (0x3c3a64)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.07894216 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.07894216 ETH
+
+
+9_deploy_feedreg.js
+===================
+
+   Replacing 'FeedTracking'
+   ------------------------
+   > transaction hash:    0xd9853a55969a2f71629b800882348c320bb8c5d7898cc6846481cc0c1a5c3d07
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x9ec2039860C6100eF25CB0507E588FbEab31524C
+   > block number:        5595
+   > block timestamp:     1686278846
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             95.62757428
+   > gas used:            2776341 (0x2a5d15)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.05552682 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.05552682 ETH
+
+
+10_deploy_emissionreg.js
+========================
+
+   Replacing 'EmissionTracking'
+   ----------------------------
+   > transaction hash:    0x3f9351f736a1e0258644305523bb34fe0c217671e0f6fe2aae6afd0898342e3f
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x7655024913F6e234ef024b46E01e356450E833FA
+   > block number:        5596
+   > block timestamp:     1686278847
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             95.57519586
+   > gas used:            2618921 (0x27f629)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.05237842 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.05237842 ETH
+
+
+11_deploy_cbt.js
+================
+
+   Replacing 'CarbonToken'
+   -----------------------
+   > transaction hash:    0x68285d889508bc141b8a9e31ff8d4d7ffe06657501964d72b1d6ad7ecea76ef6
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xC5d46B1934E3901Fe6aC5Caef4Ee13dd81ff7F5E
+   > block number:        5597
+   > block timestamp:     1686278848
+   > account:             0xA9DbE9DeE2DfecC23e0233F72587bbe2eDd8FAb6
+   > balance:             95.4801208
+   > gas used:            4753753 (0x488959)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.09507506 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.09507506 ETH
+
+
+Summary
+=======
+> Total deployments:   4
+> Final cost:          0.28192246 ETH
+
+

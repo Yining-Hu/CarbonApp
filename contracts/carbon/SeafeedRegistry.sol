@@ -36,6 +36,7 @@ contract SeafeedRegistry {
 
     struct Order {
         string Customer;
+        address CustomerAddr;
         uint16 Quantity;
         OrderStatus OS;
         uint256 DateTime;
@@ -87,6 +88,7 @@ contract SeafeedRegistry {
         public
     {
         require(!testingExists[_testingid], "Testing already exists.");
+        require(productionExists[_productionid], "The referred productionid does not exist.");
         
         testingExists[_testingid] = true;
         testings[_testingid] = Testing(_temperature,_datetime);
@@ -104,6 +106,7 @@ contract SeafeedRegistry {
         public
     {
         require(!storageExists[_storageid], "Storage already exists.");
+        require(testingExists[_testingid], "The referred testingid does not exist.");
 
         storageExists[_storageid] = true;
         storages[_storageid] = Storage(_manufacturer,_location,_datetime,_bestbefore);
@@ -120,6 +123,7 @@ contract SeafeedRegistry {
         public
     {
         require(!saleExists[_saleid], "Sale already exists.");
+        require(storageExists[_storageid], "The referred storageid does not exist.");
 
         saleExists[_saleid] = true;
         sales[_saleid] = Sale(_quantity,false,_datetime);   
@@ -129,15 +133,18 @@ contract SeafeedRegistry {
     function logOrder(
         string memory _orderid, 
         string memory _customer, 
+        address _customeraddr,
         uint16 _quantity, 
         uint256 _datetime,
         string memory _saleid) 
         public 
     {
         require(!orderExists[_orderid], "Order already exists.");
+        require(saleExists[_saleid], "The referred saleid does not exist.");
+        require(_quantity<=sales[_saleid].Quantity, "The order quantity exceeds the total sale quantity.");
         
         orderExists[_orderid] = true;
-        orders[_orderid] = Order(_customer,_quantity,OrderStatus.ORDERED,_datetime);
+        orders[_orderid] = Order(_customer,_customeraddr,_quantity,OrderStatus.ORDERED,_datetime);
         OrderToSale[_orderid] = _saleid;
         allorders.push(_orderid);
     }
@@ -222,7 +229,8 @@ contract SeafeedRegistry {
         view
         returns(
             string memory,
-            uint256,
+            address,
+            uint16,
             string memory,
             uint256)
     {
@@ -243,6 +251,7 @@ contract SeafeedRegistry {
 
         return(
             orders[_orderid].Customer,
+            orders[_orderid].CustomerAddr,
             orders[_orderid].Quantity,
             orderstatus,
             orders[_orderid].DateTime
@@ -253,12 +262,14 @@ contract SeafeedRegistry {
         returns(
             string[] memory,
             string[] memory,
+            address[] memory,
             uint256[] memory,
             string[] memory,
             uint256[] memory
         )
     {
         string[] memory customers = new string[](allorders.length);
+        address[] memory customeraddrs = new address[](allorders.length);
         uint256[] memory quantities = new uint256[](allorders.length);
         string[] memory statuss = new string[](allorders.length);
         uint256[] memory datetimes = new uint256[](allorders.length);
@@ -281,16 +292,23 @@ contract SeafeedRegistry {
             datetimes[i] = orders[allorders[i]].DateTime;
         }
 
-        return(allorders,customers,quantities,statuss,datetimes);
+        return(allorders,customers,customeraddrs,quantities,statuss,datetimes);
     }
 
     // use an orderid to trace back to source
-    function queryOrderSource(string memory _orderid) public view returns (string memory) {
+    function queryOrderSource(string memory _orderid) public view 
+        returns (
+            string memory,
+            string memory,
+            string memory,
+            string memory
+        ) 
+    {
         require(orderExists[_orderid], "Order does not exist.");
         string memory saleid = OrderToSale[_orderid];
-        string memory storageid = TestingToProduction[saleid];
+        string memory storageid = SaleToStorage[saleid];
         string memory testingid = StorageToTesting[storageid];
-        string memory productionid = SaleToStorage[testingid];
-        return productionid;
+        string memory productionid = TestingToProduction[testingid];
+        return (productionid,testingid,storageid,saleid);
     }
 }
