@@ -8,7 +8,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var ftrackingpath = './build/contracts/FeedTracking.json';
-var ftrackingaddr = "0x9ec2039860C6100eF25CB0507E588FbEab31524C";
+var ftrackingaddr = "0xF17a5701695F71077D28789e47eD091C795BDB1a";
 var ftrackinginstance = utils.getContract("addr",ftrackingaddr,provider,ftrackingpath);
 
 router.post('/log',

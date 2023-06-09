@@ -7,7 +7,7 @@ router.use(express.json());
 var provider = 'http://127.0.0.1:7545';
 
 var sfpath = './build/contracts/SeafeedRegistry.json';
-var sfaddr = "0xc12dE0e057ea1eBE3A2Beeb63f2Bc7a71d49D158";
+var sfaddr = "0x9743aF0E01981bC49bb98F4c7cB28441270D9aF5";
 var sfinstance = utils.getContract("addr",sfaddr,provider,sfpath);
 
 router.post('/log/production',
@@ -153,60 +153,14 @@ router.post('/log/storage',
         }
     })
 
-router.post('/log/sale',
-    validator.check("saleid").exists().withMessage("Input should contain field 'saleid'."),
-    validator.check("quantity").exists().withMessage("Input should contain field 'quantity'."),
-    validator.check("quantity").isInt().withMessage("Input quantity should be an integer."),
-    validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
-    validator.check("storageid").exists().withMessage("Input should contain field 'storageid'."),
-    validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
-    validator.check("gas").isInt(),
-
-    (request, response) => {
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var saleid = request.body.saleid;
-            var quantity = request.body.quantity;
-            var storageid = request.body.storageid;
-            var datetime = request.body.datetime;
-            var gas = request.body.gas;
-
-            sfinstance.then(value => {
-                value.methods.logSale(saleid,quantity,datetime,storageid).send({from: request.body.bcacc, gas: gas})
-                .then((result) => {
-                    console.log(result);
-                    console.log(`Logging Sale ${saleid}, Txn hash: ${result.transactionHash}`);
-                    response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
-                    response.end('\n');
-                })
-                .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to log Sale ${saleid}, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
-                        response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Sale already exists.")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new Sale ID."}));
-                    } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
-                    }
-                    response.end();
-                })
-            })
-        }
-    })
-
-router.post('/log/order',
+router.post('/log/saleorder',
     validator.check("orderid").exists().withMessage("Input should contain field 'orderid'."),
     validator.check("customer").exists().withMessage("Input should contain field 'customer'."),
     validator.check("customeraddr").exists().withMessage("Input should contain field 'customeraddr'."),
     validator.check("quantity").exists().withMessage("Input should contain field 'quantity'."),
     validator.check("quantity").isInt().withMessage("Input quantity should be an integer."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
-    validator.check("saleid").exists().withMessage("Input should contain field 'saleid'."),
+    validator.check("storageid").exists().withMessage("Input should contain field 'storageid'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
@@ -220,11 +174,11 @@ router.post('/log/order',
             var customeraddr = request.body.customeraddr;
             var quantity = request.body.quantity;
             var datetime = request.body.datetime;
-            var saleid = request.body.saleid;
+            var storageid = request.body.storageid;
             var gas = request.body.gas;
 
             sfinstance.then(value => {
-                value.methods.logOrder(orderid,customer,customeraddr,quantity,datetime,saleid).send({from: request.body.bcacc, gas: gas})
+                value.methods.logSaleOrder(orderid,customer,customeraddr,quantity,datetime,storageid).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging Order ${orderid}, Txn hash: ${result.transactionHash}`);
@@ -384,38 +338,7 @@ router.get('/view/storage',
         }
     });
 
-router.get('/view/sale', 
-    validator.check("saleid").exists().withMessage("Input should contain field 'saleid'."),
-
-    (request, response) => {
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var saleid = request.query.saleid;
-
-            sfinstance.then(value => {
-                value.methods.querySale(saleid).call({from: request.body.bcacc})
-                .then((result) => {
-                    console.log(result);
-                    response.json({"saleid":saleid,"quantity":result[0],"dispatchdocsattached":result[1],"datetime":result[2]});
-                })
-                .catch((error) => {
-                    console.log(`Failed to query Sale ${saleid}.`);
-                    console.log(error);
-
-                    if (error.message.includes("Sale does not exist.")) {
-                        response.write(JSON.stringify({"server_response":"Sale does not exist."}));
-                    } else {
-                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
-                    }
-                    response.end();
-                })
-            })
-        }
-    });
-
-router.get('/view/order', 
+router.get('/view/saleorder', 
     validator.check("orderid").exists().withMessage("Input should contain field 'orderid'."),
 
     (request, response) => {
@@ -426,7 +349,7 @@ router.get('/view/order',
             var orderid = request.query.orderid;
 
             sfinstance.then(value => {
-                value.methods.queryOrder(orderid).call({from: request.body.bcacc})
+                value.methods.querySaleOrder(orderid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
                     response.json({"orderid":orderid,"customer":result[0],"quantity":result[1],"orderstatus":result[2],"datetime":result[3]});
@@ -446,10 +369,10 @@ router.get('/view/order',
         }
     });
 
-router.get('/view/orders',
+router.get('/view/saleorders',
     (request, response) => {
         sfinstance.then(value => {
-            value.methods.queryAllOrders().call({from: request.body.bcacc})
+            value.methods.queryAllSaleOrders().call({from: request.body.bcacc})
             .then((result) => {
                 var order = {};
                 var orderarray = [];
@@ -486,44 +409,13 @@ router.get('/view/source',
             var orderid = request.query.orderid;
 
             sfinstance.then(value => {
-                value.methods.queryOrderSource(orderid).call({from: request.body.bcacc})
+                value.methods.querySaleOrderSource(orderid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"orderid":orderid,"productionid":result[0],"testingid":result[1],"storageid":result[2],"saleid":result[3]});
+                    response.json({"orderid":orderid,"productionid":result[0],"testingid":result[1],"storageid":result[2]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Order ${orderid}.`);
-                    console.log(error);
-
-                    if (error.message.includes("Order does not exist.")) {
-                        response.write(JSON.stringify({"server_response":"Order does not exist."}));
-                    } else {
-                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
-                    }
-                    response.end();
-                })
-            })
-        }
-    });
-
-router.get('/view/salefromorder', 
-    validator.check("orderid").exists().withMessage("Input should contain field 'orderid'."),
-
-    (request, response) => {
-        var paramerrors = validator.validationResult(request);
-        if (!paramerrors.isEmpty()) {
-            return response.status(400).json({"server_response": paramerrors.array()});
-        } else {
-            var orderid = request.query.orderid;
-
-            sfinstance.then(value => {
-                value.methods.querySaleFromOrder(orderid).call({from: request.body.bcacc})
-                .then((result) => {
-                    console.log(result);
-                    response.json({"saleid":result});
-                })
-                .catch((error) => {
-                    console.log(`Failed to query sale from Order ${orderid}.`);
                     console.log(error);
 
                     if (error.message.includes("Order does not exist.")) {

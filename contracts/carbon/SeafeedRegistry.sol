@@ -28,13 +28,7 @@ contract SeafeedRegistry {
         uint256 BestBefore;
     }
 
-    struct Sale {
-        uint16 Quantity;
-        bool DispatchDocsAttached;
-        uint256 DateTime;
-    }
-
-    struct Order {
+    struct SaleOrder {
         string Customer;
         address CustomerAddr;
         uint16 Quantity;
@@ -48,21 +42,18 @@ contract SeafeedRegistry {
     mapping(string => Production) public productions;
     mapping(string => Testing) public testings;
     mapping(string => Storage) public storages;
-    mapping(string => Sale) public sales;
-    mapping(string => Order) public orders;
+    mapping(string => SaleOrder) public saleorders;
 
     // existence of structs
     mapping(string => bool) public productionExists;
     mapping(string => bool) public testingExists;
     mapping(string => bool) public storageExists;
-    mapping(string => bool) public saleExists;
-    mapping(string => bool) public orderExists;
+    mapping(string => bool) public saleorderExists;
 
     // trace from end product to source
     mapping(string => string) public TestingToProduction;
     mapping(string => string) public StorageToTesting;
-    mapping(string => string) public SaleToStorage;
-    mapping(string => string) public OrderToSale;
+    mapping(string => string) public OrderToStorage;
 
 // the setters
     function logProduction(
@@ -70,7 +61,7 @@ contract SeafeedRegistry {
         string memory _batchid,
         string memory _farmid,
         uint256 _volume,
-        uint256 _datetime) 
+        uint256 _datetime)
         public
     {
         require(!productionExists[_productionid], "Production already exists.");
@@ -113,45 +104,27 @@ contract SeafeedRegistry {
         StorageToTesting[_storageid] = _testingid; // traceability
     }
 
-    // logSale should be more like "orderSeafeed" or logOrder
-    function logSale(
-        string memory _saleid,
-        uint16 _quantity,
-        uint256 _datetime,
-        string memory _storageid
-    )
-        public
-    {
-        require(!saleExists[_saleid], "Sale already exists.");
-        require(storageExists[_storageid], "The referred storageid does not exist.");
-
-        saleExists[_saleid] = true;
-        sales[_saleid] = Sale(_quantity,false,_datetime);   
-        SaleToStorage[_saleid] = _storageid; // traceability
-    }
-
-    function logOrder(
+    function logSaleOrder(
         string memory _orderid, 
         string memory _customer, 
         address _customeraddr,
         uint16 _quantity, 
         uint256 _datetime,
-        string memory _saleid) 
+        string memory _storageid) 
         public 
     {
-        require(!orderExists[_orderid], "Order already exists.");
-        require(saleExists[_saleid], "The referred saleid does not exist.");
-        require(_quantity<=sales[_saleid].Quantity, "The order quantity exceeds the total sale quantity.");
+        require(!saleorderExists[_orderid], "Order already exists.");
+        require(storageExists[_storageid], "The referred storageid does not exist.");
         
-        orderExists[_orderid] = true;
-        orders[_orderid] = Order(_customer,_customeraddr,_quantity,OrderStatus.ORDERED,_datetime);
-        OrderToSale[_orderid] = _saleid;
+        saleorderExists[_orderid] = true;
+        saleorders[_orderid] = SaleOrder(_customer,_customeraddr,_quantity,OrderStatus.ORDERED,_datetime);
+        OrderToStorage[_orderid] = _storageid;
         allorders.push(_orderid);
     }
 
     function updateOrder(string memory _orderid, uint8 _ordertatus) public {
-        require(orderExists[_orderid], "Order does not exist.");
-        orders[_orderid].OS = OrderStatus(_ordertatus);
+        require(saleorderExists[_orderid], "Order does not exist.");
+        saleorders[_orderid].OS = OrderStatus(_ordertatus);
     }
 
 // the getters
@@ -207,24 +180,7 @@ contract SeafeedRegistry {
         );
     }
 
-    function querySale(string memory _saleid)
-        public
-        view
-        returns(
-            uint16,
-            bool,
-            uint256
-        )
-    {
-        require(saleExists[_saleid], "Sale does not exist.");
-        return(
-            sales[_saleid].Quantity,
-            sales[_saleid].DispatchDocsAttached,
-            sales[_saleid].DateTime
-        );
-    }
-
-    function queryOrder(string memory _orderid)
+    function querySaleOrder(string memory _orderid)
         public
         view
         returns(
@@ -234,31 +190,31 @@ contract SeafeedRegistry {
             string memory,
             uint256)
     {
-        require(orderExists[_orderid], "Order does not exist.");
+        require(saleorderExists[_orderid], "Order does not exist.");
 
         string memory orderstatus;
-        if (orders[_orderid].OS == OrderStatus.ORDERED) {
+        if (saleorders[_orderid].OS == OrderStatus.ORDERED) {
             orderstatus = "Ordered";
-        } else if (orders[_orderid].OS == OrderStatus.PAYMENTRECEIVED) {
+        } else if (saleorders[_orderid].OS == OrderStatus.PAYMENTRECEIVED) {
             orderstatus = "Paymentreceived";
-        } else if (orders[_orderid].OS == OrderStatus.DISPATCHED) {
+        } else if (saleorders[_orderid].OS == OrderStatus.DISPATCHED) {
             orderstatus = "Dispatched";
-        } else if (orders[_orderid].OS == OrderStatus.ARRIVED) {
+        } else if (saleorders[_orderid].OS == OrderStatus.ARRIVED) {
             orderstatus = "Arrived";
         } else {
             orderstatus = "Unknown";
         }
 
         return(
-            orders[_orderid].Customer,
-            orders[_orderid].CustomerAddr,
-            orders[_orderid].Quantity,
+            saleorders[_orderid].Customer,
+            saleorders[_orderid].CustomerAddr,
+            saleorders[_orderid].Quantity,
             orderstatus,
-            orders[_orderid].DateTime
+            saleorders[_orderid].DateTime
         );
     }
 
-    function queryAllOrders() public view 
+    function queryAllSaleOrders() public view 
         returns(
             string[] memory,
             string[] memory,
@@ -275,40 +231,38 @@ contract SeafeedRegistry {
         uint256[] memory datetimes = new uint256[](allorders.length);
 
         for(uint256 i=0; i<allorders.length; i++) {
-            if (orders[allorders[i]].OS == OrderStatus.ORDERED) {
+            if (saleorders[allorders[i]].OS == OrderStatus.ORDERED) {
                 statuss[i] = "Ordered";
-            } else if (orders[allorders[i]].OS == OrderStatus.PAYMENTRECEIVED) {
+            } else if (saleorders[allorders[i]].OS == OrderStatus.PAYMENTRECEIVED) {
                 statuss[i] = "Paymentreceived";
-            } else if (orders[allorders[i]].OS == OrderStatus.DISPATCHED) {
+            } else if (saleorders[allorders[i]].OS == OrderStatus.DISPATCHED) {
                 statuss[i] = "Dispatched";
-            } else if (orders[allorders[i]].OS == OrderStatus.ARRIVED) {
+            } else if (saleorders[allorders[i]].OS == OrderStatus.ARRIVED) {
                 statuss[i] = "Arrived";
             } else {
                 statuss[i] = "Unknown";
             }
 
-            customers[i] = orders[allorders[i]].Customer;
-            quantities[i] = orders[allorders[i]].Quantity;
-            datetimes[i] = orders[allorders[i]].DateTime;
+            customers[i] = saleorders[allorders[i]].Customer;
+            quantities[i] = saleorders[allorders[i]].Quantity;
+            datetimes[i] = saleorders[allorders[i]].DateTime;
         }
 
         return(allorders,customers,customeraddrs,quantities,statuss,datetimes);
     }
 
     // use an orderid to trace back to source
-    function queryOrderSource(string memory _orderid) public view 
+    function querySaleOrderSource(string memory _orderid) public view 
         returns (
-            string memory,
             string memory,
             string memory,
             string memory
         ) 
     {
-        require(orderExists[_orderid], "Order does not exist.");
-        string memory saleid = OrderToSale[_orderid];
-        string memory storageid = SaleToStorage[saleid];
+        require(saleorderExists[_orderid], "Order does not exist.");
+        string memory storageid = OrderToStorage[_orderid];
         string memory testingid = StorageToTesting[storageid];
         string memory productionid = TestingToProduction[testingid];
-        return (productionid,testingid,storageid,saleid);
+        return (productionid,testingid,storageid);
     }
 }
