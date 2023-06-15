@@ -1,17 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./AnimalRegistry.sol";
+// import "./AnimalRegistry.sol";
+import "./HerdRegistry.sol";
 import "./FeedTracking.sol";
 
 contract EmissionTracking {
-    AnimalRegistry public animalregistry;
+    // AnimalRegistry public animalregistry;
+    HerdRegistry public herdregistry;
     FeedTracking public feedtracking;
 
     struct EmissionRecord {
         uint16 Value;
         FeedTracking.Ingredient FeedType;
-        string AnimalID;
+        string HerdID;
+        // string AnimalID;
         uint256 DateTime; // unix time
         uint256 BlockTime;
     }
@@ -20,19 +23,21 @@ contract EmissionTracking {
     mapping(string => bool) public emissionExists;
     string[] public allemissions;
 
-    constructor(AnimalRegistry _animalregistry, FeedTracking _feedtracking)
+    constructor(HerdRegistry _herdregistry, FeedTracking _feedtracking)
     {
-        animalregistry = _animalregistry;
+        // animalregistry = _animalregistry;
+        herdregistry = _herdregistry;
         feedtracking = _feedtracking;
     }
 
     // Note: oziris should receive data as often as needed; blockchain will only receive data once/twice a day
-    function logEmission(string memory _emissionid, uint16 _value, uint8 _feedtype, string memory _animalid, uint256 _datetime) public 
+    function logEmission(string memory _emissionid, uint16 _value, uint8 _feedtype, string memory _herdid, uint256 _datetime) public 
     {
         require(!emissionExists[_emissionid], "Emission ID exists.");
-        require(animalregistry.animalExists(_animalid), "Animal is not registed.");
+        // require(animalregistry.animalExists(_animalid), "Animal is not registed.");
+        require(herdregistry.herdExists(_herdid), "Herd does not exist.");
         
-        emissions[_emissionid] = EmissionRecord(_value, FeedTracking.Ingredient(_feedtype), _animalid, _datetime, block.timestamp);
+        emissions[_emissionid] = EmissionRecord(_value, FeedTracking.Ingredient(_feedtype), _herdid, _datetime, block.timestamp);
         emissionExists[_emissionid] = true;
         allemissions.push(_emissionid);
     }
@@ -61,7 +66,8 @@ contract EmissionTracking {
             }
 
             return(
-                emissions[_emissionid].AnimalID,
+                // emissions[_emissionid].AnimalID,
+                emissions[_emissionid].HerdID,
                 emissions[_emissionid].Value,
                 ingredient,
                 emissions[_emissionid].DateTime,
@@ -79,14 +85,16 @@ contract EmissionTracking {
         uint256[] memory
     )
     {
-        string[] memory animalids = new string[](allemissions.length);
+        // string[] memory animalids = new string[](allemissions.length);
+        string[] memory herdids = new string[](allemissions.length);
         uint16[] memory values = new uint16[](allemissions.length);
         string[] memory ingredients = new string[](allemissions.length);
         uint256[] memory datetimes = new uint256[](allemissions.length);
         uint256[] memory blocktimes = new uint256[](allemissions.length);
 
         for(uint256 i=0; i<allemissions.length; i++){
-            animalids[i] = emissions[allemissions[i]].AnimalID;
+            // animalids[i] = emissions[allemissions[i]].AnimalID;
+            herdids[i] = emissions[allemissions[i]].HerdID;
             values[i] = emissions[allemissions[i]].Value;
 
             if (emissions[allemissions[i]].FeedType == FeedTracking.Ingredient.REGULAR) {
@@ -103,7 +111,7 @@ contract EmissionTracking {
             blocktimes[i] = emissions[allemissions[i]].BlockTime;
         }
 
-        return(allemissions,animalids,values,ingredients,datetimes,blocktimes);
+        return(allemissions,herdids,values,ingredients,datetimes,blocktimes);
     }
 
     // Note: on the front end, for a record of issued Carbon Tokens, we first take the start and end date, then for each date we find the emission record
@@ -128,7 +136,7 @@ contract EmissionTracking {
         // same animal id shouldn't appear in both groups
         for(uint256 i=0; i<_control.length; i++){
             for(uint256 j=0; j<_treatment.length; j++){
-                require(keccak256(abi.encodePacked(emissions[_treatment[j]].AnimalID))!=keccak256(abi.encodePacked(emissions[_control[i]].AnimalID)), "Control Group shouldn't have the same animals as Treatment Group.");
+                require(keccak256(abi.encodePacked(emissions[_treatment[j]].HerdID))!=keccak256(abi.encodePacked(emissions[_control[i]].HerdID)), "Control Group shouldn't have the same animals as Treatment Group.");
             }
         }
 
@@ -153,7 +161,7 @@ contract EmissionTracking {
             ingredient = "Unknown";
         }
 
-        feedsearchid = string(abi.encodePacked(ingredient,emissions[_emissionid].AnimalID,emissions[_emissionid].DateTime));
+        feedsearchid = string(abi.encodePacked(ingredient,emissions[_emissionid].HerdID,emissions[_emissionid].DateTime));
         feedid = feedtracking.feedSearch(feedsearchid);
 
         return(feedid);

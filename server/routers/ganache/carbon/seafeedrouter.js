@@ -203,7 +203,7 @@ router.post('/log/saleorder',
         }
     })
 
-router.post('/update/order',
+router.post('/update/saleorder',
     validator.check("orderid").exists().withMessage("Input should contain field 'orderid'."),
     validator.check("orderstatus").exists().withMessage("Input should contain field 'orderstatus'."),
     validator.check("orderstatus").isInt().withMessage("Input should be an integer in the range [0,3]."),
