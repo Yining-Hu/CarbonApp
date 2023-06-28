@@ -6,16 +6,16 @@ export default `
             actor SF
             actor Beston
             actor Auditor
-            participant Seafeed.sol
+            participant SeafeedRegistry.sol
             participant FarmRegistry.sol
-            participant AnimalRegistry.sol
+            participant HerdRegistry.sol
             participant FeedTracking.sol
             participant EmissionTracking.sol
             participant CarbonToken.sol
             rect rgb(190, 150, 255)
-            SF->>Seafeed.sol: Log seafeed productions, testings, storages, sales, orders.
+            SF->>SeafeedRegistry.sol: Log seafeed productions, testings, storages, sales, orders.
             Farmer->>FarmRegistry.sol: Log farms.
-            Farmer->>AnimalRegistry.sol: Log animals.
+            Farmer->>HerdRegistry.sol: Log herds.
             Farmer->>FeedTracking.sol: Log feeds.
             FTS->>EmissionTracking.sol: Log emissions.
             end
@@ -24,9 +24,9 @@ export default `
             end
             rect rgb(255, 213, 128)
             Auditor->>CarbonToken.sol: Verify carbon tokens.
-            Auditor->>Seafeed.sol: Verify seafeed records.
+            Auditor->>SeafeedRegistry.sol: Verify seafeed records.
             Auditor->>FarmRegistry.sol: Verify farm details.
-            Auditor->>AnimalRegistry.sol: Verify animal details.
+            Auditor->>HerdRegistry.sol: Verify herd details.
             Auditor->>FeedTracking.sol: Verify feed records.
             Auditor->>EmissionTracking.sol: Verify emission records.
             end
