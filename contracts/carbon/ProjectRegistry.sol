@@ -16,9 +16,9 @@ contract ProjectRegistry {
         string[] Herds;
     }
 
-    mapping(string => Project) projects;
-    mapping(string => bool) projectExists;
-    string[] allprojects;
+    mapping(string => Project) public projects;
+    mapping(string => bool) public projectExists;
+    string[] public allprojects;
     
     function registerProject(
         string memory _projectid,

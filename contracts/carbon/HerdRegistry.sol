@@ -25,12 +25,12 @@ contract HerdRegistry {
     function registerHerd(
         string memory _herdid,
         string memory _farmid,
-        uint16 _numofherds,
+        uint16 _numofanimals,
         uint16 _daysonfarm) public 
         {
             require(herdExists[_herdid] == false, "Herd already exists.");
             require(farmregistry.farmExists(_farmid), "Farm does not exist.");
-            herds[_herdid] = Herd(_farmid,_numofherds,_daysonfarm);
+            herds[_herdid] = Herd(_farmid,_numofanimals,_daysonfarm);
             herdExists[_herdid] = true;
             allherds.push(_herdid);
         }
@@ -40,7 +40,7 @@ contract HerdRegistry {
         view 
         returns(
             string memory, 
-            uint16, 
+            uint16,
             uint16)
         {
             require(herdExists[_herdid] == true, "Herd does not exist.");

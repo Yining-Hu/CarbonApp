@@ -16,7 +16,7 @@ router.post('/log',
     validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
     validator.check("amount").exists().withMessage("Input should contain field 'amount'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'."),
-    validator.check("animalid").exists().withMessage("Input should contain field 'animalid'."),
+    validator.check("herdid").exists().withMessage("Input should contain field 'herdid'."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
@@ -29,12 +29,12 @@ router.post('/log',
             var emissionid = request.body.emissionid;
             var amount = request.body.amount;
             var feedtype = request.body.feedtype;
-            var animalid = request.body.animalid;
+            var herdid = request.body.herdid;
             var datetime = request.body.datetime;
             var gas = request.body.gas;
 
             etrackinginstance.then(value => {
-                value.methods.logEmission(emissionid,amount,feedtype,animalid,datetime).send({from: request.body.bcacc, gas: gas})
+                value.methods.logEmission(emissionid,amount,feedtype,herdid,datetime).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging feed ${emissionid}, Txn hash: ${result.transactionHash}`);
@@ -48,8 +48,8 @@ router.post('/log',
 
                     if (error.message.includes("gas")) {
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Animal is not registered.")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. You can only log feed for a registered animal."}));
+                    } else if (error.message.includes("Herd is not registered.")) {
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. You can only log feed for a registered herd."}));
                     } else {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                     }
@@ -73,7 +73,7 @@ router.get('/view',
                 value.methods.queryEmission(emissionid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"emissionid":emissionid,"animalid":result[0],"amount":result[1],"feedtype":result[2],"datetime":result[3],"blocktime":result[4]});
+                    response.json({"emissionid":emissionid,"herdid":result[0],"amount":result[1],"feedtype":result[2],"datetime":result[3],"blocktime":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Emission ${emissionid}.`);
@@ -100,7 +100,7 @@ router.get('/view/emissions',
         
                 for (i=0;i<result[0].length;i++) {
                     emission.emissionid = result[0][i];
-                    emission.animalid = result[1][i];
+                    emission.herdid = result[1][i];
                     emission.value = result[2][i];
                     emission.feedtype = result[3][i];
                     emission.datetime = result[4][i];
@@ -120,7 +120,7 @@ router.get('/view/emissions',
         })
     });
 
-router.post('/verify/value', 
+router.get('/verify/value', 
     validator.check("control").exists().withMessage("Input should contain field 'control'."),
     validator.check("treatment").exists().withMessage("Input should contain field 'treatment'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'"),
@@ -139,13 +139,10 @@ router.post('/verify/value',
                 value.methods.verifyEmissionValue(control,treatment,feedtype).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    console.log(`Verifying emission value, Txn hash: ${result.transactionHash}`);
-                    response.write(JSON.stringify({"verification_result":result, "Txn":result.transactionHash, "server_response": "Txn successful."}));
-                    response.end('\n');
+                    response.json({"verification_result":result[0]});
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to verify the specified emission records, Txn hash: ${txnhash}`);
+                    console.log(`Failed to verify the specified emission records`);
                     console.log(error);
 
                     if (error.message.includes("same number of emission records")) {
@@ -156,6 +153,37 @@ router.post('/verify/value',
                         response.write(JSON.stringify({"server_response":"Please only enter emission records with regular feed."}));
                     } else if (error.message.includes("the specified treatment")) {
                         response.write(JSON.stringify({"server_response":"Please only enter emission records with the specified treatment type."}));
+                    } else {
+                        response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
+                    }
+                    response.end();
+                })
+            })
+        }
+    });
+
+router.get('/link', 
+    validator.check("emissionid").exists().withMessage("Input should contain field 'emissionid'."),
+
+    (request, response) => {
+        var paramerrors = validator.validationResult(request);
+        if (!paramerrors.isEmpty()) {
+            return response.status(400).json({"server_response": paramerrors.array()});
+        } else {
+            var emissionid = request.query.emissionid;
+
+            farmreginstance.then(value => {
+                value.methods.queryFarm(emissionid).call({from: request.body.bcacc})
+                .then((result) => {
+                    console.log(result);
+                    response.json({"emissionid": emissionid, "feedid": result[0]});
+                })
+                .catch((error) => {
+                    console.log(`Failed to query emission: ${emissionid}`);
+                    console.log(error);
+
+                    if (error.message.includes("Emission does not exist.")) {
+                        response.write(JSON.stringify({"server_response":"Emission does not exist."}));
                     } else {
                         response.write(JSON.stringify({"server_response":"Please check transaction parameters."}));
                     }

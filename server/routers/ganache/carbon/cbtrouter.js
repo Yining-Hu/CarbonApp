@@ -16,8 +16,7 @@ router.post('/issue',
     validator.check("cbtokenid").exists().withMessage("Input should contain field 'cbtokenid'."),
     validator.check("amount").exists().withMessage("Input should contain field 'amount'."),
     validator.check("feedids").exists().withMessage("Input should contain field 'feedids'."),
-    validator.check("start").exists().withMessage("Input should contain field 'start'."),
-    validator.check("end").exists().withMessage("Input should contain field 'end'."),
+    validator.check("projectid").exists().withMessage("Input should contain field 'projectid'."),
     validator.check("gas").exists().withMessage("Input should contain field 'gas'."),
     validator.check("gas").isInt(),
 
@@ -29,15 +28,14 @@ router.post('/issue',
             var cbtokenid = request.body.cbtokenid;
             var amount = request.body.amount;
             var feedids = request.body.feedids;
-            var start = request.body.start;
-            var end = request.body.end;
+            var projectid = request.body.projectid;
             var gas = request.body.gas;
 
             cbtinstance.then(value => {
-                value.methods.issue(cbtokenid,amount,feedids,start,end).send({from: request.body.bcacc, gas: gas})
+                value.methods.issue(cbtokenid,amount,feedids,projectid).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
-                    console.log(`Issuing ${amount} amount of ${cbtokenid} Carbon Tokens for the period ${start}-${end}, Txn hash: ${result.transactionHash}`);
+                    console.log(`Issuing ${amount} amount of ${cbtokenid} Carbon Tokens for the project ${projectid}, Txn hash: ${result.transactionHash}`);
                     response.write(JSON.stringify({"Txn":result.transactionHash, "server_response": "Txn successful."}));
                     response.end('\n');
                 })
@@ -200,7 +198,7 @@ router.get('/view/cbtoken',
                 value.methods.queryCarbonToken(cbtokenid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"cbtokenid":cbtokenid,"internalid":result[0],"amount":result[1],"start":result[2],"end":result[3]});
+                    response.json({"cbtokenid":cbtokenid,"projectid":result[0],"internalid":result[1],"amount":result[2]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Carbon Token ${cbtokenid}.`);
@@ -227,10 +225,9 @@ router.get('/view/cbtokens',
         
                 for (i=0;i<result[0].length;i++) {
                     cbt.cbtokenid = result[0][i];
-                    cbt.internalid = result[1][i];
-                    cbt.amount = result[2][i];
-                    cbt.start = result[3][i];
-                    cbt.end = result[4][i];
+                    cbt.projectid = result[1][i];
+                    cbt.internalid = result[2][i];
+                    cbt.amount = result[3][i];
                     cbtarray.push({...cbt});
                 }
                 console.log(cbtarray);

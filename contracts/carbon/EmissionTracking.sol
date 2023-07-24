@@ -146,7 +146,8 @@ contract EmissionTracking {
     // the function takes an Emission ID as an argument, returns the animalid and datetime, and find the corresponding feed record
     // it returns '' if the emission cannot be linked to a feed record
     // the frontend should propafate this
-    function linkEmissionToFeed(string memory _emissionid) public returns(string memory) {
+    function linkEmissionToFeed(string memory _emissionid) public view returns(string memory) {
+        require(emissionExists[_emissionid], "Emission does not exist.");
         string memory ingredient;
         string memory feedid;
         string memory feedsearchid;
