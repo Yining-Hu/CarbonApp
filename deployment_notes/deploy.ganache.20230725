@@ -1,0 +1,198 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'bestonchain'
+> Network id:      100
+> Block gas limit: 1342177280 (0x50000000)
+
+
+6_deploy_farmreg.js
+===================
+
+   Deploying 'FarmRegistry'
+   ------------------------
+   > transaction hash:    0xc04d1a737322671d462b6c7c126e23d1ca7997e6417fdd834f5d33f30e8ea632
+   > Blocks: 2            Seconds: 4
+   > contract address:    0xA8557fB5535FAD27422a3c2b1BCf325Bf3f511B2
+   > block number:        2735
+   > block timestamp:     1690261961
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0
+   > gas used:            922580 (0xe13d4)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 2737)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+7_deploy_herdreg.js
+===================
+
+   Deploying 'HerdRegistry'
+   ------------------------
+   > transaction hash:    0xad29f0a0558290e75fd2abc3aff40afefade7c39d50c9a557e47cc7f7fa07e40
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x5e43a81DADABe262dF2714706666561B293321e4
+   > block number:        2739
+   > block timestamp:     1690261970
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0
+   > gas used:            1377936 (0x150690)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 1 (block: 2740)
+   > confirmation number: 3 (block: 2742)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+8_deploy_projectreg.js
+======================
+
+   Deploying 'ProjectRegistry'
+   ---------------------------
+   > transaction hash:    0x43071f23b2d25e9f146ff8893547352b18e3a384fea2bb1865af274d2808ad39
+   > Blocks: 1            Seconds: 4
+   > contract address:    0x0EE0443D05F6D5E75c8Ad26D1008E4246e712739
+   > block number:        2745
+   > block timestamp:     1690261982
+   > account:             0xd6D95AFd6402A029B6158fCc88B0234f35b7e823
+   > balance:             0
+   > gas used:            1674211 (0x198be3)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 1 (block: 2746)
+   > confirmation number: 3 (block: 2748)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+9_deploy_seafeed.js
+===================
+
+   Deploying 'SeafeedRegistry'
+   ---------------------------
+   > transaction hash:    0x56121eb0fe0bf6dae19618d15c684d650a75269981cdbc60748c961b8829adfa
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x443f3A3f2703F83a15204316ADDE122a53E4F5eE
+   > block number:        2750
+   > block timestamp:     1690261698
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0
+   > gas used:            3457679 (0x34c28f)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 2752)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+10_deploy_feedreg.js
+====================
+
+   Deploying 'FeedTracking'
+   ------------------------
+   > transaction hash:    0x31b3034caf55f52c8b6e76b1b50a4f5e5783ece14d1262ca09e3475c628930e0
+   > Blocks: 2            Seconds: 4
+   > contract address:    0xe6b3B22C7b9D3cfed246c763d522ed9Aaf75d61F
+   > block number:        2754
+   > block timestamp:     1690261706
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0
+   > gas used:            2776185 (0x2a5c79)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 2756)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+11_deploy_emissionreg.js
+========================
+
+   Deploying 'EmissionTracking'
+   ----------------------------
+   > transaction hash:    0xd17502417cb6b00a17cc070b3c7eb17365faf4d2e38ef08ce7cf3c678ae9e971
+   > Blocks: 2            Seconds: 4
+   > contract address:    0xca8bD5f05212683724A46C25B0Ea62E515C7ea1E
+   > block number:        2758
+   > block timestamp:     1690261715
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0
+   > gas used:            2665089 (0x28aa81)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 2760)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+12_deploy_cbt.js
+================
+
+   Deploying 'CarbonToken'
+   -----------------------
+   > transaction hash:    0xb90b20ab00d8861935a9318ca806271f8f2141217fb8ec0912051606e4a48a95
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x67698e49B0b1A046836D31D4aa08332245F0555F
+   > block number:        2762
+   > block timestamp:     1690261724
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0
+   > gas used:            5051139 (0x4d1303)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 1 (block: 2763)
+   > confirmation number: 3 (block: 2765)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+Summary
+=======
+> Total deployments:   7
+> Final cost:          0 ETH
+
+
