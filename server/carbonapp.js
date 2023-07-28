@@ -1,6 +1,6 @@
 const express = require('express');
 
-var animalroute,farmroute,seafeedroute,feedroute,emissionroute,cbtroute,generalroute,middlewares;
+var herdroute,farmroute,seafeedroute,feedroute,emissionroute,cbtroute,generalroute,middlewares;
 
 /**
  * command-line argument handling
@@ -11,7 +11,7 @@ if (process.argv.length < 3) {
 }
 
 if (process.argv[2] && process.argv[2] === '-ganache') {
-    animalroute = require('./routers/ganache/carbon/animalrouter.js');
+    herdroute = require('./routers/ganache/carbon/herdrouter.js');
     farmroute = require('./routers/ganache/carbon/farmrouter.js');
     seafeedroute = require('./routers/ganache/carbon/seafeedrouter.js');
     feedroute = require('./routers/ganache/carbon/feedrouter.js');
@@ -20,8 +20,9 @@ if (process.argv[2] && process.argv[2] === '-ganache') {
     generalroute = require('./routers/ganache/general.js');
     middlewares = require('./routers/ganache/middlewares.js');
 } else if (process.argv[2] && process.argv[2] === '-bestonchain') {
-    animalroute = require('./routers/bestonchain/carbon/animalrouter.js');
+    herdroute = require('./routers/bestonchain/carbon/herdrouter.js');
     farmroute = require('./routers/bestonchain/carbon/farmrouter.js');
+    seafeedroute = require('./routers/ganache/carbon/seafeedrouter.js');
     feedroute = require('./routers/bestonchain/carbon/feedrouter.js');
     emissionroute = require('./routers/bestonchain/carbon/emissionrouter.js');
     cbtroute = require('./routers/bestonchain/carbon/cbtrouter.js');
@@ -37,7 +38,7 @@ app.use(express.json());
 
 app.use(middlewares.authorization);
 
-app.use('/animal', animalroute);
+app.use('/herd', herdroute);
 app.use('/farm', farmroute);
 app.use('/seafeed',seafeedroute);
 app.use('/feed', feedroute);
