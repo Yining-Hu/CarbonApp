@@ -1,16 +1,29 @@
 const utils = require('../../../utils.js');
+const fs = require('fs'); 
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const express = require('express');
 const validator = require('express-validator');
-const router = express.Router();
+const router = express.Router()
 router.use(express.json());
 
-// var netId = '5777';
-var provider = 'http://127.0.0.1:7545';
+var privkeyPath = "/home/yih/Documents/dev/beston-dapps/server/credentials/bestonchain/";
+
+const agentkey = JSON.parse(fs.readFileSync(privkeyPath + "agent.json")).privkey;
+const buyerkey = JSON.parse(fs.readFileSync(privkeyPath + "buyer.json")).privkey;
+const sellerkey = JSON.parse(fs.readFileSync(privkeyPath + "seller.json")).privkey;
+const bestonkey = JSON.parse(fs.readFileSync(privkeyPath + "beston.json")).privkey;
+const farmerkey = JSON.parse(fs.readFileSync(privkeyPath + "farmer.json")).privkey;
+const ftskey = JSON.parse(fs.readFileSync(privkeyPath + "fts.json")).privkey;
+const sfkey = JSON.parse(fs.readFileSync(privkeyPath + "sf.json")).privkey;
+const auditorkey = JSON.parse(fs.readFileSync(privkeyPath + "auditor.json")).privkey;
+const accPrivKeys = [agentkey,buyerkey,sellerkey,bestonkey,farmerkey,ftskey,sfkey,auditorkey];
+
+var providerURL = "http://127.0.0.1:8545";
+var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var projectregpath = './build/contracts/ProjectRegistry.json';
-var projectregaddr = "";
-var projectreginstance = utils.getContract("addr",projectregaddr,provider,projectregpath);
-// var projectreginstance = utils.getContract("netId",netId,providerURL,projectregpath);
+var projectregaddr = "0x0EE0443D05F6D5E75c8Ad26D1008E4246e712739";
+var projectreginstance = utils.getContract("addr",projectregaddr,provider,projectregpath); // get the digitaltwin contract instance
 
 router.post('/register', 
     validator.check("projectid").exists().withMessage("Input should contain field 'projectid'."),
@@ -42,16 +55,19 @@ router.post('/register',
                     response.end('\n');
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to register project: ${projectid}, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
+                    if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Herd already exists")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new Herd ID."}));
                     } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to register project: ${projectid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Transaction has been reverted")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter a new project id."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
                     }
                     response.end();
                 })
@@ -83,16 +99,19 @@ router.post('/add/herds',
                     response.end('\n');
                 })
                 .catch((error) => {
-                    var txnhash = Object.keys(error.data)[0];
-                    console.log(`Failed to add herds to project: ${projectid}, Txn hash: ${txnhash}`);
-                    console.log(error);
-
-                    if (error.message.includes("gas")) {
+                    if (error.receipt == null) {
+                        console.log(error)
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
-                    } else if (error.message.includes("Project does not exists")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter an existing Project ID."}));
                     } else {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        var txnhash = error.receipt.transactionHash;
+                        console.log(`Failed to add herds to project: ${projectid}, Txn hash: ${txnhash}`);
+                        console.log(error);
+
+                        if (error.message.includes("Project does not exists")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter an existing Project ID."}));
+                        } else {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
+                        }
                     }
                     response.end();
                 })

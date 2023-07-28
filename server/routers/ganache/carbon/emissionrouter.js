@@ -49,7 +49,7 @@ router.post('/log',
                     if (error.message.includes("gas")) {
                         response.write(JSON.stringify({"Txn":'0x', "server_response":"Txn unsuccessful. Please increase gas amount."}));
                     } else if (error.message.includes("Herd is not registered.")) {
-                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. You can only log feed for a registered herd."}));
+                        response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. You can only log an emission for a registered herd."}));
                     } else {
                         response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                     }

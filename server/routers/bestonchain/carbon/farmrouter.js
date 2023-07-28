@@ -13,13 +13,16 @@ const buyerkey = JSON.parse(fs.readFileSync(privkeyPath + "buyer.json")).privkey
 const sellerkey = JSON.parse(fs.readFileSync(privkeyPath + "seller.json")).privkey;
 const bestonkey = JSON.parse(fs.readFileSync(privkeyPath + "beston.json")).privkey;
 const farmerkey = JSON.parse(fs.readFileSync(privkeyPath + "farmer.json")).privkey;
-const accPrivKeys = [agentkey, buyerkey, sellerkey, bestonkey, farmerkey];
+const ftskey = JSON.parse(fs.readFileSync(privkeyPath + "fts.json")).privkey;
+const sfkey = JSON.parse(fs.readFileSync(privkeyPath + "sf.json")).privkey;
+const auditorkey = JSON.parse(fs.readFileSync(privkeyPath + "auditor.json")).privkey;
+const accPrivKeys = [agentkey,buyerkey,sellerkey,bestonkey,farmerkey,ftskey,sfkey,auditorkey];
 
 var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var farmregpath = './build/contracts/FarmRegistry.json';
-var farmregaddr = "0x5030ccc29FCf1878165cE3f8da157aeF57c59899";
+var farmregaddr = "0xA8557fB5535FAD27422a3c2b1BCf325Bf3f511B2";
 var farmreginstance = utils.getContract("addr",farmregaddr,provider,farmregpath); // get the digitaltwin contract instance
 
 router.post('/register', 
