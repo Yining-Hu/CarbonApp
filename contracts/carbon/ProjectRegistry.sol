@@ -28,7 +28,7 @@ contract ProjectRegistry {
         uint256 _projectend
     ) public 
     {
-        require(projectExists[_projectid], "Project does not exist.");
+        require(!projectExists[_projectid], "Project already exists.");
         projects[_projectid] = Project(_baselinestart,_baselineend,_projectstart,_projectend,new string[](0));
         projectExists[_projectid] = true;
         allprojects.push(_projectid);

@@ -22,7 +22,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var projectregpath = './build/contracts/ProjectRegistry.json';
-var projectregaddr = "0x0EE0443D05F6D5E75c8Ad26D1008E4246e712739";
+var projectregaddr = "0x0B1F47Be80B10797452d6313E7344c1e8e81255C";
 var projectreginstance = utils.getContract("addr",projectregaddr,provider,projectregpath); // get the digitaltwin contract instance
 
 router.post('/register', 

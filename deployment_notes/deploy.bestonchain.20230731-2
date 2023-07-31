@@ -1,0 +1,45 @@
+
+Compiling your contracts...
+===========================
+> Everything is up to date, there is nothing to compile.
+
+
+
+Starting migrations...
+======================
+> Network name:    'bestonchain'
+> Network id:      100
+> Block gas limit: 1342177280 (0x50000000)
+
+
+12_deploy_cbt.js
+================
+
+   Replacing 'CarbonToken'
+   -----------------------
+   > transaction hash:    0x5b581a4c694bbaa2a33aff484b3c72c0cba0cccb9acf815e5382abd257e7ed38
+   > Blocks: 2            Seconds: 4
+   > contract address:    0xCF91ae6afA7F9094b0981E1b0D400165aDF9836E
+   > block number:        6527
+   > block timestamp:     1690762227
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0.000000000000005
+   > gas used:            5051127 (0x4d12f7)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 6529)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0 ETH
+
+
