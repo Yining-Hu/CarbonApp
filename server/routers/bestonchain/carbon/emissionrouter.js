@@ -22,7 +22,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var etrackingpath = './build/contracts/EmissionTracking.json';
-var etrackingaddr = "0xca8bD5f05212683724A46C25B0Ea62E515C7ea1E";
+var etrackingaddr = "0x9761e931A5f263525357091Ed240D6E5C3953026";
 var etrackinginstance = utils.getContract("addr",etrackingaddr,provider,etrackingpath); // get the digitaltwin contract instance
 
 router.post('/log', 

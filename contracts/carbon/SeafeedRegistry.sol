@@ -244,6 +244,7 @@ contract SeafeedRegistry {
             }
 
             customers[i] = saleorders[allorders[i]].Customer;
+            customeraddrs[i] = saleorders[allorders[i]].CustomerAddr;
             quantities[i] = saleorders[allorders[i]].Quantity;
             datetimes[i] = saleorders[allorders[i]].DateTime;
         }

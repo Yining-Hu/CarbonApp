@@ -22,16 +22,16 @@ module.exports = {
             bcacc = credential.bcacc;
             target = credential.apikey;
         } else {
-            response.json({"server_response":"Invalid username!"});
+            return response.json({"server_response":"Invalid username!"});
         }
 
         // then check if the apikey is correct
         if (apikey == null) {
-            response.json({"server_response":"Please enter your ApiKey!"});
+            return response.json({"server_response":"Please enter your ApiKey!"});
         } else if (target.length != apikey.length) {
-            response.json({"server_response":"User not authorized!"});
+            return response.json({"server_response":"User not authorized!"});
         } else if (!timingSafeEqual(Buffer.from(target, "utf8"), Buffer.from(apikey, "utf8"))) {
-            response.json({"server_response":"User not authorized!"});
+            return response.json({"server_response":"User not authorized!"});
         } else {
             request.body.bcacc = bcacc; // apend user's blockchain account to the request body
             next();

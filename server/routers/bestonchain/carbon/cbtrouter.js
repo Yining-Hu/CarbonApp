@@ -22,7 +22,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var cbtpath = './build/contracts/CarbonToken.json';
-var cbtaddr = "0xCF91ae6afA7F9094b0981E1b0D400165aDF9836E";
+var cbtaddr = "0x1E225764BA20dD6e7c985856F6D5Df980760E143";
 var cbtinstance = utils.getContract("addr",cbtaddr,provider,cbtpath); // get the digitaltwin contract instance
 
 router.post('/issue', 
@@ -45,7 +45,7 @@ router.post('/issue',
             var gas = request.body.gas;
 
             cbtinstance.then(value => {
-                value.methods.issue(cbtokenid,amount,feedids,start,end).send({from: request.body.bcacc, gas: gas})
+                value.methods.issue(cbtokenid,amount,feedids,projectid).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Issuing ${amount} amount of ${cbtokenid} Carbon Tokens for the project ${projectid}, Txn hash: ${result.transactionHash}`);

@@ -1,9 +1,10 @@
 import React from 'react'
-import {BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import MyMermaid from './components/Mermaid.js'
 import EmissionTraceSequence from './components/EmissionTraceSequence.js'
 import UserRegisterSequence from './components/UserRegisterSequence.js'
+import CarbonToken from './components/CarbonToken.js'
 
 function AppRouter() {
     return (
@@ -14,6 +15,9 @@ function AppRouter() {
                 } />
                 <Route path="/sequence/emission" element={
                     <MyMermaid chart={EmissionTraceSequence} />
+                } />
+                <Route path="/carbontoken" element={
+                    <CarbonToken />
                 } />
             </Routes>
         </BrowserRouter>

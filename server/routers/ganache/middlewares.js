@@ -15,7 +15,7 @@ module.exports = {
     
             // first check if user exists
             if (username == null) {
-                response.json({"server_response":"Please register and enter your username!"});
+                return response.json({"server_response":"Please register and enter your username!"});
             } else if (fs.existsSync(userpath)) {
                 json = fs.readFileSync(userpath);
                 const credential = JSON.parse(json);
@@ -27,11 +27,11 @@ module.exports = {
     
             // then check if the apikey is correct
             if (apikey == null) {
-                response.json({"server_response":"Please enter your ApiKey!"});
+                return response.json({"server_response":"Please enter your ApiKey!"});
             } else if (target.length != apikey.length) {
-                response.json({"server_response":"User not authorized!"});
+                return response.json({"server_response":"User not authorized!"});
             } else if (!timingSafeEqual(Buffer.from(target, "utf8"), Buffer.from(apikey, "utf8"))) {
-                response.json({"server_response":"User not authorized!"});
+                return response.json({"server_response":"User not authorized!"});
             } else {
                 request.body.username = username;
                 request.body.bcacc = bcacc; // apend user's blockchain account to the request body

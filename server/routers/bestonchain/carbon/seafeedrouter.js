@@ -22,7 +22,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var sfpath = './build/contracts/SeafeedRegistry.json';
-var sfaddr = "0x443f3A3f2703F83a15204316ADDE122a53E4F5eE";
+var sfaddr = "0xF662Bf150F7Fd04D96f18A8Bb7EAF16abDe64E92";
 var sfinstance = utils.getContract("addr",sfaddr,provider,sfpath); // get the digitaltwin contract instance
 
 router.post('/log/production',

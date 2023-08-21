@@ -22,13 +22,14 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var ftrackingpath = './build/contracts/FeedTracking.json';
-var ftrackingaddr = "0xe6b3B22C7b9D3cfed246c763d522ed9Aaf75d61F";
+var ftrackingaddr = "0xe778A92b0B57CCE976169a49cE55Cb5d9eAd4b17";
 var ftrackinginstance = utils.getContract("addr",ftrackingaddr,provider,ftrackingpath); // get the digitaltwin contract instance
 
 router.post('/log',
     validator.check("feedid").exists().withMessage("Input should contain field 'feedid'."),
     validator.check("feedtype").exists().withMessage("Input should contain field 'feedtype'."),
     validator.check("feedtype").isInt().withMessage("Input should be an interger in the range [0,2]."),
+    validator.check("orderid").exists().withMessage("Input should contain field 'orderid'"),
     validator.check("herdid").exists().withMessage("Input should contain field 'herdid'."),
     validator.check("dmi").exists().withMessage("Input should contain field 'dmi'."),
     validator.check("datetime").exists().withMessage("Input should contain field 'datetime'."),
@@ -42,13 +43,14 @@ router.post('/log',
         } else {
             var feedid = request.body.feedid;
             var feedtype = request.body.feedtype;
+            var orderid = request.body.orderid;
             var herdid = request.body.herdid;
             var dmi = request.body.dmi;
             var datetime = request.body.datetime;
             var gas = request.body.gas;
 
             ftrackinginstance.then(value => {
-                value.methods.logFeed(feedid,feedtype,herdid,dmi,datetime).send({from: request.body.bcacc, gas: gas})
+                value.methods.logFeed(feedid,feedtype,orderid,herdid,dmi,datetime).send({from: request.body.bcacc, gas: gas})
                 .then((result) => {
                     console.log(result);
                     console.log(`Logging feed ${feedid}, Txn hash: ${result.transactionHash}`);
@@ -118,10 +120,10 @@ router.get('/view/feeds',
                 for (i=0;i<result[0].length;i++) {
                     feed.feedid = result[0][i];
                     feed.feedtype = result[1][i];
-                    feed.herdid = result[2][i];
-                    feed.dmi = result[3][i];
-                    feed.datetime = result[4][i];
-                    feed.blocktime = result[5][i];
+                    feed.orderid = result[2][i];
+                    feed.herdid = result[3][i];
+                    feed.dmi = result[4][i];
+                    feed.datetime = result[5][i];
                     feedarray.push({...feed});
                 }
                 console.log(feedarray);
