@@ -46,7 +46,7 @@ export default class Herd extends React.Component {
       },
     }
 
-    axios.post(`http://localhost:3000/farm/register`, 
+    axios.post(`http://localhost:3000/herd/register`, 
     {herdid:this.state.herdid,
      farmid:this.state.farmid,
      num_of_animals:this.state.num_of_animals,

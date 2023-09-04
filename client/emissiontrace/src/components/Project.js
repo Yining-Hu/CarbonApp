@@ -37,6 +37,13 @@ export default class Project extends React.Component {
     })
   }
 
+  handleArrayInput = event => {
+    this.setState({
+      ...this.state,
+      [event.target.name]: (event.target.value).split(','),
+    })
+  }
+
   handleRegister = event => {
     event.preventDefault();
 
@@ -114,7 +121,7 @@ export default class Project extends React.Component {
           </div>
           <div className='form-div'>
             <label className='cbtoken-label'>Herds:</label>
-            <input type="text" name="herd" onChange={this.handleChange}/>
+            <input type="text" name="herd" onChange={this.handleArrayInput}/>
           </div>
           <button type="submit">Submit</button>
         </form>
