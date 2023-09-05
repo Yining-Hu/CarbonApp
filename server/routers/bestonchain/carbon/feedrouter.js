@@ -120,10 +120,11 @@ router.get('/view/feeds',
                 for (i=0;i<result[0].length;i++) {
                     feed.feedid = result[0][i];
                     feed.feedtype = result[1][i];
-                    feed.orderid = result[2][i];
+                    feed.claimstatus = result[2][i];
                     feed.herdid = result[3][i];
-                    feed.dmi = result[4][i];
-                    feed.datetime = result[5][i];
+                    feed.orderid = result[4][i];
+                    feed.dmi = result[5][i];
+                    feed.datetime = result[6][i];
                     feedarray.push({...feed});
                 }
                 console.log(feedarray);

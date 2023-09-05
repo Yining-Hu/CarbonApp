@@ -117,7 +117,7 @@ router.get('/view/emissions',
                 for (i=0;i<result[0].length;i++) {
                     emission.emissionid = result[0][i];
                     emission.herdid = result[1][i];
-                    emission.value = result[2][i];
+                    emission.amount = result[2][i];
                     emission.feedtype = result[3][i];
                     emission.datetime = result[4][i];
                     emission.blocktime = result[5][i];

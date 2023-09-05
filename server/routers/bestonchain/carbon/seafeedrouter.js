@@ -412,9 +412,10 @@ router.get('/view/saleorders',
                 for (i=0;i<result[0].length;i++) {
                     order.orderid = result[0][i];
                     order.customer = result[1][i];
-                    order.quantity = result[2][i];
-                    order.status = result[3][i];
-                    order.datetime = result[4][i];
+                    order.customeraddr = result[2][i];
+                    order.quantity = result[3][i];
+                    order.status = result[4][i];
+                    order.datetime = result[5][i];
                     orderarray.push({...order});
                 }
                 console.log(orderarray);
