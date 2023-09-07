@@ -28,7 +28,6 @@ export default class Project extends React.Component {
       .then(res => {
         const projects = res.data;
         this.setState({ projects });
-        console.log(projects[2].herds)
       })
   }
 
@@ -60,13 +59,6 @@ export default class Project extends React.Component {
     });
   };
 
-  // handleArrayInput = event => {
-  //   this.setState({
-  //     ...this.state,
-  //     [event.target.name]: (event.target.value).split(','),
-  //   })
-  // }
-
   handleRegister = event => {
     event.preventDefault();
 
@@ -85,7 +77,6 @@ export default class Project extends React.Component {
      baselineend:this.state.baselineend,
      projectstart:this.state.projectstart,
      projectend:this.state.projectend,
-     herds:this.state.herds,
      gas:300000}, apiConfig)
     .then(res => {
       console.log(res.data);
@@ -104,9 +95,11 @@ export default class Project extends React.Component {
       },
     }
 
+    const herdnames = this.state.herds.map(a => a.name);
+
     axios.post(`http://localhost:3000/project/add/herds`, 
     {projectid:this.state.projectid,
-     herdids:this.state.herds,
+     herdids:herdnames,
      gas:300000}, apiConfig)
     .then(res => {
       console.log(res.data);
@@ -124,7 +117,6 @@ export default class Project extends React.Component {
           <th>Baseline End</th>
           <th>Project Start</th>
           <th>Project End</th>
-          <th>Herds</th>
         </tr>
         {
           this.state.projects
@@ -135,7 +127,6 @@ export default class Project extends React.Component {
                 <td>{parseTimestamp(project.baselineend)}</td>
                 <td>{parseTimestamp(project.projectstart)}</td>
                 <td>{parseTimestamp(project.projectend)}</td>
-                <td>{(project.herds).toString()}</td>
               </tr>
             )
         }
@@ -163,14 +154,10 @@ export default class Project extends React.Component {
             <label className='cbtoken-label'>ProjectID:</label>
             <input type="text" name="projectend" onChange={this.handleChange}/>
           </div>
-          {/* <div className='form-div'>
-            <label className='cbtoken-label'>Herds:</label>
-            <input type="text" name="herd" onChange={this.handleArrayInput}/>
-          </div> */}
           <button type="submit">Submit</button>
         </form>
 
-        <h2>Add Herds to a Carbon Offset Project</h2>
+        <h2>Add/Update Herds</h2>
         <form onSubmit={this.handleUpdate}>
           <div className='form-div'>
             <label className='cbtoken-label'>ProjectID:</label>

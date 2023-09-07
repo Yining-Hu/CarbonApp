@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./FarmRegistry.sol";
 import "./HerdRegistry.sol";
 
 contract ProjectRegistry {
-    FarmRegistry public farmregistry;
     HerdRegistry public herdregistry;
 
     struct Project {
@@ -20,6 +18,11 @@ contract ProjectRegistry {
     mapping(string => bool) public projectExists;
     string[] public allprojects;
     
+    constructor(HerdRegistry _herdregistry)
+    {
+        herdregistry = _herdregistry;
+    }
+
     function registerProject(
         string memory _projectid,
         uint256 _baselinestart,
@@ -60,14 +63,15 @@ contract ProjectRegistry {
         uint256[] memory,
         uint256[] memory,
         uint256[] memory,
-        uint256[] memory,
-        string[][] memory)
+        uint256[] memory
+        // string[][] memory
+        )
     {
         uint256[] memory blstarts = new uint256[](allprojects.length);
         uint256[] memory blends = new uint256[](allprojects.length);
         uint256[] memory pjstarts = new uint256[](allprojects.length);
         uint256[] memory pjends = new uint256[](allprojects.length);
-        string[][] memory herd_arrays = new string[][](allprojects.length);
+        // string[][] memory herd_arrays = new string[][](allprojects.length);
 
         for(uint256 i=0; i<allprojects.length; i++){
             blstarts[i] = projects[allprojects[i]].Baselinestart;
@@ -75,11 +79,11 @@ contract ProjectRegistry {
             pjstarts[i] = projects[allprojects[i]].Projectstart;
             pjends[i] = projects[allprojects[i]].Projectend;
 
-            for(uint256 j=0; j<projects[allprojects[i]].Herds.length; j++){
-                herd_arrays[j][i] = projects[allprojects[i]].Herds[j];
-            }
+            // for(uint256 j=0; j<projects[allprojects[i]].Herds.length; j++){
+            //     herd_arrays[j][i] = projects[allprojects[i]].Herds[j];
+            // }
         }
 
-        return(allprojects,blstarts,blends,pjstarts,pjends,herd_arrays);
+        return(allprojects,blstarts,blends,pjstarts,pjends); // herd_arrays
     }
 }

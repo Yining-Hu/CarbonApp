@@ -1,0 +1,124 @@
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/carbon/CarbonToken.sol
+> Compiling ./contracts/carbon/ProjectRegistry.sol
+> Compilation warnings encountered:
+
+    Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:56:10:
+   |
+56 |         (string memory customer,address customeraddr,uint16 quanti ...
+   |          ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:56:54:
+   |
+56 |  ... mory customer,address customeraddr,uint16 quantity,string memory orderstatus,uint256  ...
+   |                                         ^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:56:70:
+   |
+56 |  ... dress customeraddr,uint16 quantity,string memory orderstatus,uint256 orderdatetime) = seafeedre ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/FeedTracking.sol:56:96:
+   |
+56 |  ... quantity,string memory orderstatus,uint256 orderdatetime) = seafeedregistry.querySaleOrder( ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:59:14:
+   |
+59 |             (string memory ingredient, string memory claimstatus, string ...
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:59:40:
+   |
+59 |  ...         (string memory ingredient, string memory claimstatus, string memory animalid, string me ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:59:67:
+   |
+59 |  ... edient, string memory claimstatus, string memory animalid, string memory orderid, uint16 dmi ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:59:91:
+   |
+59 |  ... aimstatus, string memory animalid, string memory orderid, uint16 dmi, uint256 datetime)=fee ...
+   |                                         ^^^^^^^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:59:114:
+   |
+59 |  ... y animalid, string memory orderid, uint16 dmi, uint256 datetime)=feedtracking.qu ...
+   |                                         ^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:60:14:
+   |
+60 |             (uint256 blstart, uint256 blend, uint256 pjstart, uint256 pjend, string[] memory herds)=projectregistry.queryProject(_projectid);
+   |              ^^^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:60:31:
+   |
+60 |             (uint256 blstart, uint256 blend, uint256 pjstart, uint256 pjend, string[] memory herds)=projectregistry.queryProject(_projectid);
+   |                               ^^^^^^^^^^^^^
+
+,Warning: Unused local variable.
+  --> project:/contracts/carbon/CarbonToken.sol:60:78:
+   |
+60 |             (uint256 blstart, uint256 blend, uint256 pjstart, uint256 pjend, string[] memory herds)=projectregistry.queryProject(_projectid);
+   |                                                                              ^^^^^^^^^^^^^^^^^^^^^
+
+
+> Artifacts written to /home/yih/Documents/dev/beston-dapps/build/contracts
+> Compiled successfully using:
+   - solc: 0.8.7+commit.e28d00a7.Emscripten.clang
+
+
+
+Starting migrations...
+======================
+> Network name:    'bestonchain'
+> Network id:      100
+> Block gas limit: 1342177280 (0x50000000)
+
+
+8_deploy_projectreg.js
+======================
+
+   Replacing 'ProjectRegistry'
+   ---------------------------
+   > transaction hash:    0xd18ab9a89fcd287b0b0bbed0523648cb35e49eb19478efaded5eeb5fb66200fd
+   > Blocks: 0            Seconds: 0
+   > contract address:    0xB63BDB7246c63533309535aF5633244082b9bFeF
+   > block number:        51590
+   > block timestamp:     1694065221
+   > account:             0x63Ac0F252218d7E74A297C52998C999b579bE450
+   > balance:             0.000000000000005
+   > gas used:            1515400 (0x171f88)
+   > gas price:           0 gwei
+   > value sent:          0 ETH
+   > total cost:          0 ETH
+
+   Pausing for 2 confirmations...
+   ------------------------------
+   > confirmation number: 2 (block: 51592)
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:                   0 ETH
+
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0 ETH
+
+

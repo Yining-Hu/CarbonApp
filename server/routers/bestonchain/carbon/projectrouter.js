@@ -22,7 +22,7 @@ var providerURL = "http://127.0.0.1:8545";
 var provider = new HDWalletProvider(accPrivKeys, providerURL);
 
 var projectregpath = './build/contracts/ProjectRegistry.json';
-var projectregaddr = "0x0B1F47Be80B10797452d6313E7344c1e8e81255C";
+var projectregaddr = "0xB63BDB7246c63533309535aF5633244082b9bFeF";
 var projectreginstance = utils.getContract("addr",projectregaddr,provider,projectregpath); // get the digitaltwin contract instance
 
 router.post('/register', 
@@ -107,8 +107,10 @@ router.post('/add/herds',
                         console.log(`Failed to add herds to project: ${projectid}, Txn hash: ${txnhash}`);
                         console.log(error);
 
-                        if (error.message.includes("Project does not exists")) {
+                        if (error.message.includes("Project does not exist")) {
                             response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please enter an existing Project ID."}));
+                        } else if (error.message.includes("Herd does not exist")) {
+                            response.write(JSON.stringify({"Txn":txnhash, "server_response":"Txn reverted. Please only enter existing Herd IDs."}));
                         } else {
                             response.write(JSON.stringify({"Txn":txnhash, "server_response":"Please check transaction parameters."}));
                         }
@@ -164,7 +166,7 @@ router.get('/view/projects',
                     project.baselineend = result[2][i];
                     project.projectstart = result[3][i];
                     project.projectend = result[4][i];
-                    project.herds = result[5][i];
+                    // project.herds = result[5][i];
                     projectarray.push({...project});
                 }
                 console.log(projectarray);
