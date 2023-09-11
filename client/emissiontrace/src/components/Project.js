@@ -135,24 +135,24 @@ export default class Project extends React.Component {
         <h2>Register a Carbon Offset Project</h2>
         <form onSubmit={this.handleRegister}>
           <div className='form-div'>
-            <label className='cbtoken-label'>ProjectID:</label>
-            <input type="text" name="projectid" onChange={this.handleChange}/>
+            <label className='label'>ProjectID:</label>
+            <input className='form-input' type="text" name="projectid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Baseline Start:</label>
-            <input type="text" name="baselinestart" onChange={this.handleChange}/>
+            <label className='label'>Baseline Start:</label>
+            <input className='form-input' type="text" name="baselinestart" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Baseline End:</label>
-            <input type="text" name="baselineend" onChange={this.handleChange}/>
+            <label className='label'>Baseline End:</label>
+            <input className='form-input' type="text" name="baselineend" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Project start:</label>
-            <input type="text" name="projectstart" onChange={this.handleChange}/>
+            <label className='label'>Project start:</label>
+            <input className='form-input' type="text" name="projectstart" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>ProjectID:</label>
-            <input type="text" name="projectend" onChange={this.handleChange}/>
+            <label className='label'>ProjectID:</label>
+            <input className='form-input' type="text" name="projectend" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -160,16 +160,16 @@ export default class Project extends React.Component {
         <h2>Add/Update Herds</h2>
         <form onSubmit={this.handleUpdate}>
           <div className='form-div'>
-            <label className='cbtoken-label'>ProjectID:</label>
-            <input type="text" name="projectid" onChange={this.handleChange}/>
+            <label className='label'>ProjectID:</label>
+            <input className='form-input' type="text" name="projectid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
               {this.state.herds.map((herd, idx) => (
                 <div className='form-div'>
-                  <label className='cbtoken-label'>Herd:</label>
-                  <input
+                  <label className='label'>Herd:</label>
+                  <input className='form-input'
                     type="text"
-                    placeholder={`Herd #${idx + 1} id`}
+                    placeholder={`herd${idx + 1}`}
                     value={herd.name}
                     onChange={this.handleHerdNameChange(idx)}
                   />

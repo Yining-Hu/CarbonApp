@@ -1,7 +1,12 @@
 import React from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
-export default class Project extends React.Component {
+function withRouter(Component) {
+  return props => <Component {...props} params={useNavigate()} />
+}
+
+class Farm extends React.Component {
   state = {
     farms:[],
     farmid:"",
@@ -30,6 +35,11 @@ export default class Project extends React.Component {
       ...this.state,
       [event.target.name]: event.target.value,
     })
+  }
+
+  handleClick = event => {
+    const {navigate} = this.props;
+    navigate("/farmdetail/" + event.target.value);
   }
 
   handleRegister = event => {
@@ -66,7 +76,7 @@ export default class Project extends React.Component {
           this.state.farms
             .map(farm =>
               <tr key={farm.farmid}>
-                <td>{farm.farmid}</td>
+                <td>{farm.farmid} onClick={this.handleClick}</td>
                 <td>{farm.farmer}</td>
               </tr>
             )
@@ -76,8 +86,8 @@ export default class Project extends React.Component {
         <h2>Register a Farm</h2>
         <form onSubmit={this.handleRegister}>
           <div className='form-div'>
-            <label className='cbtoken-label'>FarmID:</label>
-            <input type="text" name="farmid" onChange={this.handleChange}/>
+            <label className='label'>FarmID:</label>
+            <input className='form-input' type="text" name="farmid" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -85,3 +95,5 @@ export default class Project extends React.Component {
     )
   }
 }
+
+export default withRouter(Farm)

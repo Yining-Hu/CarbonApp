@@ -19,6 +19,7 @@ export default class Seafeed extends React.Component {
     orderid:"",
     customer:"",
     customeraddr:"",
+    quantity:""
   }
 
   componentDidMount() {
@@ -105,7 +106,7 @@ export default class Seafeed extends React.Component {
       },
     }
 
-    axios.post(`http://localhost:3000/seafeed/log/production`, 
+    axios.post(`http://localhost:3000/seafeed/log/storage`, 
     {storageid:this.state.storageid,
      manufacturer:this.state.manufacturer,
      location:this.state.location,
@@ -134,6 +135,7 @@ export default class Seafeed extends React.Component {
     {orderid:this.state.orderid,
      customer:this.state.customer,
      customeraddr:this.state.customeraddr,
+     quantity:this.state.quantity,
      datetime:this.state.datetime,
      storageid:this.state.storageid,
      gas:300000}, apiConfig)
@@ -173,24 +175,24 @@ export default class Seafeed extends React.Component {
         <h2>Log a Production</h2>
         <form onSubmit={this.handleLogProduction}>
           <div className='form-div'>
-            <label className='cbtoken-label'>ProductionID:</label>
-            <input type="text" name="productionid" onChange={this.handleChange}/>
+            <label className='label'>ProductionID:</label>
+            <input className='form-input' type="text" name="productionid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>BatchID:</label>
-            <input type="text" name="batchid" onChange={this.handleChange}/>
+            <label className='label'>BatchID:</label>
+            <input className='form-input' type="text" name="batchid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>FarmID:</label>
-            <input type="text" name="farmid" onChange={this.handleChange}/>
+            <label className='label'>FarmID:</label>
+            <input className='form-input' type="text" name="farmid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Volume:</label>
-            <input type="text" name="volume" onChange={this.handleChange}/>
+            <label className='label'>Volume:</label>
+            <input className='form-input' type="text" name="volume" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Datetime:</label>
-            <input type="text" name="datetime" onChange={this.handleChange}/>
+            <label className='label'>Datetime:</label>
+            <input className='form-input' type="text" name="datetime" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -198,20 +200,20 @@ export default class Seafeed extends React.Component {
         <h2>Log a Testing</h2>
         <form onSubmit={this.handleLogTesting}>
           <div className='form-div'>
-            <label className='cbtoken-label'>TestingID:</label>
-            <input type="text" name="testingid" onChange={this.handleChange}/>
+            <label className='label'>TestingID:</label>
+            <input className='form-input' type="text" name="testingid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Temperature:</label>
-            <input type="text" name="temperature" onChange={this.handleChange}/>
+            <label className='label'>Temperature:</label>
+            <input className='form-input' type="text" name="temperature" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Datetime:</label>
-            <input type="text" name="datetime" onChange={this.handleChange}/>
+            <label className='label'>Datetime:</label>
+            <input className='form-input' type="text" name="datetime" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>ProductionID:</label>
-            <input type="text" name="productionid" onChange={this.handleChange}/>
+            <label className='label'>ProductionID:</label>
+            <input className='form-input' type="text" name="productionid" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -219,28 +221,28 @@ export default class Seafeed extends React.Component {
         <h2>Log a Storage</h2>
         <form onSubmit={this.handleLogStorage}>
           <div className='form-div'>
-            <label className='cbtoken-label'>StorageID:</label>
-            <input type="text" name="storageid" onChange={this.handleChange}/>
+            <label className='label'>StorageID:</label>
+            <input className='form-input' type="text" name="storageid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Manufacturer:</label>
-            <input type="text" name="manufacturer" onChange={this.handleChange}/>
+            <label className='label'>Manufacturer:</label>
+            <input className='form-input' type="text" name="manufacturer" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Location:</label>
-            <input type="text" name="location" onChange={this.handleChange}/>
+            <label className='label'>Location:</label>
+            <input className='form-input' type="text" name="location" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Datetime:</label>
-            <input type="text" name="datetime" onChange={this.handleChange}/>
+            <label className='label'>Datetime:</label>
+            <input className='form-input' type="text" name="datetime" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Best Before:</label>
-            <input type="text" name="bestbefore" onChange={this.handleChange}/>
+            <label className='label'>Best Before:</label>
+            <input className='form-input' type="text" name="bestbefore" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>TestingID:</label>
-            <input type="text" name="testingid" onChange={this.handleChange}/>
+            <label className='label'>TestingID:</label>
+            <input className='form-input' type="text" name="testingid" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -248,28 +250,28 @@ export default class Seafeed extends React.Component {
         <h2>Log a Saleorder</h2>
         <form onSubmit={this.handleLogSaleorder}>
           <div className='form-div'>
-            <label className='cbtoken-label'>SaleorderID:</label>
-            <input type="text" name="orderid" onChange={this.handleChange}/>
+            <label className='label'>SaleorderID:</label>
+            <input className='form-input' type="text" name="orderid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Customer:</label>
-            <input type="text" name="customer" onChange={this.handleChange}/>
+            <label className='label'>Customer:</label>
+            <input className='form-input' type="text" name="customer" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Customer Blockchain Account:</label>
-            <input type="text" name="customeraddr" onChange={this.handleChange}/>
+            <label className='label'>Customer Blockchain Account:</label>
+            <input className='form-input' type="text" name="customeraddr" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Quantity:</label>
-            <input type="text" name="quantity" onChange={this.handleChange}/>
+            <label className='label'>Quantity:</label>
+            <input className='form-input' type="text" name="quantity" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Datetime:</label>
-            <input type="text" name="datetime" onChange={this.handleChange}/>
+            <label className='label'>Datetime:</label>
+            <input className='form-input' type="text" name="datetime" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>StorageID:</label>
-            <input type="text" name="storageid" onChange={this.handleChange}/>
+            <label className='label'>StorageID:</label>
+            <input className='form-input' type="text" name="storageid" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>

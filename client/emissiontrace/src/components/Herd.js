@@ -84,20 +84,20 @@ export default class Herd extends React.Component {
         <h2>Register a Herd</h2>
         <form onSubmit={this.handleRegister}>
           <div className='form-div'>
-            <label className='cbtoken-label'>HerID:</label>
-            <input type="text" name="herdid" onChange={this.handleChange}/>
+            <label className='label'>HerID:</label>
+            <input className='form-input' type="text" name="herdid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>FarmID:</label>
-            <input type="text" name="farmid" onChange={this.handleChange}/>
+            <label className='label'>FarmID:</label>
+            <input className='form-input' type="text" name="farmid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Number of Animals:</label>
-            <input type="text" name="num_of_animals" onChange={this.handleChange}/>
+            <label className='label'>Number of Animals:</label>
+            <input className='form-input' type="text" name="num_of_animals" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Days on Farm:</label>
-            <input type="text" name="days_on_farm" onChange={this.handleChange}/>
+            <label className='label'>Days on Farm:</label>
+            <input className='form-input' type="text" name="days_on_farm" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>

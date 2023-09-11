@@ -83,7 +83,7 @@ export default class Emission extends React.Component {
                 <td>{emission.amount}</td>
                 <td>{emission.feedtype}</td>
                 <td>{parseTimestamp(emission.datetime)}</td>
-                <td>{emission.blocktime}</td>
+                <td>{parseTimestamp(emission.blocktime)}</td>
               </tr>
             )
         }
@@ -92,20 +92,28 @@ export default class Emission extends React.Component {
         <h2>Log an Emission</h2>
         <form onSubmit={this.handleLog}>
           <div className='form-div'>
-            <label className='cbtoken-label'>EmissionID:</label>
-            <input type="text" name="emissionid" onChange={this.handleChange}/>
+            <label className='label'>EmissionID:</label>
+            <input className='form-input' type="text" name="emissionid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Feed Type:</label>
-            <input type="text" name="feedtype" onChange={this.handleChange}/>
+            <label className='label'>Amount:</label>
+            <input className='form-input' type="text" name="amount" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>HerdID:</label>
-            <input type="text" name="herdid" onChange={this.handleChange}/>
+            <label className='label'>Feed Type:</label>
+            <select name="feedtype" id="feedtype" onChange={this.handleChange}>
+              <option value="0">Regular</option>
+              <option value="1">Asparagopsis</option>
+              <option value="2">Polygain</option>
+          </select>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Datetime:</label>
-            <input type="text" name="datetime" onChange={this.handleChange}/>
+            <label className='label'>HerdID:</label>
+            <input className='form-input' type="text" name="herdid" onChange={this.handleChange}/>
+          </div>
+          <div className='form-div'>
+            <label className='label'>Datetime:</label>
+            <input className='form-input' type="text" name="datetime" onChange={this.handleChange}/>
           </div>
           <button type="submit">Submit</button>
         </form>

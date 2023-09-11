@@ -11,6 +11,7 @@ import Herd from './components/Herd.js'
 import Seafeed from './components/Seafeed.js'
 import Feed from './components/Feed.js'
 import Emission from './components/Emission.js'
+import FarmDetail from './components/FarmDetail.js'
 
 function AppRouter() {
     return (
@@ -24,6 +25,9 @@ function AppRouter() {
                 } />
                 <Route path="/farm" element={
                     <Farm />
+                } />
+                <Route path="/farmdetail/:farmid" element={
+                    <FarmDetail />
                 } />
                 <Route path="/herd" element={
                     <Herd />

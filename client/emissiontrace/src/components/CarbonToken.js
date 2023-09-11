@@ -4,9 +4,11 @@ import axios from 'axios';
 export default class CarbonToken extends React.Component {
   state = {
     cbts:[],
+    distributions:[],
     carbontokenid:"",
     amount:"",
-    feedids:"",
+    name:"",
+    feedids:[{name:""}],
     projectid:"",
     distributionid:"",
     farmid:""
@@ -27,6 +29,12 @@ export default class CarbonToken extends React.Component {
         const cbts = res.data;
         this.setState({ cbts });
       })
+
+    axios.get(`http://localhost:3000/cbt/view/distributions`,apiConfig)
+      .then(res => {
+        const distributions = res.data;
+        this.setState({ distributions });
+      })
   }
 
   handleChange = event => {
@@ -36,21 +44,47 @@ export default class CarbonToken extends React.Component {
     })
   }
 
+  handleFeedIDChange = (idx) => (evt) => {
+    const newFeeds = this.state.feedids.map((feedid, fidx) => {
+      if (idx !== fidx) return feedid;
+      return { ...feedid, name: evt.target.value };
+    });
+
+    this.setState({ feedids: newFeeds });
+  };
+
+  handleAddFeed = () => {
+    this.setState({
+      feedids: this.state.feedids.concat([{ name: "" }]),
+    });
+  };
+
+  handleRemoveFeed = (idx) => () => {
+    this.setState({
+      feedids: this.state.feedids.filter((s, fidx) => idx !== fidx),
+    });
+  };
+
   handleIssue = event => {
     event.preventDefault();
 
     const apiConfig = {
       headers:{
-          "api-key":"dTR4EeuqZgPcW6dAvv1Ka7805Sht6P",
           "user-name":"beston",
+          "api-key":"dTR4EeuqZgPcW6dAvv1Ka7805Sht6P",
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
       },
     }
 
-    axios.post(`http://localhost:3000/cbt/issue`, {cbtokenid:this.state.cbtokenid,amount:this.state.amount,feedids:this.state.feedids,projectid:this.state.projectid,gas:300000}, apiConfig)
+    axios.post(`http://localhost:3000/cbt/issue`, 
+    {cbtokenid:this.state.carbontokenid,
+     amount:this.state.amount,
+     feedids:this.state.feedids.map(a => a.name),
+     projectid:this.state.projectid,
+     gas:300000}, apiConfig)
     .then(res => {
-      console.log(res.data);
+     console.log(res.data);
     })
   };
 
@@ -66,7 +100,12 @@ export default class CarbonToken extends React.Component {
       },
     }
 
-    axios.post(`http://localhost:3000/cbt/distribute`, {cbtokenid:this.state.cbtokenid,distributionid:this.state.distributionid, farmid:this.state.farmid,amount:this.state.amount,gas:300000}, apiConfig)
+    axios.post(`http://localhost:3000/cbt/distribute`, 
+    {cbtokenid:this.state.carbontokenid,
+     distributionid:this.state.distributionid,
+     farmid:this.state.farmid,
+     amount:this.state.amount,
+     gas:300000}, apiConfig)
     .then(res => {
       console.log(res.data);
     })
@@ -96,23 +135,61 @@ export default class CarbonToken extends React.Component {
         }
         </table>
 
+        <h2>Carbon Token Distributions</h2>
+        <table>
+        <tr>
+          <th>DistributionID</th>
+          <th>CarbonTokenID</th>
+          <th>Amount</th>
+          <th>Farmer Blockchain Account</th>
+          <th>Paid</th>
+        </tr>
+        {
+          this.state.distributions
+            .map(distribution =>
+              <tr key={distribution.distributionid}>
+                <td>{distribution.distributionid}</td>
+                <td>{distribution.cbtokenid}</td>
+                <td>{distribution.amount}</td>
+                <td>{distribution.farmer}</td>
+                <td>{String(distribution.paid)}</td>
+              </tr>
+            )
+        }
+        </table>
+
         <h2>Issue Carbon Token</h2>
         <form onSubmit={this.handleIssue}>
           <div className='form-div'>
-            <label className='cbtoken-label'>CarbonTokenID:</label>
-            <input type="text" name="carbontokenid" onChange={this.handleChange}/>
+            <label className='label'>CarbonTokenID:</label>
+            <input className='form-input' type="text" name="carbontokenid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Amount:</label>
-            <input type="text" name="amount" onChange={this.handleChange}/>
+            <label className='label'>Amount:</label>
+            <input className='form-input' type="text" name="amount" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>FeedIDs:</label>
-            <input type="text" name="feedids" onChange={this.handleChange}/>
+            {this.state.feedids.map((feedid, idx) => (
+              <div className='form-div'>
+                <label className='label'>FeedIDs:</label>
+                <input className='form-input'
+                  type="text"
+                  placeholder={`feed${idx + 1}`}
+                  value={feedid.name}
+                  onChange={this.handleFeedIDChange(idx)}
+                />
+                <button type="button" onClick={this.handleAddFeed} className="small">
+                  +
+                </button>
+                <button type="button" onClick={this.handleRemoveFeed(idx)} className="small">
+                  -
+                </button>
+              </div>
+            ))}
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>ProjectID:</label>
-            <input type="text" name="projectid" onChange={this.handleChange}/>
+            <label className='label'>ProjectID:</label>
+            <input className='form-input' type="text" name="projectid" onChange={this.handleChange}/>
           </div>
             <button type="submit">Submit</button>
         </form>
@@ -120,20 +197,20 @@ export default class CarbonToken extends React.Component {
         <h2>Distribute Carbon Token</h2>
         <form onSubmit={this.handleDistribute}>
           <div className='form-div'>
-            <label className='cbtoken-label'>CarbonTokenID:</label>
-            <input type="text" name="carbontokenid" onChange={this.handleChange}/>
+            <label className='label'>CarbonTokenID:</label>
+            <input className='form-input' type="text" name="carbontokenid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>DistributionID:</label>
-            <input type="text" name="distributionid" onChange={this.handleChange}/>
+            <label className='label'>DistributionID:</label>
+            <input className='form-input' type="text" name="distributionid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>FarmID:</label>
-            <input type="text" name="farmid" onChange={this.handleChange}/>
+            <label className='label'>Farmer Blockchain Account:</label>
+            <input className='form-input' type="text" name="farmer" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
-            <label className='cbtoken-label'>Amount:</label>
-            <input type="text" name="amount" onChange={this.handleChange}/>
+            <label className='label'>Amount:</label>
+            <input className='form-input' type="text" name="amount" onChange={this.handleChange}/>
           </div>
             <button type="submit">Submit</button>
         </form>
