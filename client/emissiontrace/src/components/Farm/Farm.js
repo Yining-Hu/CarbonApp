@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 function withRouter(Component) {
-  return props => <Component {...props} params={useNavigate()} />
+  return props => <Component {...props} navigation={useNavigate()} />
 }
 
 class Farm extends React.Component {
@@ -37,9 +37,8 @@ class Farm extends React.Component {
     })
   }
 
-  handleClick = event => {
-    const {navigate} = this.props;
-    navigate("/farmdetail/" + event.target.value);
+  handleClick = (farmid) => {
+    this.props.navigation("/farmdetail/" + farmid)
   }
 
   handleRegister = event => {
@@ -71,13 +70,15 @@ class Farm extends React.Component {
         <tr>
           <th>FarmID</th>
           <th>Farmer</th>
+          <th>Details</th>
         </tr>
         {
           this.state.farms
             .map(farm =>
               <tr key={farm.farmid}>
-                <td>{farm.farmid} onClick={this.handleClick}</td>
+                <td>{farm.farmid}</td>
                 <td>{farm.farmer}</td>
+                <td><button onClick={() => this.handleClick(farm.farmid)}>View</button></td>
               </tr>
             )
         }

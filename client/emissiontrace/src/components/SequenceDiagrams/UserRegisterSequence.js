@@ -1,4 +1,4 @@
-export default `
+const userregistersequence = `
 %%{init: {'theme': 'forest', 'themeVariables': { 'fontSize': '20px'}}}%%
     sequenceDiagram
         autonumber
@@ -12,3 +12,4 @@ export default `
             signup/->>User: apikey
             Bank->>general/transfer/: receiver's blockchain account, bank's private key, value
 `
+export default userregistersequence;

@@ -1,8 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import { parseTimestamp } from '../utils';
+import { parseTimestamp } from '../../utils';
+import { useNavigate } from "react-router-dom";
 
-export default class Project extends React.Component {
+function withRouter(Component) {
+  return props => <Component {...props} navigation={useNavigate()} />
+}
+
+class Project extends React.Component {
   state = {
     projects:[],
     projectid:"",
@@ -36,6 +41,10 @@ export default class Project extends React.Component {
       ...this.state,
       [event.target.name]: event.target.value,
     })
+  }
+
+  handleClick = (projectid) => {
+    this.props.navigation("/projectdetail/" + projectid)
   }
 
   handleHerdNameChange = (idx) => (evt) => {
@@ -117,6 +126,7 @@ export default class Project extends React.Component {
           <th>Baseline End</th>
           <th>Project Start</th>
           <th>Project End</th>
+          <th>Details</th>
         </tr>
         {
           this.state.projects
@@ -127,6 +137,7 @@ export default class Project extends React.Component {
                 <td>{parseTimestamp(project.baselineend)}</td>
                 <td>{parseTimestamp(project.projectstart)}</td>
                 <td>{parseTimestamp(project.projectend)}</td>
+                <td><button onClick={() => this.handleClick(project.projectid)}>View</button></td>
               </tr>
             )
         }
@@ -188,3 +199,5 @@ export default class Project extends React.Component {
     )
   }
 }
+
+export default withRouter(Project)

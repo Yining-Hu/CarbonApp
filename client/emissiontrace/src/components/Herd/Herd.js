@@ -1,7 +1,12 @@
 import React from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
-export default class Herd extends React.Component {
+function withRouter(Component) {
+  return props => <Component {...props} navigation={useNavigate()} />
+}
+
+class Herd extends React.Component {
   state = {
     herds:[],
     herdid:"",
@@ -32,6 +37,10 @@ export default class Herd extends React.Component {
       ...this.state,
       [event.target.name]: event.target.value,
     })
+  }
+
+  handleClick = (herdid) => {
+    this.props.navigation("/herddetail/" + herdid)
   }
 
   handleRegister = event => {
@@ -67,6 +76,7 @@ export default class Herd extends React.Component {
           <th>FarmID</th>
           <th>Number of Animals</th>
           <th>Days on Farm</th>
+          <th>Details</th>
         </tr>
         {
           this.state.herds
@@ -76,6 +86,7 @@ export default class Herd extends React.Component {
                 <td>{herd.farmid}</td>
                 <td>{herd.num_of_animals}</td>
                 <td>{herd.days_on_farm}</td>
+                <td><button onClick={() => this.handleClick(herd.herdid)}>View</button></td>
               </tr>
             )
         }
@@ -105,3 +116,5 @@ export default class Herd extends React.Component {
     )
   }
 }
+
+export default withRouter(Herd)

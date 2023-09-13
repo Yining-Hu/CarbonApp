@@ -1,16 +1,21 @@
 import React from 'react';
 import axios from 'axios';
-import { parseTimestamp } from '../utils';
+import { parseTimestamp } from '../../utils';
+import { useNavigate } from "react-router-dom";
 
-export default class Emission extends React.Component {
+function withRouter(Component) {
+  return props => <Component {...props} navigation={useNavigate()} />
+}
+
+class Feed extends React.Component {
   state = {
-    emissions:[],
-    emissionid:"",
-    herdid:"",
-    amount:"",
+    feeds:[],
+    feedid:"",
     feedtype:"",
+    claimstatus:"",
+    herdid:"",
+    dmi:"",
     datetime:"",
-    blocktime:"",
   }
 
   componentDidMount() {
@@ -23,10 +28,10 @@ export default class Emission extends React.Component {
       },
     }
 
-    axios.get(`http://localhost:3000/emission/view/emissions`,apiConfig)
+    axios.get(`http://localhost:3000/feed/view/feeds`,apiConfig)
       .then(res => {
-        const emissions = res.data;
-        this.setState({ emissions });
+        const feeds = res.data;
+        this.setState({ feeds });
       })
   }
 
@@ -35,6 +40,10 @@ export default class Emission extends React.Component {
       ...this.state,
       [event.target.name]: event.target.value,
     })
+  }
+
+  handleClick = (feedid) => {
+    this.props.navigation("/feeddetail/" + feedid)
   }
 
   handleLog = event => {
@@ -49,11 +58,12 @@ export default class Emission extends React.Component {
       },
     }
 
-    axios.post(`http://localhost:3000/emission/log`, 
-    {emissionid:this.state.emissionid,
-     amount: this.state.amount,
+    axios.post(`http://localhost:3000/feed/log`, 
+    {feedid:this.state.feedid,
      feedtype:this.state.feedtype,
+     orderid:this.state.orderid,
      herdid:this.state.herdid,
+     dmi:this.state.dmi,
      datetime:this.state.datetime,
      gas:300000}, apiConfig)
     .then(res => {
@@ -64,40 +74,38 @@ export default class Emission extends React.Component {
   render() {
     return (
       <div>
-        <h2>Emission</h2>
+        <h2>Feed</h2>
         <table>
         <tr>
-          <th>EmissionID</th>
+          <th>FeedID</th>
+          <th>Feed Type</th>
+          <th>OrderID</th>
           <th>HerdID</th>
-          <th>Amount</th>
-          <th>FeedType</th>
+          <th>DMI</th>
           <th>Datetime</th>
-          <th>Blocktime</th>
+          <th>Details</th>
         </tr>
         {
-          this.state.emissions
-            .map(emission =>
-              <tr key={emission.emissionid}>
-                <td>{emission.emissionid}</td>
-                <td>{emission.herdid}</td>
-                <td>{emission.amount}</td>
-                <td>{emission.feedtype}</td>
-                <td>{parseTimestamp(emission.datetime)}</td>
-                <td>{parseTimestamp(emission.blocktime)}</td>
+          this.state.feeds
+            .map(feed =>
+              <tr key={feed.feedid}>
+                <td>{feed.feedid}</td>
+                <td>{feed.feedtype}</td>
+                <td>{feed.orderid}</td>
+                <td>{feed.herdid}</td>
+                <td>{feed.dmi}</td>
+                <td>{parseTimestamp(feed.datetime)}</td>
+                <td><button onClick={() => this.handleClick(feed.feedid)}>View</button></td>
               </tr>
             )
         }
         </table>
 
-        <h2>Log an Emission</h2>
+        <h2>Log a Feed</h2>
         <form onSubmit={this.handleLog}>
           <div className='form-div'>
-            <label className='label'>EmissionID:</label>
-            <input className='form-input' type="text" name="emissionid" onChange={this.handleChange}/>
-          </div>
-          <div className='form-div'>
-            <label className='label'>Amount:</label>
-            <input className='form-input' type="text" name="amount" onChange={this.handleChange}/>
+            <label className='label'>FeedID:</label>
+            <input className='form-input' type="text" name="feedid" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
             <label className='label'>Feed Type:</label>
@@ -108,8 +116,16 @@ export default class Emission extends React.Component {
           </select>
           </div>
           <div className='form-div'>
+            <label className='label'>OrderID:</label>
+            <input className='form-input' type="text" name="orderid" onChange={this.handleChange}/>
+          </div>
+          <div className='form-div'>
             <label className='label'>HerdID:</label>
             <input className='form-input' type="text" name="herdid" onChange={this.handleChange}/>
+          </div>
+          <div className='form-div'>
+            <label className='label'>DMI:</label>
+            <input className='form-input' type="text" name="dmi" onChange={this.handleChange}/>
           </div>
           <div className='form-div'>
             <label className='label'>Datetime:</label>
@@ -121,3 +137,5 @@ export default class Emission extends React.Component {
     )
   }
 }
+
+export default withRouter(Feed)

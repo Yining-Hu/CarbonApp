@@ -384,7 +384,7 @@ router.get('/view/saleorder',
                 value.methods.querySaleOrder(orderid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"orderid":orderid,"customer":result[0],"quantity":result[1],"orderstatus":result[2],"datetime":result[3]});
+                    response.json({"orderid":orderid,"customer":result[0],"customer blockchain address":result[1],"quantity":result[2],"orderstatus":result[3]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Order ${orderid}.`);

@@ -1,7 +1,12 @@
 import React from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
-export default class Seafeed extends React.Component {
+function withRouter(Component) {
+  return props => <Component {...props} navigation={useNavigate()} />
+}
+
+class Seafeed extends React.Component {
   state = {
     saleorders:[],
     productionid:"",
@@ -44,6 +49,10 @@ export default class Seafeed extends React.Component {
       ...this.state,
       [event.target.name]: event.target.value,
     })
+  }
+
+  handleClick = (orderid) => {
+    this.props.navigation("/orderdetail/" + orderid)
   }
 
   handleLogProduction = event => {
@@ -156,6 +165,7 @@ export default class Seafeed extends React.Component {
           <th>Quantity</th>
           <th>Status</th>
           <th>Datetime</th>
+          <th>Details</th>
         </tr>
         {
           this.state.saleorders
@@ -167,6 +177,7 @@ export default class Seafeed extends React.Component {
                 <td>{saleorder.quantity}</td>
                 <td>{saleorder.status}</td>
                 <td>{saleorder.datetime}</td>
+                <td><button onClick={() => this.handleClick(saleorder.orderid)}>View</button></td>
               </tr>
             )
         }
@@ -279,3 +290,5 @@ export default class Seafeed extends React.Component {
     )
   }
 }
+
+export default withRouter(Seafeed)

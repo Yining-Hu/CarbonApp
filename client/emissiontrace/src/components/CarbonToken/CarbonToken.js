@@ -1,7 +1,12 @@
 import React from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
-export default class CarbonToken extends React.Component {
+function withRouter(Component) {
+  return props => <Component {...props} navigation={useNavigate()} />
+}
+
+class CarbonToken extends React.Component {
   state = {
     cbts:[],
     distributions:[],
@@ -42,6 +47,14 @@ export default class CarbonToken extends React.Component {
       ...this.state,
       [event.target.name]: event.target.value,
     })
+  }
+
+  handleCbtokenClick = (cbtokenid) => {
+    this.props.navigation("/cbtokendetail/" + cbtokenid)
+  }
+
+  handleDistributionClick = (distributionid) => {
+    this.props.navigation("/distributiondetail/" + distributionid)
   }
 
   handleFeedIDChange = (idx) => (evt) => {
@@ -121,6 +134,7 @@ export default class CarbonToken extends React.Component {
           <th>ProjectID</th>
           <th>InternalID</th>
           <th>Amount</th>
+          <th>Details</th>
         </tr>
         {
           this.state.cbts
@@ -130,6 +144,7 @@ export default class CarbonToken extends React.Component {
                 <td>{cbt.projectid}</td>
                 <td>{cbt.internalid}</td>
                 <td>{cbt.amount}</td>
+                <td><button onClick={() => this.handleCbtokenClick(cbt.cbtokenid)}>View</button></td>
               </tr>
             )
         }
@@ -143,6 +158,7 @@ export default class CarbonToken extends React.Component {
           <th>Amount</th>
           <th>Farmer Blockchain Account</th>
           <th>Paid</th>
+          <th>Details</th>
         </tr>
         {
           this.state.distributions
@@ -153,6 +169,7 @@ export default class CarbonToken extends React.Component {
                 <td>{distribution.amount}</td>
                 <td>{distribution.farmer}</td>
                 <td>{String(distribution.paid)}</td>
+                <td><button onClick={() => this.handleDistributionClick(distribution.distributionid)}>View</button></td>
               </tr>
             )
         }
@@ -218,3 +235,5 @@ export default class CarbonToken extends React.Component {
     )
   }
 }
+
+export default withRouter(CarbonToken)

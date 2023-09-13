@@ -1,4 +1,4 @@
-export default `
+const emissiontracesequence = `
 %%{init: {'theme': 'forest', 'themeVariables': { 'fontSize': '20px'}}}%%
     sequenceDiagram
         autonumber
@@ -35,3 +35,5 @@ export default `
             Auditor->>EmissionTracking: Verify emission records.
             end
 `
+
+export default emissiontracesequence;
