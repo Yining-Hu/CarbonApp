@@ -35,13 +35,16 @@
   font-size: 25px;
 }
 
+.grid-container {
+  grid-template-columns: 1fr 1fr;
+  background:linear-gradient(#000,#000) center/2px 100% no-repeat;
+  grid-gap: 140px;
+}
+
 select {
-  /* border:0; */
   background:transparent;
-  /* height:32px; */
   border:1px solid #000000;
   width:258px;
-  /* -webkit-appearance: none; */
 }
 
 table, th, td {

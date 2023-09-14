@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
 function withRouter(Component) {
   return props => <Component {...props} navigation={useNavigate()} />
@@ -126,7 +127,16 @@ class CarbonToken extends React.Component {
 
   render() {
     return (
-      <div>
+      <Grid2 
+        className={'grid-container'}
+        container 
+        direction={'row'} 
+        justifyContent={'center'} 
+        alignItems={'center'} 
+        spacing={2} 
+      >
+        <Grid2 container>
+        <Grid2 xs={6}>
         <h2>Carbon Tokens</h2>
         <table>
         <tr>
@@ -149,7 +159,9 @@ class CarbonToken extends React.Component {
             )
         }
         </table>
-
+        </Grid2>
+        
+        <Grid2 xs={6}>
         <h2>Carbon Token Distributions</h2>
         <table>
         <tr>
@@ -174,7 +186,11 @@ class CarbonToken extends React.Component {
             )
         }
         </table>
+        </Grid2>
+        </Grid2>
 
+        <Grid2 container>
+        <Grid2 xs={6}>
         <h2>Issue Carbon Token</h2>
         <form onSubmit={this.handleIssue}>
           <div className='form-div'>
@@ -210,7 +226,9 @@ class CarbonToken extends React.Component {
           </div>
             <button type="submit">Submit</button>
         </form>
+        </Grid2>
 
+        <Grid2 xs={6}>
         <h2>Distribute Carbon Token</h2>
         <form onSubmit={this.handleDistribute}>
           <div className='form-div'>
@@ -231,7 +249,9 @@ class CarbonToken extends React.Component {
           </div>
             <button type="submit">Submit</button>
         </form>
-      </div>
+        </Grid2>
+        </Grid2>
+      </Grid2>
     )
   }
 }

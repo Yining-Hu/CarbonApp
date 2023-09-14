@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { parseTimestamp } from '../../utils';
 import { useNavigate } from "react-router-dom";
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
 function withRouter(Component) {
   return props => <Component {...props} navigation={useNavigate()} />
@@ -117,7 +118,14 @@ class Project extends React.Component {
 
   render() {
     return (
-      <div>
+      <Grid2 
+        container 
+        direction={'row'} 
+        justifyContent={'center'} 
+        alignItems={'center'} 
+        spacing={2} 
+      >
+        <Grid2 xs={12}>
         <h2>Carbon Projects</h2>
         <table>
         <tr>
@@ -142,7 +150,9 @@ class Project extends React.Component {
             )
         }
         </table>
+        </Grid2>
 
+        <Grid2 xs={3}>
         <h2>Register a Carbon Offset Project</h2>
         <form onSubmit={this.handleRegister}>
           <div className='form-div'>
@@ -167,7 +177,9 @@ class Project extends React.Component {
           </div>
           <button type="submit">Submit</button>
         </form>
+        </Grid2>
 
+        <Grid2 xs={3}>
         <h2>Add/Update Herds</h2>
         <form onSubmit={this.handleUpdate}>
           <div className='form-div'>
@@ -195,7 +207,8 @@ class Project extends React.Component {
             </div>
             <button type="submit">Update</button>
           </form>
-      </div>
+          </Grid2>
+      </Grid2>
     )
   }
 }

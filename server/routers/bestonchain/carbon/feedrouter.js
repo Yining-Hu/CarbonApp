@@ -92,7 +92,7 @@ router.get('/view',
                 value.methods.queryFeed(feedid).call({from: request.body.bcacc})
                 .then((result) => {
                     console.log(result);
-                    response.json({"feedid":feedid,"feedtype":result[0],"herdid":result[1],"orderid":result[2],"dmi":result[3],"datetime":result[4]});
+                    response.json({"feedid":feedid,"feedtype":result[0],"claimstatus":result[1],"herdid":result[2],"orderid":result[3],"dmi":result[4]});
                 })
                 .catch((error) => {
                     console.log(`Failed to query Feed ${feedid}.`);

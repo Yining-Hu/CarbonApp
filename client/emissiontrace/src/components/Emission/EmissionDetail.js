@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {useParams} from 'react-router-dom'
+import { parseTimestamp } from '../../utils';
 
 function withRouter(Component) {
   return props => <Component {...props} params={useParams()} />
@@ -35,9 +36,15 @@ class EmissionDetail extends React.Component {
         <h2>Emission Details</h2>
         {
           Object.keys(this.state.emission).map((key) => {
-            return <p className='detail'>
-              <b>{key}</b> {this.state.emission[key]}
-            </p>
+            if (key==='datetime' | key==='blocktime') {
+              return <p className='detail'>
+                <b>{key}</b> {parseTimestamp(this.state.emission[key])}
+              </p>
+            } else {
+              return <p className='detail'>
+                <b>{key}</b> {this.state.emission[key]}
+              </p>
+            }
          })
         }
       </div>

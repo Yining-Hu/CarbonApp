@@ -35,9 +35,15 @@ class DistributionDetail extends React.Component {
         <h2>Distribution Details</h2>
         {
           Object.keys(this.state.distribution).map((key) => {
-            return <p className='detail'>
-              <b>{key}</b> {this.state.distribution[key]}
-            </p>
+            if (key==='paid') {
+              return <p className='detail'>
+                <b>{key}</b> {String(this.state.distribution[key])}
+              </p>
+            } else {
+              return <p className='detail'>
+                <b>{key}</b> {this.state.distribution[key]}
+              </p>
+            }
          })
         }
       </div>

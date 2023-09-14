@@ -35,9 +35,16 @@ class ProjectDetail extends React.Component {
         <h2>Project Details</h2>
         {
           Object.keys(this.state.project).map((key) => {
-            return <p className='detail'>
-              <b>{key}</b> {this.state.project[key]}
-            </p>
+            if (key==='herds') {
+              return <p className='detail'>
+                <b>{key}</b> {this.state.project[key].toString()}
+              </p>
+            } else {
+              return <p className='detail'>
+                <b>{key}</b> {this.state.project[key]}
+              </p>
+            }
+
          })
         }
       </div>

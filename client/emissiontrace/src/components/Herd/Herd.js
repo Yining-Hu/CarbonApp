@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
 function withRouter(Component) {
   return props => <Component {...props} navigation={useNavigate()} />
@@ -68,7 +69,16 @@ class Herd extends React.Component {
 
   render() {
     return (
-      <div>
+      <Grid2 
+        className={'grid-container'}
+        container 
+        direction={'row'} 
+        justifyContent={'center'} 
+        alignItems={'center'} 
+        spacing={2} 
+        columns={2}
+      >
+        <Grid2>
         <h2>Herd</h2>
         <table>
         <tr>
@@ -91,7 +101,9 @@ class Herd extends React.Component {
             )
         }
         </table>
+        </Grid2>
 
+        <Grid2>
         <h2>Register a Herd</h2>
         <form onSubmit={this.handleRegister}>
           <div className='form-div'>
@@ -112,7 +124,8 @@ class Herd extends React.Component {
           </div>
           <button type="submit">Submit</button>
         </form>
-      </div>
+        </Grid2>
+      </Grid2>
     )
   }
 }

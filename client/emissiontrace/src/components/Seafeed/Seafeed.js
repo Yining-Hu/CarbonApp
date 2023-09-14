@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
 function withRouter(Component) {
   return props => <Component {...props} navigation={useNavigate()} />
@@ -155,7 +156,14 @@ class Seafeed extends React.Component {
 
   render() {
     return (
-      <div>
+      <Grid2 
+        container 
+        direction={'row'} 
+        justifyContent={'center'} 
+        alignItems={'center'} 
+        spacing={2} 
+      >
+        <Grid2 xs={12}>
         <h2>Sale Orders</h2>
         <table>
         <tr>
@@ -182,8 +190,10 @@ class Seafeed extends React.Component {
             )
         }
         </table>
+        </Grid2>
 
-        <h2>Log a Production</h2>
+        <Grid2 xs={3}>
+        <h2>Step 1: Log a Production</h2>
         <form onSubmit={this.handleLogProduction}>
           <div className='form-div'>
             <label className='label'>ProductionID:</label>
@@ -207,8 +217,10 @@ class Seafeed extends React.Component {
           </div>
           <button type="submit">Submit</button>
         </form>
+        </Grid2>
 
-        <h2>Log a Testing</h2>
+        <Grid2 xs={3}>
+        <h2>Step 2: Log a Testing</h2>
         <form onSubmit={this.handleLogTesting}>
           <div className='form-div'>
             <label className='label'>TestingID:</label>
@@ -228,8 +240,10 @@ class Seafeed extends React.Component {
           </div>
           <button type="submit">Submit</button>
         </form>
+        </Grid2>
 
-        <h2>Log a Storage</h2>
+        <Grid2 xs={3}>
+        <h2>Step 3: Log a Storage</h2>
         <form onSubmit={this.handleLogStorage}>
           <div className='form-div'>
             <label className='label'>StorageID:</label>
@@ -257,8 +271,10 @@ class Seafeed extends React.Component {
           </div>
           <button type="submit">Submit</button>
         </form>
+        </Grid2>
 
-        <h2>Log a Saleorder</h2>
+        <Grid2 xs={3}>
+        <h2>Step 4: Log a Saleorder</h2>
         <form onSubmit={this.handleLogSaleorder}>
           <div className='form-div'>
             <label className='label'>SaleorderID:</label>
@@ -286,7 +302,8 @@ class Seafeed extends React.Component {
           </div>
           <button type="submit">Submit</button>
         </form>
-      </div>
+        </Grid2>
+      </Grid2>
     )
   }
 }
